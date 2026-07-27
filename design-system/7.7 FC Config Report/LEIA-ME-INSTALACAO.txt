@@ -1,0 +1,31 @@
+Flow Computer Configuration Analisys - Instalacao Rapida
+
+Requisito:
+- Python 3.14 instalado
+
+Passo 1 - Extrair o ZIP
+- Extraia o conteudo para uma pasta local, por exemplo: C:\SGMedInspector
+
+Passo 2 - Instalar dependencias
+- Abra o PowerShell na pasta extraida
+- Execute:
+  .\install_sgmed.ps1
+
+Passo 3 - Iniciar a aplicacao
+- Na mesma pasta, execute:
+  .\start_sgmed.ps1
+
+Passo 4 - Abrir no navegador
+- O script escolhe automaticamente uma porta livre, a partir da 8010
+- Veja no terminal a linha:
+  Abra no navegador: http://127.0.0.1:PORTA
+
+Se der erro:
+- Confirme que o Python 3.14 esta disponivel no comando:
+  py -3.14 --version
+
+Instalacao manual, se necessario:
+- py -3.14 -m pip install --user -r backend\requirements.txt
+
+Execucao manual, se necessario:
+- py -3.14 -m uvicorn app.main:app --host 127.0.0.1 --port 8010 --app-dir backend

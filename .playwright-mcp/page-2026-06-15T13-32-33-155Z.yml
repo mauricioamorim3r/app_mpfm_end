@@ -1,0 +1,350 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - button "Editar" [ref=e7] [cursor=pointer]
+      - generic [ref=e8]: PulseFlow Ops Studio
+      - generic [ref=e9]: Local · editável
+    - button "Resumo do Mês" [ref=e10] [cursor=pointer]:
+      - generic [ref=e11]: Resumo do Mês
+    - button "Processar Arquivos" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: Processar Arquivos
+    - button "Dados MPFM" [ref=e14] [cursor=pointer]:
+      - generic [ref=e15]: Dados MPFM
+    - button "Monitoramento MPFM" [ref=e16] [cursor=pointer]:
+      - generic [ref=e17]: Monitoramento MPFM
+    - button "XML 042" [ref=e18] [cursor=pointer]:
+      - generic [ref=e19]: XML 042
+    - button "Relatórios Mensais" [ref=e20] [cursor=pointer]:
+      - generic [ref=e21]: Relatórios Mensais
+    - button "Dados Separador" [ref=e22] [cursor=pointer]:
+      - generic [ref=e23]: Dados Separador
+    - button "Cards Diários" [ref=e24] [cursor=pointer]:
+      - generic [ref=e25]: Cards Diários
+    - button "Gráficos" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: Gráficos
+    - button "Alarmes MPFM" [ref=e28] [cursor=pointer]:
+      - generic [ref=e29]: Alarmes MPFM
+    - button "Prazos" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: Prazos
+    - button "Cadastro" [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: Cadastro
+    - button "Reconciliação" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: Reconciliação
+    - button "Fluxo Metodológico" [ref=e36] [cursor=pointer]:
+      - generic [ref=e37]: Fluxo Metodológico
+    - button "Twin MPFM" [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: Twin MPFM
+    - button "Registros do SGM-FM" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]: Registros do SGM-FM
+    - button "Exportar" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: Exportar
+    - button "Assistente IA" [ref=e44] [cursor=pointer]:
+      - generic [ref=e45]: Assistente IA
+    - generic [ref=e46]: Equinor Brasil Energia Ltda.
+  - main [ref=e47]:
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - heading "Twin MPFM" [level=1] [ref=e185]
+        - generic [ref=e51]: Sinóptico operacional com assets do Twin MPFM e dados reais do run de reconciliação
+      - generic [ref=e52]:
+        - combobox "Mês de referência" [ref=e53]:
+          - option "Jun/2026" [selected]
+          - option "Mai/2026"
+          - option "Abr/2026"
+          - option "Mar/2026"
+          - option "Fev/2026"
+          - option "Jan/2026"
+          - option "Dez/2025"
+          - option "Nov/2025"
+          - option "Out/2025"
+        - 'button "⏱ Auto: ON" [ref=e54] [cursor=pointer]'
+        - button "◑ Escuro" [pressed] [ref=e186] [cursor=pointer]
+        - button "⚙ Config." [ref=e56] [cursor=pointer]
+        - button "↻ Atualizar" [ref=e57] [cursor=pointer]
+    - generic [ref=e187]:
+      - generic [ref=e188]:
+        - generic [ref=e189]:
+          - generic [ref=e190]: Banco
+          - textbox "Banco" [ref=e191]:
+            - /placeholder: Todos
+        - generic [ref=e192]:
+          - generic [ref=e193]: TAG
+          - textbox "TAG" [ref=e194]:
+            - /placeholder: Todas
+        - generic [ref=e195]:
+          - generic [ref=e196]: Data
+          - textbox "Data" [ref=e197]:
+            - /placeholder: dd/mm/aaaa
+        - generic [ref=e198]:
+          - generic [ref=e199]: Run real
+          - combobox "Run real" [ref=e200]:
+            - option "Último run disponível"
+            - option "#15 · 2026-05-19 · B08 / Riser_P2 · run" [selected]
+            - option "#14 · 2026-05-16 · B08 / Riser_P2 · run"
+            - option "#13 · 2026-05-16 · B08 / Riser_P2 · run"
+            - option "#12 · 2026-05-16 · B08 / Riser_P2 · run"
+            - option "#11 · 2026-05-16 · B08 / Riser_P2 · run"
+            - option "#10 · 2026-05-15 · B08 / Riser_P2 · run"
+            - option "#9 · 2026-05-19 · B08 / Riser_P2 · run"
+            - option "#8 · 2026-05-01 · B08 / Riser_P2 · run"
+            - option "#7 · 2026-05-16 · B08 / Riser_P1 · run"
+            - option "#6 · 2026-05-16 · B08 / Riser_P1 · run"
+            - option "#5 · 2026-04-19 · B15 / PW-104DA · run"
+            - option "#4 · 2026-04-19 · B15 / PW-104DA · run"
+            - option "#3 · 2026-04-19 · B15 / PW-104DA · run"
+            - option "#2 · 2026-04-19 · B15 / PW-104DA · run"
+            - option "#1 · 2026-04-19 · B15 / PW-104DA · run"
+        - generic [ref=e201]:
+          - button "Limpar" [ref=e202] [cursor=pointer]
+          - button "Carregar twin" [ref=e203] [cursor=pointer]
+          - link "Abrir protótipo" [active] [ref=e204] [cursor=pointer]:
+            - /url: /twin/index.html
+      - status [ref=e205]: "Twin carregado com Run #15 · B08 / Riser_P2 · 19/05/2026 · SynopticApiPayload.v1."
+      - generic [ref=e206]:
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]: Run
+            - strong [ref=e210]: "#15"
+            - emphasis [ref=e211]: B08 / Riser_P2
+          - generic [ref=e212]:
+            - generic [ref=e213]: Data
+            - strong [ref=e214]: 19/05/2026
+            - emphasis [ref=e215]: post · CMP-12
+          - generic [ref=e216]:
+            - generic [ref=e217]: Cobertura
+            - strong [ref=e218]: 95,8%
+            - emphasis [ref=e219]: 23 de 24 horas
+          - generic [ref=e220]:
+            - generic [ref=e221]: Status
+            - strong [ref=e222]: OK
+            - emphasis [ref=e223]: reconciliação real
+        - generic [ref=e224]:
+          - generic [ref=e225]:
+            - generic [ref=e226]:
+              - generic [ref=e227]:
+                - heading "Sinóptico da cadeia de medição" [level=3] [ref=e228]
+                - paragraph [ref=e229]: TS x SEP · referência Separador de Testes · hora ativa 01:00.
+              - generic [ref=e230]: OK
+            - generic [ref=e231]:
+              - generic [ref=e232]: "Contrato: SynopticApiPayload.v1"
+              - generic [ref=e233]: "Modo: time_shifted"
+              - generic [ref=e234]: "Alertas: 0"
+            - generic [ref=e235]:
+              - button "POÇO / PRODUÇÃO ATIVO" [ref=e240] [cursor=pointer]:
+                - generic [ref=e241]: POÇO / PRODUÇÃO
+                - generic [ref=e242]: ATIVO
+              - button "GAS LIFT NAO INFORMADO" [ref=e243] [cursor=pointer]:
+                - generic [ref=e244]: GAS LIFT
+                - generic [ref=e245]: NAO INFORMADO
+              - button "MPFM SUBSEA SEM FONTE" [ref=e246] [cursor=pointer]:
+                - generic [ref=e247]: MPFM SUBSEA
+                - generic [ref=e248]: SEM FONTE
+              - button "FLOWLINE / RISER RASTREADO" [ref=e249] [cursor=pointer]:
+                - generic [ref=e250]: FLOWLINE / RISER
+                - generic [ref=e251]: RASTREADO
+              - button "MPFM TOPSIDE NORMAL" [ref=e252] [cursor=pointer]:
+                - generic [ref=e253]: MPFM TOPSIDE
+                - generic [ref=e254]: NORMAL
+              - button "SEPARADOR REFERENCIA OK" [ref=e255] [cursor=pointer]:
+                - generic [ref=e256]: SEPARADOR
+                - generic [ref=e257]: REFERENCIA OK
+              - button "FCS320 / ALOCAÇÃO OK" [ref=e258] [cursor=pointer]:
+                - generic [ref=e259]: FCS320 / ALOCAÇÃO
+                - generic [ref=e260]: OK
+            - generic [ref=e261]:
+              - button "00" [ref=e262] [cursor=pointer]
+              - button "01" [ref=e263] [cursor=pointer]
+              - button "02" [ref=e264] [cursor=pointer]
+              - button "03" [ref=e265] [cursor=pointer]
+              - button "04" [ref=e266] [cursor=pointer]
+              - button "05" [ref=e267] [cursor=pointer]
+              - button "06" [ref=e268] [cursor=pointer]
+              - button "07" [ref=e269] [cursor=pointer]
+              - button "08" [ref=e270] [cursor=pointer]
+              - button "09" [ref=e271] [cursor=pointer]
+              - button "10" [ref=e272] [cursor=pointer]
+              - button "11" [ref=e273] [cursor=pointer]
+              - button "12" [ref=e274] [cursor=pointer]
+              - button "13" [ref=e275] [cursor=pointer]
+              - button "14" [ref=e276] [cursor=pointer]
+              - button "15" [ref=e277] [cursor=pointer]
+              - button "16" [ref=e278] [cursor=pointer]
+              - button "17" [ref=e279] [cursor=pointer]
+              - button "18" [ref=e280] [cursor=pointer]
+              - button "19" [ref=e281] [cursor=pointer]
+              - button "20" [ref=e282] [cursor=pointer]
+              - button "21" [ref=e283] [cursor=pointer]
+              - button "22" [ref=e284] [cursor=pointer]
+              - button "23" [ref=e285] [cursor=pointer]
+          - complementary [ref=e286]:
+            - generic [ref=e289]:
+              - heading "MPFM TOPSIDE" [level=3] [ref=e290]
+              - paragraph [ref=e291]: Dados MPFM carregados da base curada.
+            - generic [ref=e292]: NORMAL
+            - generic [ref=e293]:
+              - generic [ref=e294]:
+                - generic [ref=e295]: Óleo hora
+                - strong [ref=e296]: 276,397 t/h
+              - generic [ref=e297]:
+                - generic [ref=e298]: Gás hora
+                - strong [ref=e299]: 64,741 t/h
+              - generic [ref=e300]:
+                - generic [ref=e301]: Água hora
+                - strong [ref=e302]: 0,007 t/h
+              - generic [ref=e303]:
+                - generic [ref=e304]: P/T
+                - strong [ref=e305]: 106,8 barg / 69,8 °C
+              - generic [ref=e306]:
+                - generic [ref=e307]: HC dia
+                - strong [ref=e308]: 8.182,38 t
+              - generic [ref=e309]:
+                - generic [ref=e310]: Total dia
+                - strong [ref=e311]: 8.182,60 t
+            - generic [ref=e312]:
+              - generic [ref=e313]: Evidências
+              - generic [ref=e314]: "Fonte MPFM: 13FT0217"
+        - generic [ref=e315]:
+          - generic [ref=e316]:
+            - heading "Execução end-to-end" [level=3] [ref=e317]
+            - paragraph [ref=e318]: Atividades suportadas pelo memorial e pelo contexto real da reconciliação.
+          - generic [ref=e319]:
+            - generic [ref=e320]:
+              - generic [ref=e321]: "1"
+              - generic [ref=e322]: Calibracao e parametros PVT
+              - emphasis [ref=e323]: Fonte versionada de FE, Rs, densidades standard, limites e condicao de referencia.
+              - generic [ref=e324]:
+                - generic [ref=e325]:
+                  - generic [ref=e326]: PVT
+                  - strong [ref=e327]: "#2"
+                - generic [ref=e328]:
+                  - generic [ref=e329]: Banco/TAG
+                  - strong [ref=e330]: B08 / Riser_P2
+                - generic [ref=e331]:
+                  - generic [ref=e332]: Fonte
+                  - strong [ref=e333]: Calsep PVTsim v23.1.0 | MPFM_Calibração_PW-104 Rev1.xlsm
+            - generic [ref=e334]:
+              - generic [ref=e335]: "2"
+              - generic [ref=e336]: Comissionamento e configuracao
+              - emphasis [ref=e337]: Parametros usados para converter a referencia do separador para a mesma base de comparacao do MPFM.
+              - generic [ref=e338]:
+                - generic [ref=e339]:
+                  - generic [ref=e340]: SF/FE
+                  - strong [ref=e341]: 0,868900
+                - generic [ref=e342]:
+                  - generic [ref=e343]: Delta Rs
+                  - strong [ref=e344]: 64,2400 Sm3/Sm3
+                - generic [ref=e345]:
+                  - generic [ref=e346]: GOR mode
+                  - strong [ref=e347]: fixed
+            - generic [ref=e348]:
+              - generic [ref=e349]: "3"
+              - generic [ref=e350]: Operacao continua MPFM
+              - emphasis [ref=e351]: Medições daily/hourly do MPFM carregadas da base curada para o periodo do run.
+              - generic [ref=e352]:
+                - generic [ref=e353]:
+                  - generic [ref=e354]: MPFM HC
+                  - strong [ref=e355]: 8.182,382 t
+                - generic [ref=e356]:
+                  - generic [ref=e357]: MPFM Total
+                  - strong [ref=e358]: 8.182,601 t
+                - generic [ref=e359]:
+                  - generic [ref=e360]: Pressao
+                  - strong [ref=e361]: 106,76 barg
+            - generic [ref=e362]:
+              - generic [ref=e363]: "4"
+              - generic [ref=e364]: Verificacao MPFM x Separador
+              - emphasis [ref=e365]: Balanço de massa por fase conforme memorial, com conversao PVT e comparacao por janela.
+              - generic [ref=e366]:
+                - generic [ref=e367]:
+                  - generic [ref=e368]: Cobertura
+                  - strong [ref=e369]: 95,8 %
+                - generic [ref=e370]:
+                  - generic [ref=e371]: Horas validas
+                  - strong [ref=e372]: "23"
+                - generic [ref=e373]:
+                  - generic [ref=e374]: HC REF
+                  - strong [ref=e375]: 7.349,308 t
+            - generic [ref=e376]:
+              - generic [ref=e377]: "5"
+              - generic [ref=e378]: Decisao tecnica
+              - emphasis [ref=e379]: Resultado consolidado considerando limites PVT, cobertura e flags de QA.
+              - generic [ref=e380]:
+                - generic [ref=e381]:
+                  - generic [ref=e382]: Status
+                  - strong [ref=e383]: OK
+                - generic [ref=e384]:
+                  - generic [ref=e385]: Desvio HC
+                  - strong [ref=e386]: 6,694 %
+                - generic [ref=e387]:
+                  - generic [ref=e388]: Desvio Total
+                  - strong [ref=e389]: 6,001 %
+            - generic [ref=e390]:
+              - generic [ref=e391]: "6"
+              - generic [ref=e392]: Aprovado / manter K
+              - emphasis [ref=e393]: Quando o resultado fica dentro do criterio, o fluxo recomenda manter a medicao e programar proxima verificacao.
+              - generic [ref=e394]:
+                - generic [ref=e395]:
+                  - generic [ref=e396]: Campanha
+                  - strong [ref=e397]: "#12"
+                - generic [ref=e398]:
+                  - generic [ref=e399]: Proposta
+                  - strong [ref=e400]: insufficient_window
+                - generic [ref=e401]:
+                  - generic [ref=e402]: K selecionado
+                  - strong [ref=e403]: 0,965217
+            - generic [ref=e404]:
+              - generic [ref=e405]: "7"
+              - generic [ref=e406]: Investigar causa raiz
+              - emphasis [ref=e407]: Quando ha desvio fora do criterio, separar erro de sensor, PVT/EOS, BSW, GSV e fonte SEP antes de intervencao.
+              - generic [ref=e408]:
+                - generic [ref=e409]:
+                  - generic [ref=e410]: Alarmes no dia
+                  - strong [ref=e411]: "0"
+                - generic [ref=e412]:
+                  - generic [ref=e413]: QA flags
+                  - strong [ref=e414]: "109"
+                - generic [ref=e415]:
+                  - generic [ref=e416]: BSW medio gap
+                  - strong [ref=e417]: 0,7752 pp
+            - generic [ref=e418]:
+              - generic [ref=e419]: "8"
+              - generic [ref=e420]: Diagnostico diferencial
+              - emphasis [ref=e421]: Usar trilha padrao, linha e PVT para confirmar se o desvio vem do instrumento, da EOS ou de premissas do teste.
+              - generic [ref=e422]:
+                - generic [ref=e423]:
+                  - generic [ref=e424]: Oleo std
+                  - strong [ref=e425]: 1,708 %
+                - generic [ref=e426]:
+                  - generic [ref=e427]: Gas std
+                  - strong [ref=e428]: "-"
+                - generic [ref=e429]:
+                  - generic [ref=e430]: Agua std
+                  - strong [ref=e431]: "-99,738 %"
+        - generic [ref=e432]:
+          - generic [ref=e433]:
+            - heading "Resultado metrológico" [level=3] [ref=e434]
+            - generic [ref=e435]:
+              - generic [ref=e436]:
+                - generic [ref=e437]: HC MPFM
+                - strong [ref=e438]: 7.841,28 t
+                - emphasis [ref=e439]: Ref. 7.349,31 t
+              - generic [ref=e440]:
+                - generic [ref=e441]: Desvio HC
+                - strong [ref=e442]: 6,694%
+                - emphasis [ref=e443]: limite ±10,0%
+              - generic [ref=e444]:
+                - generic [ref=e445]: Total MPFM
+                - strong [ref=e446]: 7.841,49 t
+                - emphasis [ref=e447]: Ref. 7.397,58 t
+              - generic [ref=e448]:
+                - generic [ref=e449]: Desvio Total
+                - strong [ref=e450]: 6,001%
+                - emphasis [ref=e451]: limite ±7,0%
+          - generic [ref=e452]:
+            - heading "PVT e memorial" [level=3] [ref=e453]
+            - generic [ref=e454]:
+              - code [ref=e455]: NSV = GSV × (1 - BSW / 100)
+              - code [ref=e456]: V_STO = NSV × FE/SF (0,868900)
+              - code [ref=e457]: V_gas_total = V_gas_sep + V_STO × ΔRs (64,2400)
+              - code [ref=e458]: δ = 100 × (MPFM - REF) / REF
+            - paragraph [ref=e459]: "Fonte PVT: Calsep PVTsim v23.1.0 | MPFM_Calibração_PW-104 Rev1.xlsm."

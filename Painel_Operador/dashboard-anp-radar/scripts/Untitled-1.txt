@@ -1,0 +1,2 @@
+cd "c:\Users\MAUAM\OneDrive - Equinor\Desktop\NOVO"
+"INICIAR LOCAL.bat"

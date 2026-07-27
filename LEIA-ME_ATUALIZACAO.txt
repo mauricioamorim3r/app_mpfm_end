@@ -1,0 +1,31 @@
+MPFM Update - Reconciliação / Memorial técnico
+Gerado em: 2026-06-15 13:53:33
+
+Conteúdo:
+- index.html
+- routes/recon_routes.py
+- static/app.recon.js
+- static/app.layout.css
+
+O que atualiza:
+- Nova aba Memorial técnico na tela de Reconciliação.
+- Novo endpoint: GET /api/recon/runs/{run_id}/memorial.
+- Renderização com dados reais dos runs salvos no banco existente.
+- Checklist técnico, fórmulas, evidências, decisões e recomendações.
+- Ajuste visual responsivo e compatível com modo claro/escuro.
+
+Como aplicar:
+1. Parar o servidor da versão em uso.
+2. Descompactar este zip na raiz da aplicação, sobrescrevendo os arquivos existentes.
+3. Subir novamente o servidor.
+4. Acessar Reconciliação > Histórico > Memorial em um run existente.
+
+Não inclui:
+- data/mpfm_local.db
+- .env
+- uploads
+- logs
+- arquivos temporários
+
+Observação:
+Esta atualização usa o banco de dados já existente. Não há alteração de schema nesta entrega.

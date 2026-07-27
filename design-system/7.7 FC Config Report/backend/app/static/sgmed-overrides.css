@@ -1,0 +1,136 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.panel,
+.subpanel,
+.comparison-layout,
+.comparison-card,
+.meta-list,
+.meta-list > div,
+.tag-summary-list,
+.message-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.comparison-card h3,
+.support-text,
+.tag-summary-list p,
+.meta-list dt,
+.meta-list dd,
+.message-card {
+  overflow-wrap: anywhere;
+}
+
+.primary-button,
+.ghost-button,
+.tab-button {
+  white-space: normal;
+  text-align: center;
+}
+
+.sgmed-tools {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  max-width: min(760px, calc(100vw - 32px));
+}
+
+.sgmed-tools a,
+.sgmed-tools button,
+.sgmed-maintenance-actions button {
+  border: 1px solid #002060;
+  border-radius: 8px;
+  background: #002060;
+  color: #fff;
+  padding: .72rem .9rem;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 10px 24px #00000024;
+  cursor: pointer;
+}
+
+.sgmed-tools a.secondary,
+.sgmed-tools button.secondary,
+.sgmed-maintenance-actions button.ghost-button {
+  background: #fff;
+  color: #002060;
+}
+
+.sgmed-maintenance-modal[hidden] {
+  display: none;
+}
+
+.sgmed-maintenance-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: #0f172a66;
+}
+
+.sgmed-maintenance-panel {
+  width: min(720px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  border: 1px solid #d9e2ef;
+  border-radius: 12px;
+  background: #fff;
+  color: #172033;
+  padding: 1rem;
+  box-shadow: 0 24px 60px #00000030;
+}
+
+.sgmed-maintenance-panel h2 {
+  margin: 0 0 .4rem;
+  color: #002060;
+}
+
+.sgmed-maintenance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin: .8rem 0;
+}
+
+.sgmed-maintenance-actions button.danger {
+  border-color: #b42318;
+  background: #b42318;
+}
+
+.sgmed-maintenance-select,
+.sgmed-maintenance-select select {
+  width: 100%;
+}
+
+.sgmed-maintenance-status {
+  min-height: 2.5rem;
+  border: 1px solid #d9e2ef;
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: #475467;
+  padding: .7rem;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 680px) {
+  .sgmed-tools {
+    left: 12px;
+    right: 12px;
+    display: grid;
+  }
+
+  .sgmed-tools a,
+  .sgmed-tools button,
+  .sgmed-maintenance-actions button {
+    width: 100%;
+  }
+}

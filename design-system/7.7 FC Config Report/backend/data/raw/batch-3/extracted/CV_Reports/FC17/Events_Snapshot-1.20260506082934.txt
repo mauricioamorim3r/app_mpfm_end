@@ -1,0 +1,22 @@
+                                   DAILY EVENTS REPORT ON DEMAND
+
+Company                            Equinor
+Location                           Tot. Fuel Gas & Test Sep. Gas & Gas Lift
+
+System                             21JN112
+Description                        FPSO Bacalhau
+Flow computer                      21JN112
+
+Start date/time                    06/05/26 00:00:00
+End date/time                      06/05/26 08:29:33
+
+Events                             8
+05/06/26 08:29:33                  'Print snapshot report' executed by administrator (2000)
+05/06/26 08:29:27                  'Print configuration report' executed by administrator (2000)
+05/06/26 08:27:57                  Run 1 DPA alarm from Normal to High High [60]
+05/06/26 08:27:57                  Parameter Analog input 4 full scale 1 was changed from 420 to 600 by administrator (2000)
+05/06/26 08:22:04                  User Administrator (Web: 10.0.1.51) failed to log in
+05/06/26 08:22:04                  User administrator (Web: 10.0.1.51) has logged in
+05/06/26 01:21:26                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 00:21:25                  User administrator (Web: 10.0.1.50) has logged in
+

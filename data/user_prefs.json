@@ -1,0 +1,133 @@
+{
+  "theme_mode": "light",
+  "auto_folder_monitor": {
+    "enabled": false,
+    "stability_seconds": 20,
+    "schedule_enabled": false,
+    "schedule_times": [
+      "09:00",
+      "12:00",
+      "18:00"
+    ],
+    "interval_enabled": true,
+    "folders": [
+      {
+        "id": "folder-1785003811839",
+        "label": "Riser P5",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.1_13-FT-0367 Riser P5 - Topside B03\\2026\\07. Julho",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      },
+      {
+        "id": "folder-1785003841689",
+        "label": "Riser P2",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.2_13-FT-0167 Riser P2 - Topside B08\\2026\\07. Julho",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      },
+      {
+        "id": "folder-1785003886218",
+        "label": "Riser P4",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.3_13-FT-0317 Riser P4 - Topside B13\\2026\\07. Julho",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      },
+      {
+        "id": "folder-1785003910367",
+        "label": "PE-4",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.4_18-FT-1506 PE 4 - Subsea B05\\2026\\07. Julho",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      },
+      {
+        "id": "folder-1785003930814",
+        "label": "PE-2",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.5_18-FT-0506 PE 2 - Subsea B10\\2026\\07. Julho",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      },
+      {
+        "id": "folder-1785003951258",
+        "label": "PW-104",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.6_18-FT-1106 PW_104DA - Subsea B15\\2026\\07. Julho",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      }
+    ]
+  },
+  "xml042_cnpj8": "04028583",
+  "sep_selected_metrics": [
+    "gas_t",
+    "hc_t",
+    "oil_m3",
+    "oil_t",
+    "pressure_barg",
+    "temp",
+    "total_t",
+    "water_t"
+  ],
+  "selected_metrics": [
+    "MPFM uncorr Gás (t)",
+    "MPFM uncorr Óleo (t)",
+    "MPFM uncorr HC (t)",
+    "MPFM uncorr Água (t)",
+    "MPFM uncorr Total (t)",
+    "MPFM corr Gás (t)",
+    "MPFM corr Óleo (t)",
+    "MPFM corr HC (t)",
+    "MPFM corr Água (t)",
+    "MPFM corr Total (t)",
+    "PVT mass Gás (t)",
+    "PVT mass Óleo (t)",
+    "PVT mass Água (t)",
+    "PVT vol Gás (Sm³)",
+    "PVT vol Óleo (m³)",
+    "PVT vol Água (m³)",
+    "PVT @20 mass Gás (t)",
+    "PVT @20 mass Óleo (t)",
+    "PVT @20 mass Água (t)",
+    "PVT @20 vol Gás (Sm³)",
+    "PVT @20 vol Óleo (m³)",
+    "PVT @20 vol Água (m³)",
+    "Pressão (barg)",
+    "Temperatura (°C)",
+    "Dens. Gás (kg/m³)",
+    "Dens. Óleo (kg/m³)",
+    "Dens. Água (kg/m³)",
+    "Daily Gás (t)",
+    "Daily Óleo (t)",
+    "Daily HC (t)",
+    "Daily Água (t)",
+    "Soma h. Gás (t)",
+    "Soma h. Óleo (t)",
+    "Soma h. HC (t)",
+    "Soma h. Água (t)",
+    "Δ Gás (t)",
+    "Δ Óleo (t)",
+    "Δ HC (t)",
+    "Δ Água (t)",
+    "Horas",
+    "Cobertura"
+  ],
+  "summary_layout": {
+    "cards": false,
+    "bank": false,
+    "tag": false,
+    "daily": true
+  },
+  "summary_daily_chart": {
+    "visibleSeries": [
+      "mpfm_oil",
+      "mpfm_gas",
+      "mpfm_water",
+      "mpfm_hc",
+      "mpfm_total"
+    ]
+  }
+}

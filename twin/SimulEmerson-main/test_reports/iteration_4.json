@@ -1,0 +1,30 @@
+{
+  "summary": "Iteração 4 (post code-review refactor) — regressão ZERO. Backend: 75/75 pytest (20 integration + 55 unit) green em ~1.85s contra REACT_APP_BACKEND_URL público. Valores numéricos com defaults v4 IDÊNTICOS à iteração 3 (NSV_sep=194.724096, V_STO=169.40996352, m_oil_REF=145.86197859072, V_gas_flash_std=10522.0528342272, V_gas_total_std=63283.8928342272, m_gas_REF=56.89221965797025, m_water_REF=0.2055333728, m_HC_REF=202.75419824869024, m_total_REF=202.95973162149025). Fórmulas e memorial preservados — refactor não alterou separator_balance nem build_memorial (regras #2/#3). Frontend: aplicação carrega no / com visual fiel ao v4 (sidebar gradient ciano, 6 KPIs coloridos, envelope com zonas, decision-panel 'Bloqueada' com defaults), todos os data-testids resolvem (sidebar testid adicionado — vide updated_files), live-recompute funciona (qo=500→GOR=505,59), run-analysis dispara POST /api/consultor/analyze e api-status muda para 'API: ok • análise #<8>', theme toggle persiste em localStorage ('light'→'dark'), navegação entre as 8 views sem console errors/warnings, PVT modal extraído abre+salva (POST /api/pvt/catalog) e nova linha aparece no pvt-catalog-table, run-balance gera balance-results+balance-formula, memorial-output contém 5 seções e tokens-chave (NSV_sep, V_STO, m_HC_REF, En_HC, IAJ, Fator sugerido), download-memorial visível, upload .xlsx em Configurações retorna JSON com records_imported=2/records_rejected=0/rejected=[]/sample[], report-dialog (1549 chars) abre com 5 seções, download-report visível. ZERO React 'unique key' warnings (keys baseadas em conteúdo OK), ZERO console errors, ZERO page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_calculations_unit.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Refactor v4 (defensive records init, split de import_mpfm_xlsx em _find_header_row/_normalize_headers/_row_is_empty/_cell_to_serializable/_parse_row, extração de _compute_kinematic_metrics em analyze) NÃO introduziu regressões. Resposta de /api/consultor/analyze mantém todas as chaves do contrato (metrics.{gvf,wlr,gor,iaj,technicalStatus,factorSuggested,enHC,envelopeStatus}, balance, deviations, mpfmMasses, alerts, lineage, analysis_id).",
+    "Memorial GET /api/analyses/{id}/memorial retorna text/plain com as 5 seções Identificação/Consultor de Aplicabilidade/Balanço Separador/Desvios relativos/Observações técnicas — preservado.",
+    "Importer retorna 400 (não 500) para extensão errada (.txt), xlsx vazio e xlsx corrompido — confirmado pelos 3 testes test_upload_invalid_ext/test_upload_empty_xlsx/test_upload_corrupt_xlsx.",
+    "Validação Pydantic (pressure<0, qo<0, BSW>100, SF_sep_tank=0 → 422) intacta.",
+    "App.js modularizado via AppRouter + hooks (useTheme, useApiConnection, usePvtCatalog) + sub-componentes (KpiCard, PVTModal, PVTCatalogTable) — todos data-testids do v4 preservados; única ausência detectada (data-testid='sidebar' no <aside> do componente Sidebar) foi adicionada como fix de testabilidade.",
+    "Keys baseadas em conteúdo confirmadas: ZERO warnings 'Each child in a list should have a unique key' durante navegação completa entre as 8 views + run-analysis + abrir relatório + upload de planilha.",
+    "Recusas técnicas justificadas pelo agente principal são coerentes com o comportamento observado (separator_balance e build_memorial permanecem como blocos sequenciais auditáveis; fórmulas e tokens do memorial preservados)."
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/Sidebar.jsx (adicionado data-testid='sidebar' no <aside>)"
+  ],
+  "success_rate": {"backend": "100% (75/75)", "frontend": "100% (todos os fluxos críticos verificados)"},
+  "test_credentials": "N/A — app sem auth",
+  "seed_data_creation": "Pytest criou 1 PVT TEST_PE-4/PW-104 + 2 análises (full + no_persist) + 1 import xlsx; Playwright criou 1 PVT TEST_FE_FLUID_X1 + 2 análises adicionais + 1 upload .xlsx (2 records).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Executar regressão padrão: REACT_APP_BACKEND_URL=<public> pytest /app/backend/tests/ -v --junitxml=/app/test_reports/pytest/pytest_results.xml (~2s, 75 testes). Frontend: validar via Playwright a navegação completa entre as 8 views, run-analysis em ConsultorView (api-status muda para 'análise #<8>'), upload .xlsx em ConfigView (records_imported>0), e abertura do pvt-modal em PVTView. Confirmar ausência de warnings React 'unique key' no console. Memorial deve conter as 5 seções e tokens-chave. NSV_sep com defaults deve ser exatamente 194.724096.",
+  "rca_of_the_issue": "N/A — sem bugs funcionais. Refactor (iteração 4) validado como não-regressivo."
+}

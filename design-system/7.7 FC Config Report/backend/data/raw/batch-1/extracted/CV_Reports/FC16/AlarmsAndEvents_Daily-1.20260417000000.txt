@@ -1,0 +1,32 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Flare Gas
+
+System                             21JN111
+Description                        FPSO Bacalhau
+Flow computer                      21JN111
+
+Start date/time                    16/04/26 00:00:00
+End date/time                      17/04/26 00:00:00
+
+Active at end                      5
+04/16/26 11:15:53                  Run 1 Flow rate lo lo alm
+04/16/26 11:15:53                  Run 1 Flow rate lo lo alm
+04/16/26 00:52:55                  Run 2 Flow meter communication fail
+04/16/26 00:52:55                  Run 2 Flow rate lo lo alm
+04/15/26 20:33:14                  Run 1 Flow rate roc alm
+
+Events                             11
+04/16/26 23:20:00                  System-time was changed from 16/04/2026 23:19:57.001 to 16/04/2026 23:20:00.000 by  (-1)
+04/16/26 11:16:04                  Run 1 Flow meter communication fail changed from Alarm to (Unacked) Normal
+04/16/26 11:16:04                  Run 1 Flow rate alarm from Low Low to Normal [118.96]
+04/16/26 11:15:53                  Run 1 Flow meter communication fail changed from (Unacked) Normal to Alarm
+04/16/26 11:15:53                  Run 1 Flow rate alarm from Normal to Low Low [118.96]
+04/16/26 01:21:20                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 00:53:06                  Run 2 Flow meter communication fail changed from Alarm to (Unacked) Normal
+04/16/26 00:53:06                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+04/16/26 00:52:55                  Run 2 Flow meter communication fail changed from Normal to Alarm
+04/16/26 00:52:55                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+04/16/26 00:21:20                  User administrator (Web: 10.0.1.50) has logged in
+

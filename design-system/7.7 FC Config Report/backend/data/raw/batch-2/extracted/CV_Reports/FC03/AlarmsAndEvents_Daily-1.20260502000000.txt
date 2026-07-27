@@ -1,0 +1,29 @@
+                                   DAILY ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Sales Oil Skid
+
+System                             20JX101
+Description                        FPSO Bacalhau
+Flow computer                      21JN102A
+
+Start date/time                    01/05/26 00:00:00
+End date/time                      02/05/26 00:00:00
+
+Amount                             15
+05/01/26 23:20:01                  System-time was changed from 01/05/2026 23:20:03.499 to 01/05/2026 23:20:01.000 by  (-1)
+05/01/26 08:23:13                  Run 1 Flow rate alarm from Normal to Low Low [93.64]
+05/01/26 08:12:04                  Run 1 Flow rate alarm from Low Low to Normal [93.64]
+05/01/26 08:11:25                  Run 1 Flow rate alarm from Normal to Low Low [93.64]
+05/01/26 07:35:23                  User administrator (Web: 10.0.1.51) has been automatically logged off
+05/01/26 06:35:22                  'Print snapshot report' executed by administrator (2000)
+05/01/26 06:35:10                  'Print configuration report' executed by administrator (2000)
+05/01/26 06:35:05                  User administrator (Web: 10.0.1.51) has logged in
+05/01/26 06:33:38                  Parameter Product 2 standard density override was changed from 853.9 to 852.7 by CommDrivers (10000)
+05/01/26 06:33:37                  Parameter Product 1 standard density override was changed from 853.9 to 852.7 by CommDrivers (10000)
+05/01/26 04:26:00                  Run 1 Flow rate alarm from Low Low to Normal [93.64]
+05/01/26 01:21:56                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/01/26 01:21:12                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/01/26 00:21:55                  User administrator (Web: 10.0.1.50) has logged in
+05/01/26 00:21:12                  User administrator (Web: 10.0.1.50) has logged in
+

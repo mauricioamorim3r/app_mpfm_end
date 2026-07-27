@@ -1,0 +1,123 @@
+{
+  "project_name": "Twin MPFM Bacalhau",
+  "theme_strategy": {
+    "default": "light",
+    "control_room_mode": "dark",
+    "archetype": "4_swiss_high_contrast",
+    "description": "Industrial control room dashboard. Absolute clarity, high data density, Swiss brutalist layout with extreme weight contrast. Avoid decorative elements. Focus on functional status colors."
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Chivo",
+      "body": "IBM Plex Sans",
+      "mono": "JetBrains Mono"
+    },
+    "hierarchy": {
+      "h1": "text-2xl sm:text-3xl font-bold tracking-tight",
+      "h2": "text-xl sm:text-2xl font-semibold tracking-tight",
+      "h3": "text-lg sm:text-xl font-medium",
+      "body": "text-sm leading-snug",
+      "data_large": "text-3xl font-mono tracking-tighter font-medium",
+      "labels": "text-[10px] sm:text-xs font-mono uppercase tracking-[0.1em]"
+    },
+    "rules": "Use mono font for all numbers, KPIs, and tabular data for perfect vertical alignment. Never center-align tabular data; always left-align text and right-align numbers."
+  },
+  "colors": {
+    "light": {
+      "background": "#F8F9FA",
+      "surface": "#FFFFFF",
+      "border": "#E2E8F0",
+      "text_primary": "#0F172A",
+      "text_secondary": "#475569",
+      "primary": "#2563EB"
+    },
+    "dark": {
+      "background": "#0B0D12",
+      "surface": "#14171F",
+      "border": "#262B36",
+      "text_primary": "#F8FAFC",
+      "text_secondary": "#94A3B8",
+      "primary": "#3B82F6"
+    },
+    "status": {
+      "apto": "#10B981",
+      "restrito": "#F59E0B",
+      "bloqueado": "#EF4444",
+      "inferido": "#3B82F6",
+      "nao_disponivel": "#64748B",
+      "black_box": "#8B5CF6"
+    }
+  },
+  "layout_spacing": {
+    "grid_system": "Control Room Grid (Mode B). Dense, rigid layout using CSS Grid. 12-column base for desktops.",
+    "container_padding": "p-4 or p-6",
+    "gap": "gap-4",
+    "border_radius": "rounded-sm (2px)",
+    "surface_strategy": "Grid Borders (The 'Technical' Look). Rely on 1px solid borders to delineate space. Do not use drop shadows in dark mode."
+  },
+  "components": {
+    "AppShell": {
+      "description": "Left sidebar (w-64) for primary navigation. Top bar containing breadcrumbs, Light/Dark toggle, and global platform status. Main content area scrolls independently.",
+      "layout": "flex h-screen overflow-hidden bg-background text-text_primary font-sans"
+    },
+    "KpiCard": {
+      "description": "Used for GVF, WLR, GOR, IAJ Score.",
+      "classes": "border border-border bg-surface p-4 flex flex-col gap-1 rounded-sm",
+      "value_typography": "font-mono text-2xl font-semibold tracking-tight"
+    },
+    "EnvelopeChart": {
+      "description": "GVF x WLR scatter map using recharts.",
+      "implementation": "ScatterPlot over custom SVG reference areas. Zones: Apta (Green tint), Restrita (Amber tint), Bloqueada (Red tint). Plot the actual trajectory connecting historical windows."
+    },
+    "ComparisonCard": {
+      "description": "Compares Subsea/Topside/Separador/FCS320. Must display absolute and relative deviations.",
+      "classes": "grid grid-cols-4 gap-4 p-4 border border-border bg-surface rounded-sm text-sm"
+    },
+    "StatusBadge": {
+      "description": "Traceability and metrological status indicators. No gradients.",
+      "classes": "px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider border rounded-sm inline-flex items-center justify-center",
+      "variants": {
+        "apto": "bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20",
+        "restrito": "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20",
+        "bloqueado": "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20",
+        "inferido": "bg-[#3B82F6]/10 text-[#3B82F6] border-[#3B82F6]/20",
+        "nao_disponivel": "bg-[#64748B]/10 text-[#64748B] border-[#64748B]/20",
+        "black_box": "bg-[#8B5CF6]/10 text-[#8B5CF6] border-[#8B5CF6]/20"
+      }
+    },
+    "MemorialDrawer": {
+      "description": "Right-side collapsible panel for RCA, Technical Opinion, and Auditable Memorial.",
+      "classes": "w-96 border-l border-border bg-surface h-full overflow-y-auto"
+    },
+    "DataTable": {
+      "description": "For PVT/EOS Lab samples and historical windows.",
+      "classes": "w-full text-left font-mono text-xs border-collapse",
+      "row_classes": "border-b border-border hover:bg-muted/50 transition-colors"
+    }
+  },
+  "motion": {
+    "strategy": "Utilitarian and minimalist. Instant feedback. Limit animations to < 150ms opacity fades. Avoid translation (sliding) animations to prevent motion sickness in offshore environments."
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "Stroke width 1.5. Clean, unembellished."
+  },
+  "testing": {
+    "requirements": "All interactive elements (buttons, links, form inputs, toggles, badges) MUST include a 'data-testid' attribute in kebab-case."
+  },
+  "media": {
+    "image_urls": [],
+    "instructions": "Do not use third-party logos or stock photos. Rely purely on typography, layout, and icon-based data representation."
+  },
+  "instructions_to_main_agent": [
+    "Write all React components as standard .js or .jsx files. Do not use .tsx files.",
+    "Implement a robust 'Control Room Grid' with dense data presentation. Use 'p-4' inside cards instead of standard 'p-6' to fit more data.",
+    "Enforce high contrast. Ensure text readability against backgrounds in both dark and light modes.",
+    "Include a functional Dark/Light mode toggle in the header.",
+    "For the EnvelopeChart, use Recharts and overlay the scatter data on top of distinct background zones (Apta, Restrita, Bloqueada) using pure shapes/colors.",
+    "Never use Teal green/blue. Never use generic purple gradients. Stick to the defined status colors.",
+    "For the K-Factors (Ko, Kg, Kw, Khc, Kt) section, display the factors alongside an explicit 'Requer aprovação' action/status.",
+    "All components must be accessible and include data-testid for automated testing.",
+    "Avoid Shadcn 'Card' wrapper if it introduces uncontrollable padding; prefer native 'div' with border/bg utilities for precise density control."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "dashboard-anp-radar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "data": "python scripts/build_dashboard_data.py",
+    "template": "python scripts/generate_ingestion_template.py",
+    "test": "python -m unittest discover -s tests -v",
+    "build:frontend": "node scripts/build_frontend.mjs",
+    "build": "npm run data && npm run build:frontend",
+    "app": "npm run build:frontend && node server/radar-api.mjs",
+    "dev": "npm run app",
+    "preview": "npm run app"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

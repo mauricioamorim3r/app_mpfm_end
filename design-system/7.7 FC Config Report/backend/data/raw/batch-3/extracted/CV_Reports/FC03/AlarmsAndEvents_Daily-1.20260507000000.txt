@@ -1,0 +1,32 @@
+                                   DAILY ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Sales Oil Skid
+
+System                             20JX101
+Description                        FPSO Bacalhau
+Flow computer                      21JN102A
+
+Start date/time                    06/05/26 00:00:00
+End date/time                      07/05/26 00:00:00
+
+Amount                             18
+05/06/26 23:20:02                  System-time was changed from 06/05/2026 23:20:06.499 to 06/05/2026 23:20:02.000 by  (-1)
+05/06/26 11:26:26                  User  has acknowledged all alarms
+05/06/26 11:26:26                  'Acknowledge all' executed by CommDrivers (10000)
+05/06/26 11:09:34                  Run 2 Pulse input failure changed from Alarm to (Unacked) Normal
+05/06/26 11:09:34                  Run 2 No A pulses changed from Alarm to (Unacked) Normal
+05/06/26 11:09:34                  Run 2 Pulse input failure changed from Normal to Alarm
+05/06/26 11:09:34                  Run 2 No A pulses changed from Normal to Alarm
+05/06/26 07:30:32                  User administrator (Web: 10.0.1.51) has been automatically logged off
+05/06/26 06:30:32                  User administrator has acknowledged all alarms
+05/06/26 06:30:20                  'Print snapshot report' executed by administrator (2000)
+05/06/26 06:30:06                  'Print configuration report' executed by administrator (2000)
+05/06/26 06:30:00                  User administrator (Web: 10.0.1.51) has logged in
+05/06/26 06:28:11                  Parameter Product 2 standard density override was changed from 855.6 to 853.7 by CommDrivers (10000)
+05/06/26 06:28:10                  Parameter Product 1 standard density override was changed from 855.6 to 853.7 by CommDrivers (10000)
+05/06/26 01:21:56                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 01:20:56                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 00:21:56                  User administrator (Web: 10.0.1.50) has logged in
+05/06/26 00:20:55                  User administrator (Web: 10.0.1.50) has logged in
+

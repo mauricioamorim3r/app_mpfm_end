@@ -1,0 +1,22 @@
+                                   ALARM AND EVENTS REPORT ON DEMAND
+
+Company                            Equinor
+Location                           Sales Oil Skid
+
+System                             20JX101
+Description                        FPSO Bacalhau
+Flow computer                      21JN101A
+
+Start date/time                    16/04/26 00:00:00
+End date/time                      16/04/26 05:54:28
+
+Amount                             8
+04/16/26 05:54:28                  'Print snapshot report' executed by administrator (2000)
+04/16/26 05:54:22                  User administrator (Web: 10.0.1.50) has logged in
+04/16/26 05:53:55                  Parameter Product 1 standard density override was changed from 851.4 to 852.9 by CommDrivers (10000)
+04/16/26 05:53:55                  Parameter Product 2 standard density override was changed from 851.4 to 852.9 by CommDrivers (10000)
+04/16/26 01:22:06                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 01:21:21                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 00:22:05                  User administrator (Web: 10.0.1.50) has logged in
+04/16/26 00:21:20                  User administrator (Web: 10.0.1.50) has logged in
+

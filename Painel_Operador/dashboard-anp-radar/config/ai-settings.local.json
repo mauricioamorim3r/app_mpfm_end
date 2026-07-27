@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "enabled": true,
+  "activeProvider": "openai",
+  "providers": {
+    "openai": {
+      "label": "OpenAI",
+      "model": "gpt-4.1",
+      "apiKey": "",
+      "apiKeySet": false
+    },
+    "anthropic": {
+      "label": "Claude",
+      "model": "claude-3-5-sonnet-latest",
+      "apiKey": "",
+      "apiKeySet": false
+    },
+    "google": {
+      "label": "Gemini",
+      "model": "gemini-1.5-pro",
+      "apiKey": "",
+      "apiKeySet": false
+    }
+  },
+  "permissions": {
+    "readConfiguredFolders": true,
+    "extractDocuments": true,
+    "writeDrafts": true,
+    "copyMoveFiles": false,
+    "requireApprovalForFileOps": true,
+    "auditLog": true
+  },
+  "contextManifestPath": "C:\\Users\\mauri\\OneDrive\\Documentos\\Painel_Operador\\dashboard-anp-radar\\docs\\ai-operational-context.md",
+  "auditLogPath": "C:\\Users\\mauri\\OneDrive\\Documentos\\Painel_Operador\\dashboard-anp-radar\\data\\ai-action-log.jsonl"
+}

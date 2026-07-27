@@ -1,0 +1,57 @@
+                                            Hourly Report
+
+  Period start            14/04/26 00:00:00
+  Period end              14/04/26 01:00:00
+
+  Meter ID                45FT0555          Flow computer              21JN112
+  System                  21JN112           Company                    Equinor
+  Description             FPSO Bacalhau     Location                   Tot. Fuel Gas & Test Sep. Gas & Gas Lift
+
+  Totals                              Hourly               Hour Closing
+  Indicated                           4319.8                 16693819.4
+  Gross volume            m3           106.7                   427258.5
+  Mass                    t           4319.8                 16693819.4
+  Base volume             sm3         5064.4                 19812972.0
+  Energy                  GJ           230.4                   889970.5
+
+  Time weighted averages
+  Indicated flow rate                4319.84
+  Gross volume flow rate  m3/h        106.63
+  Mass flow rate          t/h        4319.84
+  Base volume flow rate   sm3/h      5064.44
+  Energy flow rate        GJ/h        230.40
+
+  Flow weighted averages
+  Meter temperature       deg C        52.05   Heating value           MJ/sm3      45.494
+  Meter pressure          kPa(g)    4700.930   Heating value           MJ/kg       53.333
+  Density temperature     deg C         0.00   Wobbe index             MJ/sm3      54.060
+  Density pressure        kPa(a)       0.000   Line compressibility    -         0.896516
+  Observed density        kg/m3        0.000   Base compressibility    -         0.996787
+  Unfactored density      kg/m3        0.000   Volume correction factor-         47.49444
+  Density factor          -           0.0000   Meter body factor       -          0.00000
+  Base density            kg/sm3       0.853   Meter factor            -          1.00000
+  Relative density        -         0.708187   Meter error             %          0.00000
+  Specific gravity        -         0.706173   Meter K factor                       0.000
+  Meter density           kg/m3       40.512   Differential pressure   kPa         15.000
+
+  Flow weighted average composition [mol-%]
+  Methane                           80.95800   n-Butane                           1.27000
+  Nitrogen                           0.58700   i-Pentane                          0.28700
+  Carbon Dioxide                     0.04000   n-Pentane                          0.22300
+  Ethane                            10.13800   n-Hexane                           0.04700
+  Propane                            5.35900   n-Heptane                          0.02300
+  Water                              0.00000   n-Octane                           0.08800
+  Hydrogen Sulphide                  0.00000   n-Nonane                           0.03100
+  Hydrogen                           0.00000   n-Decane                           0.01100
+  Carbon Monoxide                    0.00000   Helium                             0.00000
+  Oxygen                             0.00000   Argon                              0.00000
+  i-Butane                           0.93800   neo-Pentane                        0.00000
+
+  System information
+  Flowcomputer Firmware   3.2.8.17090       Ref. Temperature           deg c   20
+  Application Version     2.3.1.0           Ref. Pressure              kPa (a) 101.325
+  Application Name        FC17_21JN112_11_GAS_3R_T01_REV16.fxa
+
+  # indicates a totalizer rollover
+  * indicates a transmitter override
+

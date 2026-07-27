@@ -1,0 +1,30 @@
+{
+  "summary": "Twin MPFM v4 post-refactor regression. 75/75 backend pytest tests pass (20 integration + 55 unit) against public REACT_APP_BACKEND_URL. 39/39 frontend Playwright checks pass — sidebar (8 real nav items + Recolher menu), TopBar api-status reads 'API: ok • v4.0.0' after health check and updates to 'API: ok • análise #<8chars>' after run-analysis, 6 KPI cards render, 9 filter inputs editable with live update (qo=500 -> GOR=505.59 immediate), envelope SVG with zones + 'Atual' label, decision-panel + decision-badge ('Bloqueada' for defaults — expected per spec), report-dialog opens with 1546-char Markdown including all 5 sections, balance-formula renders post-run, pvt-modal opens, memorial-output Markdown shows 'Identificação', config-table has exactly 13 constants rows, envelope/rca/design views navigate, theme toggle works. Visual matches v4 mockup precisely (sidebar gradient cyan, comparison cards, quality list, alert list, history table). NO regressions detected after the refactor (services modularization, App.js 975->127 lines + 13 components + 8 views + 2 libs, Pydantic validation, lifespan, robust importer error handling).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_calculations_unit.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Refactor preserved all data-testid attributes — every selector from iteration_2 still resolves (verified 39 selectors).",
+    "Backend Pydantic validation working: pressure<0, qo<0, BSW>100, SF_sep_tank=0 all return 422 as required (Correção #4).",
+    "Importer now returns 400 (not 500) on wrong extension, empty file, and corrupt xlsx — all 3 cases pass.",
+    "services/calculations.py unit-tested at function level (55 tests) — analytical-expected values match (NSV_sep, V_STO, m_oil_REF, V_gas_flash_std, En, IAJ penalties, classify_envelope/IAJ thresholds).",
+    "Lineage rastreability preserved in analyze() output: FCS320_MODE=external_reference, gas_lift_status=not_confirmed/provided, native_pvt_available=false.",
+    "Memorial endpoint returns text/plain with 5 required sections (Identificação, Consultor de Aplicabilidade, Balanço Separador / Referência, Desvios relativos, Observações técnicas) and key tokens (NSV_sep, V_STO, m_HC_REF, δ_HC, En_HC, IAJ, Fator sugerido).",
+    "Default analysis still yields 'Bloqueada' with IAJ=33 — faithful to v4 (qg=252796 too large vs default separator). Not a bug.",
+    "App.js reduced to 127 lines as claimed; modular structure (components/, views/, lib/) clean; api.js centralizes HTTP via REACT_APP_BACKEND_URL.",
+    "No console errors during full navigation flow (Consultor -> Balance -> PVT -> Envelope -> RCA -> Memorial -> Config -> Design -> Consultor)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (75/75)", "frontend": "100% (39/39 selectors + flows)"},
+  "test_credentials": "N/A — no auth",
+  "seed_data_creation": "Pytest run created TEST_-prefixed PVT entry + TEST_mpfm.xlsx import + ~3 analyses via POST /api/consultor/analyze. Playwright created 1 additional analyze record (id 6883b2e1).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run full regression: REACT_APP_BACKEND_URL=<public-url> pytest /app/backend/tests/ -v --junitxml=/app/test_reports/pytest/pytest_results.xml — 75 tests, ~2s. Pydantic schemas now reject pressure<0, qo<0, BSW>100, SF_sep_tank<=0 with 422. Importer returns 400 (never 500) for bad ext/empty/corrupt xlsx. Frontend uses modularized components but every data-testid from v4 remains untouched. Default Consultor inputs intentionally yield 'Bloqueada' with IAJ=33 — this is correct v4 behavior.",
+  "rca_of_the_issue": "N/A — no functional bugs found. Refactor (Correções #1-#6) verified non-regressive."
+}

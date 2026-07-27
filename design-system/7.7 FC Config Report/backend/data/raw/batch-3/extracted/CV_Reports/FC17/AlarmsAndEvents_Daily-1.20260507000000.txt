@@ -1,0 +1,54 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Tot. Fuel Gas & Test Sep. Gas & Gas Lift
+
+System                             21JN112
+Description                        FPSO Bacalhau
+Flow computer                      21JN112
+
+Start date/time                    06/05/26 00:00:00
+End date/time                      07/05/26 00:00:00
+
+Active at end                      3
+05/06/26 13:44:08                  Run 1 Differential pressure keypad
+05/02/26 07:44:56                  Run 2 Volume flow rate lo lo alm
+02/06/26 10:28:37                  Run 3 Volume flow rate lo lo alm
+
+Events                             35
+05/06/26 23:20:02                  System-time was changed from 06/05/2026 23:20:06.500 to 06/05/2026 23:20:02.000 by  (-1)
+05/06/26 17:42:55                  User administrator (Web: 10.0.1.51) has been automatically logged off
+05/06/26 16:42:55                  'Print snapshot report' executed by administrator (2000)
+05/06/26 16:42:40                  'Print configuration report' executed by administrator (2000)
+05/06/26 16:41:46                  Parameter Run 1 Flow rate high high limit volume was changed from 10159.18 to 52839.41 by CommDrivers (10000)
+05/06/26 16:41:46                  Parameter Run 1 Flow rate high limit volume was changed from 10159.18 to 52839.41 by CommDrivers (10000)
+05/06/26 16:41:46                  Parameter Run 1 Flow rate low limit volume was changed from 1998.85 to 11015.89 by CommDrivers (10000)
+05/06/26 16:41:46                  Parameter Run 1 Flow rate low low limit volume was changed from 1998.85 to 11015.89 by CommDrivers (10000)
+05/06/26 15:55:39                  Run 1 Differential pressure keypad changed from Alarm to (Unacked) Normal
+05/06/26 15:55:39                  Parameter Run 1 Differential pressure override was changed from Enabled to Disabled by administrator (2000)
+05/06/26 15:55:35                  Parameter Run 1 Differential pressure override was changed from 637.5 to 307.5 by administrator (2000)
+05/06/26 15:55:14                  Parameter Run 1 Device diameter was changed from 48 to 104.58 by administrator (2000)
+05/06/26 15:53:20                  User Administrator (Web: 10.0.1.51) failed to log in
+05/06/26 15:53:20                  User administrator (Web: 10.0.1.51) has logged in
+05/06/26 14:44:08                  User administrator (Web: 10.0.1.51) has been automatically logged off
+05/06/26 14:27:56                  Run 1 DPA alarm from High High to Normal [60]
+05/06/26 13:44:08                  Run 1 Differential pressure keypad changed from Normal to Alarm
+05/06/26 13:44:08                  Parameter Run 1 Differential pressure override was changed from Disabled to Enabled by administrator (2000)
+05/06/26 13:43:58                  Parameter Run 1 Differential pressure override was changed from 305.45 to 637.5 by administrator (2000)
+05/06/26 13:30:07                  User Administrator (Web: 10.0.1.51) failed to log in
+05/06/26 13:30:07                  User administrator (Web: 10.0.1.51) has logged in
+05/06/26 11:26:26                  User  has acknowledged all alarms
+05/06/26 11:26:26                  'Acknowledge all' executed by CommDrivers (10000)
+05/06/26 09:36:18                  User administrator (Web: 10.0.1.52) has been automatically logged off
+05/06/26 09:29:34                  User administrator (Web: 10.0.1.51) has been automatically logged off
+05/06/26 08:36:18                  User administrator (Web: 10.0.1.52) has logged in
+05/06/26 08:34:41                  User  (Web: 10.0.1.52) failed to log in
+05/06/26 08:29:33                  'Print snapshot report' executed by administrator (2000)
+05/06/26 08:29:27                  'Print configuration report' executed by administrator (2000)
+05/06/26 08:27:57                  Run 1 DPA alarm from Normal to High High [60]
+05/06/26 08:27:57                  Parameter Analog input 4 full scale 1 was changed from 420 to 600 by administrator (2000)
+05/06/26 08:22:04                  User Administrator (Web: 10.0.1.51) failed to log in
+05/06/26 08:22:04                  User administrator (Web: 10.0.1.51) has logged in
+05/06/26 01:21:26                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 00:21:25                  User administrator (Web: 10.0.1.50) has logged in
+

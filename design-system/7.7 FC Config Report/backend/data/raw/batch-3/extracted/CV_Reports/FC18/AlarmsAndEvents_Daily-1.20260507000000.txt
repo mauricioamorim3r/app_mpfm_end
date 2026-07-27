@@ -1,0 +1,29 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Flare Pilot & LP Fuel Gas & HP Sep. Gas
+
+System                             21JN113
+Description                        FPSO Bacalhau
+Flow computer                      21JN113
+
+Start date/time                    06/05/26 00:00:00
+End date/time                      07/05/26 00:00:00
+
+Active at end                      6
+05/06/26 16:29:33                  Run 2 Volume flow rate lo lo alm
+05/06/26 12:31:47                  Run 2 Diff. pressure A hi hi alm
+05/06/26 12:31:47                  Run 2 Volume flow rate hi hi alm
+05/05/26 14:56:56                  Run 3 Diff. pressure A hi hi alm
+05/02/26 11:02:57                  Run 3 Volume flow rate hi hi alm
+04/09/26 09:45:47                  Run 1 dP calc Reynolds out of range
+
+Events                             7
+05/06/26 23:20:02                  System-time was changed from 06/05/2026 23:20:06.500 to 06/05/2026 23:20:02.000 by  (-1)
+05/06/26 12:55:14                  Run 2 DPA alarm from High High to Normal [20]
+05/06/26 12:31:47                  Run 2 DPA alarm from Normal to High High [20]
+05/06/26 11:26:26                  User  has acknowledged all alarms
+05/06/26 11:26:26                  'Acknowledge all' executed by CommDrivers (10000)
+05/06/26 01:21:14                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 00:21:13                  User administrator (Web: 10.0.1.50) has logged in
+

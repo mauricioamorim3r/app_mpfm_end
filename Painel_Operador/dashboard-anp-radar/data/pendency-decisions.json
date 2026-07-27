@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "decisions": {
+    "PEND-8F05FEE29B": {
+      "pendencyId": "PEND-8F05FEE29B",
+      "decision": "deferred",
+      "note": "",
+      "closedBy": "usuario",
+      "closedAt": "2026-06-18T12:42:16.059Z"
+    }
+  }
+}

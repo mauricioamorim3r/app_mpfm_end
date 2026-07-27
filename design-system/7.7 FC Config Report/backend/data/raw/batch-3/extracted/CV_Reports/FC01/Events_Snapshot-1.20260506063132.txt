@@ -1,0 +1,121 @@
+                                   ALARM AND EVENTS REPORT ON DEMAND
+
+Company                            Equinor
+Location                           Sales Oil Skid
+
+System                             20JX101
+Description                        FPSO Bacalhau
+Flow computer                      21JN101A
+
+Start date/time                    06/05/26 00:00:00
+End date/time                      06/05/26 06:31:31
+
+Amount                             107
+05/06/26 06:31:31                  'Print snapshot report' executed by administrator (2000)
+05/06/26 06:31:18                  'Print configuration report' executed by administrator (2000)
+05/06/26 06:31:13                  User administrator (Web: 10.0.1.51) has logged in
+05/06/26 06:28:10                  Parameter Product 1 standard density override was changed from 855.6 to 853.7 by CommDrivers (10000)
+05/06/26 06:28:10                  Parameter Product 2 standard density override was changed from 855.6 to 853.7 by CommDrivers (10000)
+05/06/26 05:34:01                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:59                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:58                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:57                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:55                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:53                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:52                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:51                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:49                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:48                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:47                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:46                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:44                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:43                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:34                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:31                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:30                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:29                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:19                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:18                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:16                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:15                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:03                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:33:02                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:33:01                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:59                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:57                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:54                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:35                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:32:33                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:32:30                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:32:28                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:32:27                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:32:26                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:24                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 05:32:16                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:12                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 05:32:11                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 04:53:29                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:53:29                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:55                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:55                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:51                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:51                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:50                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:50                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:45                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:45                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:43                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:43                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:41                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:41                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:39                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:39                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:22                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:22                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:51:21                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:51:21                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:50:55                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:50:55                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:50:54                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:50:54                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:50:16                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:50:16                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:50:15                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:50:15                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:37:01                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:37:01                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:36:40                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:36:40                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:36:10                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:36:10                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 04:36:04                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 04:36:04                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 04:36:03                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 04:36:03                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 03:51:54                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 03:51:52                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 03:51:51                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 03:51:50                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 03:51:48                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 03:51:47                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 03:45:08                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 03:44:57                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 03:44:54                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 03:43:48                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 03:43:43                  Run 1 Flow rate alarm from High High to Normal [501.84]
+05/06/26 03:43:42                  Run 1 Flow rate alarm from Normal to High High [501.84]
+05/06/26 01:27:36                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 01:27:36                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 01:26:29                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 01:26:29                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 01:26:27                  Run 2 BSW alarm from Normal to Low Low [0]
+05/06/26 01:26:27                  Run 1 BSW alarm from Normal to Low Low [0]
+05/06/26 01:21:55                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 01:20:51                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 01:09:05                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 01:09:05                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 01:08:58                  Run 2 BSW alarm from Low Low to Normal [0]
+05/06/26 01:08:58                  Run 1 BSW alarm from Low Low to Normal [0]
+05/06/26 00:21:54                  User administrator (Web: 10.0.1.50) has logged in
+05/06/26 00:20:50                  User administrator (Web: 10.0.1.50) has logged in
+

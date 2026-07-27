@@ -1,0 +1,203 @@
+.dynamic-diagrams-card{
+  margin-top:16px;
+  padding:16px;
+  overflow:hidden;
+}
+.dynamic-diagrams-head{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+  margin-bottom:14px;
+}
+.dynamic-diagrams-head h2{
+  margin:2px 0 5px;
+  color:var(--text);
+  font-size:20px;
+  line-height:1.18;
+}
+.dynamic-diagrams-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.dynamic-diagrams-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:flex-end;
+}
+.dynamic-diagrams-toolbar{
+  display:grid;
+  grid-template-columns:minmax(180px,240px) minmax(260px,1fr) auto minmax(180px,260px);
+  gap:12px;
+  align-items:end;
+  margin-bottom:12px;
+}
+.dynamic-diagrams-toolbar .field{margin:0}
+.dynamic-diagram-template-field{min-width:0}
+.dynamic-diagram-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  height:38px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.dynamic-diagram-toggle input{accent-color:var(--accent)}
+.dynamic-diagram-status{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.35;
+  text-align:right;
+}
+.dynamic-diagram-root{
+  min-height:420px;
+}
+.dynamic-diagram-frame{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 280px;
+  gap:12px;
+  align-items:start;
+}
+.dynamic-diagram-canvas{
+  position:relative;
+  width:100%;
+  background:#020817;
+  border:1px solid rgba(124,193,255,.22);
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 18px 38px rgba(0,0,0,.24);
+}
+.dynamic-diagram-canvas img{
+  display:block;
+  width:100%;
+  height:auto;
+  user-select:none;
+}
+.dynamic-diagram-field{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  transform:translate(-50%,-50%);
+  min-width:116px;
+  max-width:210px;
+  border:1px solid rgba(125,211,252,.58);
+  border-radius:8px;
+  background:rgba(2,12,22,.86);
+  color:#e9f7ff;
+  box-shadow:0 8px 22px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.04);
+  backdrop-filter:blur(4px);
+  z-index:3;
+}
+.dynamic-diagram-field.kind-oil{border-color:rgba(245,158,11,.78)}
+.dynamic-diagram-field.kind-gas{border-color:rgba(34,211,238,.74)}
+.dynamic-diagram-field.kind-water{border-color:rgba(59,130,246,.78)}
+.dynamic-diagram-field.kind-ok{border-color:rgba(34,197,94,.78)}
+.dynamic-diagram-field.kind-warn{border-color:rgba(245,158,11,.9)}
+.dynamic-diagram-field.kind-danger{border-color:rgba(239,68,68,.84)}
+.dynamic-diagram-field[hidden]{display:none}
+.dynamic-diagram-field__handle{
+  display:none;
+  position:absolute;
+  left:-9px;
+  top:-9px;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1px solid rgba(125,211,252,.8);
+  background:#08243b;
+  color:#dff7ff;
+  place-items:center;
+  font-size:12px;
+  cursor:grab;
+}
+.dynamic-diagram-editing .dynamic-diagram-field__handle{display:grid}
+.dynamic-diagram-field label{
+  display:block;
+  padding:7px 8px 6px;
+}
+.dynamic-diagram-field span{
+  display:block;
+  margin-bottom:3px;
+  color:#9bdcff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.dynamic-diagram-field input{
+  width:100%;
+  min-width:0;
+  border:0;
+  background:transparent;
+  color:#fff;
+  font:800 14px/1.1 "IBM Plex Mono", Consolas, monospace;
+  outline:0;
+  padding:0;
+}
+.dynamic-diagram-field input[readonly]{
+  cursor:default;
+}
+.dynamic-diagram-side{
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  padding:12px;
+  background:rgba(8,18,29,.46);
+}
+.dynamic-diagram-side h3{
+  margin:0 0 6px;
+  color:var(--text);
+  font-size:15px;
+  line-height:1.2;
+}
+.dynamic-diagram-side p{
+  margin:0 0 10px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.dynamic-diagram-side dl{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+  margin:0;
+}
+.dynamic-diagram-side dt{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-weight:900;
+}
+.dynamic-diagram-side dd{
+  margin:2px 0 0;
+  color:var(--text);
+  font-size:12px;
+}
+.dynamic-diagram-empty{
+  border:1px dashed rgba(125,211,252,.28);
+  border-radius:10px;
+  padding:24px;
+  color:var(--muted);
+  text-align:center;
+}
+
+@media (max-width:1100px){
+  .dynamic-diagram-frame{grid-template-columns:1fr}
+  .dynamic-diagram-side{order:-1}
+  .dynamic-diagrams-toolbar{grid-template-columns:1fr 1fr}
+  .dynamic-diagram-status{text-align:left}
+}
+@media (max-width:760px){
+  .dynamic-diagrams-head{display:block}
+  .dynamic-diagrams-actions{justify-content:flex-start;margin-top:12px}
+  .dynamic-diagrams-toolbar{grid-template-columns:1fr}
+  .dynamic-diagram-field{
+    min-width:92px;
+    max-width:148px;
+  }
+  .dynamic-diagram-field input{font-size:11px}
+}

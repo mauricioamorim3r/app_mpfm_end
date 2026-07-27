@@ -1,0 +1,170 @@
+                                   DAILY ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Sales Oil Skid
+
+System                             20JX101
+Description                        FPSO Bacalhau
+Flow computer                      21JN102A
+
+Start date/time                    05/05/26 00:00:00
+End date/time                      06/05/26 00:00:00
+
+Amount                             156
+05/05/26 23:32:02                  Run 2 No B pulses changed from (Unacked) Normal to (Blocked) Alarm
+05/05/26 23:32:02                  Run 2 Pulse input failure changed from (Unacked) Normal to (Blocked) Alarm
+05/05/26 23:32:02                  Run 2 No A pulses changed from (Unacked) Normal to (Blocked) Alarm
+05/05/26 23:24:24                  Run 2 Pulse input failure changed from Alarm to (Unacked) Normal
+05/05/26 23:24:24                  Run 2 No A pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:24:24                  Run 2 Pulse input failure changed from (Unacked) Normal to Alarm
+05/05/26 23:24:24                  Run 2 No A pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:24:23                  Run 2 Pulse input failure changed from Alarm to (Unacked) Normal
+05/05/26 23:24:23                  Run 2 No B pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:24:23                  Run 2 No A pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:24:23                  Run 2 No B pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:24:22                  Run 2 Pulse input failure changed from (Unacked) Normal to Alarm
+05/05/26 23:24:22                  Run 2 No A pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:24:22                  Run 2 Pulse input failure changed from Alarm to (Unacked) Normal
+05/05/26 23:24:22                  Run 2 No B pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:24:21                  Run 2 No A pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:24:21                  Run 2 No B pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:24:21                  Run 2 Pulse input failure changed from (Unacked) Normal to Alarm
+05/05/26 23:24:21                  Run 2 No A pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:23:59                  Run 2 Flow rate alarm from Low to Normal [0]
+05/05/26 23:23:58                  Parameter Run 2 Flow rate high limit was changed from 213.61 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Flow rate low limit was changed from 80 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd nominal K-factor was changed from 387.31 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 3 - Flowrate was changed from 103.6 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 4 - Flowrate was changed from 118.1 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 5 - Flowrate was changed from 142.4 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 6 - Flowrate was changed from 165.4 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 7 - Flowrate was changed from 171.1 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 8 - Flowrate was changed from 194.2 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 3 - Meter factor / error was changed from 1.0096 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 4 - Meter factor / error was changed from 1.00973 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 5 - Meter factor / error was changed from 1.00964 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 6 - Meter factor / error was changed from 1.00966 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 7 - Meter factor / error was changed from 1.00952 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 8 - Meter factor / error was changed from 1.00946 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 1 - Flowrate was changed from 84.4 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 2 - Flowrate was changed from 92.1 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 1 - Meter factor / error was changed from 1.00945 to 0 by CommDrivers (10000)
+05/05/26 23:23:58                  Parameter Run 2 Fwd - Point 2 - Meter factor / error was changed from 1.00926 to 0 by CommDrivers (10000)
+05/05/26 23:23:28                  Run 2 Pulse input failure changed from Alarm to (Unacked) Normal
+05/05/26 23:23:28                  Run 2 No B pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:23:28                  Run 2 No A pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:23:28                  Run 2 No B pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:23:27                  Run 2 No A pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:23:27                  Run 2 No B pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:23:27                  Run 2 No A pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:23:27                  Run 2 No B pulses changed from (Unacked) Normal to Alarm
+05/05/26 23:23:26                  Run 2 Pulse input failure changed from (Unacked) Normal to Alarm
+05/05/26 23:23:26                  Run 2 No A pulses changed from Normal to Alarm
+05/05/26 23:23:26                  Run 2 Pulse input failure changed from Alarm to (Unacked) Normal
+05/05/26 23:23:26                  Run 2 No B pulses changed from Alarm to (Unacked) Normal
+05/05/26 23:23:25                  Run 2 Pulse input failure changed from Normal to Alarm
+05/05/26 23:23:25                  Run 2 No B pulses changed from Normal to Alarm
+05/05/26 23:23:25                  Run 2 Flow rate alarm from High High to Low [80]
+05/05/26 23:20:01                  System-time was changed from 05/05/2026 23:19:58.500 to 05/05/2026 23:20:01.000 by  (-1)
+05/05/26 15:30:28                  User administrator (Web: 10.0.1.52) has been automatically logged off
+05/05/26 15:29:15                  User  has acknowledged all alarms
+05/05/26 15:29:15                  'Acknowledge all' executed by CommDrivers (10000)
+05/05/26 15:23:36                  Run 2 Flow rate alarm from Normal to High High [0]
+05/05/26 15:23:36                  Parameter Run 2 Flow rate high limit was changed from 0 to 213.61 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Flow rate low limit was changed from 0 to 80 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd nominal K-factor was changed from 0 to 387.31 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 2 - Flowrate was changed from 0 to 92.1 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 3 - Flowrate was changed from 0 to 103.6 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 4 - Flowrate was changed from 0 to 118.1 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 5 - Flowrate was changed from 0 to 142.4 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 6 - Flowrate was changed from 0 to 165.4 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 7 - Flowrate was changed from 0 to 171.1 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 8 - Flowrate was changed from 0 to 194.2 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 1 - Meter factor / error was changed from 0 to 1.00945 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 2 - Meter factor / error was changed from 0 to 1.00926 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 3 - Meter factor / error was changed from 0 to 1.0096 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 4 - Meter factor / error was changed from 0 to 1.00973 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 5 - Meter factor / error was changed from 0 to 1.00964 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 6 - Meter factor / error was changed from 0 to 1.00966 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 7 - Meter factor / error was changed from 0 to 1.00952 by CommDrivers (10000)
+05/05/26 15:23:36                  Parameter Run 2 Fwd - Point 8 - Meter factor / error was changed from 0 to 1.00946 by CommDrivers (10000)
+05/05/26 15:23:35                  Parameter Run 2 Fwd - Point 1 - Flowrate was changed from 0 to 84.4 by CommDrivers (10000)
+05/05/26 15:23:29                  User administrator (Web: 10.0.1.52) has been automatically logged off
+05/05/26 14:30:28                  User administrator (Web: 10.0.1.52) has logged in
+05/05/26 14:30:17                  User  (Web: 10.0.1.52) failed to log in
+05/05/26 14:23:28                  User administrator (Web: 10.0.1.52) has logged in
+05/05/26 14:23:20                  User administrator (Web: 10.0.1.52) failed to log in
+05/05/26 14:23:10                  User administrator (Web: 10.0.1.52) failed to log in
+05/05/26 14:23:05                  User administrator (Web: 10.0.1.52) failed to log in
+05/05/26 14:22:57                  User  (Web: 10.0.1.52) failed to log in
+05/05/26 13:59:40                  Run 2 Flow rate alarm from High High to Normal [0]
+05/05/26 13:59:39                  Parameter Run 2 Flow rate high limit was changed from 213.61 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Flow rate low limit was changed from 80 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd nominal K-factor was changed from 387.31 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 2 - Flowrate was changed from 92.1 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 3 - Flowrate was changed from 103.6 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 4 - Flowrate was changed from 118.1 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 5 - Flowrate was changed from 142.4 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 6 - Flowrate was changed from 165.4 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 7 - Flowrate was changed from 171.1 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 8 - Flowrate was changed from 194.2 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 2 - Meter factor / error was changed from 1.00926 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 3 - Meter factor / error was changed from 1.0096 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 4 - Meter factor / error was changed from 1.00973 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 5 - Meter factor / error was changed from 1.00964 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 6 - Meter factor / error was changed from 1.00966 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 7 - Meter factor / error was changed from 1.00952 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 8 - Meter factor / error was changed from 1.00946 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 1 - Flowrate was changed from 84.4 to 0 by CommDrivers (10000)
+05/05/26 13:59:39                  Parameter Run 2 Fwd - Point 1 - Meter factor / error was changed from 1.00945 to 0 by CommDrivers (10000)
+05/05/26 13:40:12                  Run 2 Flow rate alarm from Normal to High High [0]
+05/05/26 13:40:11                  Parameter Run 2 Flow rate high limit was changed from 0 to 213.61 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Flow rate low limit was changed from 0 to 80 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd nominal K-factor was changed from 0 to 387.31 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 3 - Flowrate was changed from 0 to 103.6 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 4 - Flowrate was changed from 0 to 118.1 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 5 - Flowrate was changed from 0 to 142.4 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 6 - Flowrate was changed from 0 to 165.4 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 7 - Flowrate was changed from 0 to 171.1 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 8 - Flowrate was changed from 0 to 194.2 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 2 - Meter factor / error was changed from 0 to 1.00926 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 3 - Meter factor / error was changed from 0 to 1.0096 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 4 - Meter factor / error was changed from 0 to 1.00973 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 5 - Meter factor / error was changed from 0 to 1.00964 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 6 - Meter factor / error was changed from 0 to 1.00966 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 7 - Meter factor / error was changed from 0 to 1.00952 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 8 - Meter factor / error was changed from 0 to 1.00946 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 1 - Flowrate was changed from 0 to 84.4 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 2 - Flowrate was changed from 0 to 92.1 by CommDrivers (10000)
+05/05/26 13:40:11                  Parameter Run 2 Fwd - Point 1 - Meter factor / error was changed from 0 to 1.00945 by CommDrivers (10000)
+05/05/26 11:08:16                  Run 2 Flow rate alarm from High High to Normal [0]
+05/05/26 11:08:16                  Parameter Run 2 Flow rate high limit was changed from 213.61 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Flow rate low limit was changed from 80 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd nominal K-factor was changed from 387.31 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 2 - Flowrate was changed from 92.1 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 3 - Flowrate was changed from 103.6 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 4 - Flowrate was changed from 118.1 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 5 - Flowrate was changed from 142.4 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 6 - Flowrate was changed from 165.4 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 7 - Flowrate was changed from 171.1 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 8 - Flowrate was changed from 194.2 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 2 - Meter factor / error was changed from 1.00926 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 3 - Meter factor / error was changed from 1.0096 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 4 - Meter factor / error was changed from 1.00973 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 5 - Meter factor / error was changed from 1.00964 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 6 - Meter factor / error was changed from 1.00966 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 7 - Meter factor / error was changed from 1.00952 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 8 - Meter factor / error was changed from 1.00946 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 1 - Flowrate was changed from 84.4 to 0 by CommDrivers (10000)
+05/05/26 11:08:16                  Parameter Run 2 Fwd - Point 1 - Meter factor / error was changed from 1.00945 to 0 by CommDrivers (10000)
+05/05/26 07:31:51                  User administrator (Web: 10.0.1.51) has been automatically logged off
+05/05/26 06:31:51                  'Print snapshot report' executed by administrator (2000)
+05/05/26 06:31:37                  'Print configuration report' executed by administrator (2000)
+05/05/26 06:31:31                  User administrator (Web: 10.0.1.51) has logged in
+05/05/26 06:29:05                  Parameter Product 2 standard density override was changed from 852.9 to 855.6 by CommDrivers (10000)
+05/05/26 06:29:05                  Parameter Product 1 standard density override was changed from 852.9 to 855.6 by CommDrivers (10000)
+05/05/26 01:22:11                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/05/26 01:21:22                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/05/26 00:22:11                  User administrator (Web: 10.0.1.50) has logged in
+05/05/26 00:21:21                  User administrator (Web: 10.0.1.50) has logged in
+

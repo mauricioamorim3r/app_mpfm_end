@@ -1,0 +1,51 @@
+========================================
+  MPFM Manager — Pacote de Distribuição
+========================================
+
+PRÉ-REQUISITOS
+--------------
+- Python 3.11 ou superior
+- Bibliotecas listadas em requirements.txt (se existir)
+  ou instale manualmente:
+    pip install fastapi uvicorn openpyxl pdfplumber sqlalchemy
+
+INSTALAÇÃO
+----------
+1. Extraia o conteúdo desta pasta para um local de sua escolha.
+   Exemplo: C:\Users\SEU_USUARIO\MPFM_APP\
+
+2. Abra um terminal na pasta extraída e instale dependências:
+     pip install fastapi uvicorn openpyxl pdfplumber sqlalchemy python-multipart aiofiles
+
+INICIAR A APLICAÇÃO
+-------------------
+Opção A (Windows — duplo clique):
+  iniciar_simples.bat
+
+Opção B (terminal):
+  python server.py
+
+Opção C (PowerShell):
+  .\start_app.ps1
+
+Acesse no navegador:  http://localhost:8765
+
+BANCO DE DADOS
+--------------
+O arquivo data/mpfm_local.db já contém todos os dados importados
+(medições Oct/2025 → Abr/2026, ~642k linhas curadas).
+
+CONFIGURAR PASTAS MONITORADAS
+------------------------------
+As pastas de monitoramento automático (PDFs diários) foram removidas
+pois são específicas de cada máquina. Para reconfigurar:
+  1. Acesse a aplicação em http://localhost:8765
+  2. Vá em "Upload / Importação" → seção "Monitor Automático de Pasta"
+  3. Adicione os caminhos das suas pastas de PDFs MPFM
+
+ARQUIVOS EXCEL
+--------------
+Os workbooks mensais estão disponíveis em data/outputs/ e também
+podem ser acessados/baixados pela interface em "Exportar".
+
+========================================

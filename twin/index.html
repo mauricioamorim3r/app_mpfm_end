@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twin MPFM · Protótipo com Dados Reais</title>
+<style>
+:root{
+  --bg:#eef3f7;
+  --paper:#ffffff;
+  --ink:#172331;
+  --muted:#667789;
+  --line:#d8e0e8;
+  --panel:#f7fafc;
+  --accent:#007079;
+  --blue:#2563eb;
+  --green:#2e8b57;
+  --amber:#b7791f;
+  --red:#d64545;
+  --oil:#b5762a;
+  --gas:#2563eb;
+  --water:#14a3b8;
+  --shadow:0 16px 40px rgba(23,35,49,.12);
+  --mono:"Cascadia Mono","Consolas",ui-monospace,monospace;
+  --sans:"Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.74),rgba(238,243,247,.96)),
+    repeating-linear-gradient(0deg,transparent 0 27px,rgba(0,112,121,.06) 27px 28px),
+    var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+}
+button,input,select{font:inherit}
+button,input,select,.field,.card,.panel,.top > *,.content > *,.lower > *{min-width:0}
+select{max-width:100%;text-overflow:ellipsis}
+.page{
+  width:min(1680px,100%);
+  margin:0 auto;
+  padding:18px;
+}
+.shell{
+  background:var(--paper);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  min-height:calc(100vh - 36px);
+  max-width:100%;
+  min-width:0;
+  overflow:hidden;
+}
+.top{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:16px;
+  align-items:start;
+  padding:18px 20px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#ffffff,#f8fbfd);
+}
+.eyebrow{
+  color:var(--accent);
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+h1{margin:4px 0 4px;font-size:24px;line-height:1.15}
+.sub{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+.top-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.btn{
+  border:1px solid var(--accent);
+  background:var(--accent);
+  color:#fff;
+  border-radius:6px;
+  padding:9px 12px;
+  font-weight:800;
+  font-size:12px;
+  text-decoration:none;
+  cursor:pointer;
+}
+.btn.secondary{
+  background:#fff;
+  color:var(--ink);
+  border-color:var(--line);
+}
+.toolbar{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(140px,180px)) minmax(240px,1fr) auto;
+  gap:10px;
+  align-items:end;
+  padding:14px 20px;
+  border-bottom:1px solid var(--line);
+}
+.field label{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.field input,.field select{
+  width:100%;
+  min-height:36px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:#fff;
+  color:var(--ink);
+  padding:7px 9px;
+}
+.status{
+  padding:0 20px 12px;
+  color:var(--muted);
+  font-size:12px;
+}
+.content{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(330px,390px);
+  gap:16px;
+  padding:0 20px 20px;
+}
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:12px;
+}
+.card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:14px;
+  min-width:0;
+}
+.kpi span,
+.metric span,
+.small-label{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:800;
+}
+.kpi strong{
+  display:block;
+  margin-top:7px;
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:20px;
+  line-height:1.1;
+}
+.kpi em{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+  font-style:normal;
+  overflow-wrap:anywhere;
+}
+.synoptic{
+  background:#071421;
+  color:#d7e7f5;
+  border-color:#20324d;
+}
+.synoptic-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+  margin-bottom:10px;
+}
+.synoptic h2,
+.panel h2{
+  margin:0;
+  font-size:16px;
+}
+.synoptic p,
+.panel p{
+  margin:4px 0 0;
+  color:#91aac2;
+  font-size:12px;
+  line-height:1.4;
+}
+.decision{
+  border-radius:999px;
+  padding:5px 10px;
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:900;
+  background:rgba(46,139,87,.14);
+  color:#75d69b;
+}
+.stage{
+  position:relative;
+  min-height:420px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:8px;
+  background:
+    linear-gradient(180deg,rgba(8,24,39,.98),rgba(4,11,19,.98)),
+    repeating-linear-gradient(0deg,transparent 0 34px,rgba(143,176,201,.06) 34px 35px);
+}
+.flow-line{
+  position:absolute;
+  left:6%;
+  right:8%;
+  height:4px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--oil) 0 33%,var(--gas) 33% 66%,var(--water) 66%);
+  top:210px;
+  box-shadow:0 0 16px rgba(255,255,255,.16);
+}
+.flow-line::after{
+  content:"";
+  position:absolute;
+  inset:-5px 0;
+  background:repeating-linear-gradient(90deg,transparent 0 12px,rgba(255,255,255,.62) 12px 18px,transparent 18px 32px);
+  animation:move 1.4s linear infinite;
+}
+@keyframes move{to{transform:translateX(32px)}}
+.equip{
+  position:absolute;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:126px;
+  border:0;
+  background:transparent;
+  color:#d7e7f5;
+  text-align:center;
+  cursor:pointer;
+}
+.equip img{
+  width:118px;
+  height:118px;
+  object-fit:contain;
+  border:2px solid transparent;
+  border-radius:8px;
+  filter:drop-shadow(0 12px 18px rgba(0,0,0,.35));
+}
+.equip.active img{border-color:#5dabff;filter:drop-shadow(0 0 18px rgba(93,171,255,.38))}
+.equip span{
+  display:block;
+  margin-top:4px;
+  font-size:10px;
+  font-weight:900;
+  line-height:1.15;
+  text-transform:uppercase;
+}
+.equip b{
+  display:inline-block;
+  margin-top:4px;
+  max-width:118px;
+  border-radius:4px;
+  padding:3px 6px;
+  background:rgba(143,176,201,.13);
+  color:#b8c9d8;
+  font-size:9px;
+  font-family:var(--mono);
+  overflow-wrap:anywhere;
+}
+.equip.ok b{background:rgba(46,139,87,.22);color:#75d69b}
+.equip.warn b{background:rgba(183,121,31,.22);color:#ffc46c}
+.equip.info b{background:rgba(37,99,235,.20);color:#91b5ff}
+.equip.err b{background:rgba(214,69,69,.22);color:#ff9a9a}
+.slot-1{left:8%}.slot-2{left:22%}.slot-3{left:36%}.slot-4{left:50%}.slot-5{left:64%}.slot-6{left:78%}.slot-7{left:91%}
+.slot-1 img,.slot-6 img{width:148px;height:130px}.slot-4 img{height:136px}
+.hours{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:4px;
+  margin-top:10px;
+}
+.hour{
+  min-height:30px;
+  border:1px solid #28415e;
+  background:#0c1b2d;
+  color:#9fb3c7;
+  border-radius:5px;
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:800;
+}
+.hour.ok{border-color:rgba(46,139,87,.48);color:#75d69b}
+.hour.warn{border-color:rgba(183,121,31,.48);color:#ffc46c}
+.hour.active{background:#12345b;border-color:#5dabff;color:#fff}
+.aside{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.panel h2{color:var(--ink)}
+.panel p{color:var(--muted)}
+.detail-status{
+  display:inline-block;
+  margin:10px 0;
+  border-radius:999px;
+  padding:5px 10px;
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:900;
+}
+.detail-status.ok{background:rgba(46,139,87,.12);color:var(--green)}
+.detail-status.warn{background:rgba(183,121,31,.13);color:var(--amber)}
+.detail-status.info{background:rgba(37,99,235,.10);color:var(--blue)}
+.detail-status.err{background:rgba(214,69,69,.12);color:var(--red)}
+.metric-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.metric{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:9px;
+}
+.metric strong{
+  display:block;
+  margin-top:5px;
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+.guide-list{
+  display:grid;
+  gap:8px;
+}
+.guide-item{
+  display:grid;
+  grid-template-columns:26px minmax(0,1fr);
+  gap:8px;
+  align-items:start;
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:var(--panel);
+}
+.guide-item b{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(0,112,121,.10);
+  color:var(--accent);
+  font-family:var(--mono);
+}
+.guide-item strong{display:block;font-size:12px}
+.guide-item span{display:block;margin-top:2px;color:var(--muted);font-size:11px;line-height:1.35}
+.lower{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(340px,.75fr);
+  gap:16px;
+  padding:0 20px 20px;
+}
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.step{
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--panel);
+  padding:10px;
+  min-height:126px;
+}
+.step b{
+  display:grid;
+  place-items:center;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:rgba(0,112,121,.10);
+  color:var(--accent);
+  font-family:var(--mono);
+  margin-bottom:7px;
+}
+.step strong{
+  display:block;
+  font-size:12px;
+  line-height:1.2;
+  text-transform:uppercase;
+}
+.step span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.35;
+}
+.formula-list{
+  display:grid;
+  gap:8px;
+}
+.formula-list code{
+  display:block;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:var(--panel);
+  padding:9px;
+  color:var(--ink);
+  white-space:normal;
+}
+@media(max-width:1180px){
+  .toolbar,.content,.lower{grid-template-columns:1fr}
+  .toolbar{align-items:stretch}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+  body{overflow-x:hidden}
+  .page{padding:10px;max-width:100%;overflow-x:hidden}
+  .top,.toolbar,.content,.lower{padding-left:12px;padding-right:12px}
+  .top{grid-template-columns:1fr}
+  .top-actions{justify-content:flex-start}
+  .top-actions .btn{flex:1 1 140px;text-align:center}
+  .kpis,.metric-grid,.steps{grid-template-columns:1fr}
+  .stage{min-height:620px}
+  .flow-line{left:50%;right:auto;top:46px;bottom:42px;width:4px;height:auto;background:linear-gradient(180deg,var(--oil) 0 33%,var(--gas) 33% 66%,var(--water) 66%)}
+  .flow-line::after{display:none}
+  .equip{left:50%!important;width:min(210px,calc(100% - 48px));display:grid;grid-template-columns:72px minmax(0,1fr);gap:6px;text-align:left;align-items:center}
+  .equip img,.slot-1 img,.slot-4 img,.slot-6 img{width:70px;height:70px}
+  .equip b{max-width:120px;text-align:center}
+  .slot-1{top:8%}.slot-2{top:22%}.slot-3{top:36%}.slot-4{top:50%}.slot-5{top:64%}.slot-6{top:78%}.slot-7{top:92%}
+  .hours{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="shell">
+    <header class="top">
+      <div>
+        <div class="eyebrow">Twin MPFM · protótipo operacional</div>
+        <h1>Sinóptico com dados reais da reconciliação</h1>
+        <p class="sub">Esta versão não usa dados mockados. Todos os valores vêm de <code>/api/twin/synoptic</code>, usando os runs e snapshots gravados na aplicação principal.</p>
+      </div>
+      <div class="top-actions">
+        <a class="btn secondary" href="/#twin">Voltar para a aplicação</a>
+        <button class="btn" id="reloadBtn" type="button">Atualizar dados</button>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <div class="field"><label for="bankInput">Banco</label><input id="bankInput" placeholder="Todos"></div>
+      <div class="field"><label for="tagInput">TAG</label><input id="tagInput" placeholder="Todas"></div>
+      <div class="field"><label for="dayInput">Data</label><input id="dayInput" type="date"></div>
+      <div class="field"><label for="runSelect">Run real</label><select id="runSelect"></select></div>
+      <button class="btn secondary" id="clearBtn" type="button">Limpar filtros</button>
+    </section>
+    <div class="status" id="status">Carregando...</div>
+
+    <main id="root"></main>
+  </div>
+</div>
+
+<script>
+(() => {
+  const ASSET = '/twin/assets/a02/';
+  const EQUIPMENT = [
+    ['well','POÇO / PRODUÇÃO','subsea_well_phase_lines.png','slot-1'],
+    ['gaslift','GAS LIFT','gas_lift_valve_phase_lines.png','slot-2'],
+    ['subsea','MPFM SUBSEA','mpfm_subsea_gold_front.png','slot-3'],
+    ['riser','FLOWLINE / RISER','riser_flowline_elbow.png','slot-4'],
+    ['topside','MPFM TOPSIDE','mpfm_topside_silver_front.png','slot-5'],
+    ['separator','SEPARADOR','test_separator_horizontal.png','slot-6'],
+    ['fcs','FCS320 / ALOCAÇÃO','fcs320_monitor_labeled.png','slot-7'],
+  ];
+  let ctx = null;
+  let selected = 'topside';
+  let selectedHour = 0;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const num = (v, d = 2) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toLocaleString('pt-BR', {minimumFractionDigits:d, maximumFractionDigits:d}) : '—';
+  };
+  const dateBr = (v) => {
+    const m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : (v || '—');
+  };
+  const kind = (value) => {
+    const s = String(value || '').toUpperCase();
+    if (s.includes('OK') || s.includes('NORMAL') || s.includes('ATIVO') || s.includes('APROV')) return 'ok';
+    if (s.includes('VERIFICAR') || s.includes('ATEN') || s.includes('SEM FONTE')) return 'warn';
+    if (s.includes('FALHA') || s.includes('REPROV')) return 'err';
+    return 'info';
+  };
+  const rowAt = (rows, hour) => (rows || []).find(row => Number(row.hora) === Number(hour)) || {};
+  const metric = (metrics, key, digits = 2) => {
+    const item = metrics?.[key];
+    return item?.value == null ? '—' : `${num(item.value, digits)} ${item.unit || ''}`.trim();
+  };
+  const validHours = () => {
+    const syn = (ctx?.synoptic?.hourly || []).filter(h => h.valid).map(h => Number(h.hour));
+    if (syn.length) return syn;
+    return (ctx?.calc_horas || []).filter(h => h.hora_valida).map(h => Number(h.hora));
+  };
+
+  function buildUrl() {
+    const params = new URLSearchParams();
+    const run = $('runSelect').value;
+    const bank = $('bankInput').value.trim();
+    const tag = $('tagInput').value.trim();
+    const day = $('dayInput').value;
+    if (run) params.set('run_id', run);
+    if (!run && bank) params.set('bank', bank);
+    if (!run && tag) params.set('tag', tag);
+    if (!run && day) params.set('day_ref', day);
+    const suffix = params.toString();
+    return `/api/twin/synoptic${suffix ? `?${suffix}` : ''}`;
+  }
+
+  async function load() {
+    $('status').textContent = 'Carregando dados reais...';
+    $('root').innerHTML = '';
+    try {
+      const response = await fetch(buildUrl());
+      const payload = await response.json();
+      if (!payload.ok) throw new Error(payload.message || payload.detail || 'Sem run disponível');
+      ctx = payload;
+      populateRuns();
+      const hours = validHours();
+      if (!hours.includes(Number(selectedHour))) selectedHour = hours[0] ?? 0;
+      render();
+      const run = ctx.run || {};
+      $('status').textContent = `Run #${run.id || '—'} · ${run.bank || '—'} / ${run.tag || '—'} · ${dateBr(run.day_ref)} · ${ctx.synoptic?.source?.dataContract || 'dados reais'}`;
+    } catch (err) {
+      $('status').textContent = `Falha ao carregar: ${err.message || err}`;
+      $('root').innerHTML = '<section class="card" style="margin:0 20px 20px">Não foi possível carregar dados reais do Twin.</section>';
+    }
+  }
+
+  function populateRuns() {
+    const run = ctx.run || {};
+    const current = String(run.id || '');
+    $('runSelect').innerHTML = '<option value="">Último run disponível</option>' + (ctx.runs || []).map(item => {
+      const sel = String(item.id) === current ? ' selected' : '';
+      return `<option value="${esc(item.id)}"${sel}>${esc(`#${item.id} · ${item.day_ref || '—'} · ${item.bank || '—'} / ${item.tag || '—'} · ${item.status_final || item.status || 'run'}`)}</option>`;
+    }).join('');
+    if (current) $('runSelect').value = current;
+  }
+
+  function buildNodes() {
+    const run = ctx.run || {};
+    const resumo = ctx.resumo || {};
+    const metrics = ctx.daily_metrics || {};
+    const pvt = ctx.pvt || ctx.pvt_snapshot || {};
+    const campaign = ctx.campaign || {};
+    const calc = rowAt(ctx.calc_horas, selectedHour);
+    const mpfm = rowAt(ctx.mpfm_horas, selectedHour);
+    const sep = rowAt(ctx.sep_horas, selectedHour);
+    const status = ctx.synoptic?.status || {};
+    return {
+      well:{status:status.well?.status || 'ATIVO', summary:`${run.bank || '—'} / ${run.tag || '—'} em ${dateBr(run.day_ref)}`, metrics:[['Banco',run.bank],['TAG',run.tag],['Campanha',campaign.id ? `#${campaign.id}` : '—'],['Fase',run.campaign_phase || '—']]},
+      gaslift:{status:status.gasLift?.status || 'NAO INFORMADO', summary:status.gasLift?.message || 'Sem massa dedicada de gas lift no run.', metrics:[['Massa GL','—'],['Tratamento','Não aplicado'],['Impacto','Sem desconto no payload']]},
+      subsea:{status:status.ss?.status || 'SEM FONTE', summary:status.ss?.message || 'Sem série subsea dedicada neste run.', metrics:[['Óleo subsea','—'],['Gás subsea','—'],['Água subsea','—'],['Par',run.analytical_snapshot?.flow_mode || 'topside_sep']]},
+      riser:{status:status.flowline?.status || 'RASTREADO', summary:status.flowline?.message || 'Trecho lógico entre medição e referência.', metrics:[['Riser/TAG',run.tag],['Banco',run.bank],['Janela',`${resumo.horas_validas || '—'} / ${resumo.horas_janela || 24} h`]]},
+      topside:{status:status.ts?.status || 'NORMAL', summary:status.ts?.message || 'Medição MPFM horária e diária da base curada.', metrics:[['Óleo hora',`${num(mpfm.oleo_corr_t,3)} t`],['Gás hora',`${num(mpfm.gas_corr_t,3)} t`],['Água hora',`${num(mpfm.agua_corr_t,3)} t`],['P/T',`${num(mpfm.pressao_barg,1)} barg / ${num(mpfm.temperatura_c,1)} °C`],['HC dia',metric(metrics,'MPFM corr HC (t)')],['Total dia',metric(metrics,'MPFM corr Total (t)')]]},
+      separator:{status:status.sep?.status || 'REFERENCIA OK', summary:status.sep?.message || 'Separador convertido com PVT/snapshot.', metrics:[['GSV óleo',`${num(sep.gsv_sep_sm3,3)} Sm³`],['Gás livre',`${num(sep.gas_vol_sm3,1)} Sm³`],['BSW',`${num(sep.bsw_user_pct,2)}%`],['HC ref hora',`${num(calc.massa_hc_ref_t,3)} t`],['HC ref dia',`${num(resumo.massa_hc_ref_t,2)} t`]]},
+      fcs:{status:status.fcs?.status || resumo.status_final || resumo.status_linha || '—', summary:status.fcs?.message || 'Decisão final da reconciliação.', metrics:[['Desvio HC',`${num(resumo.desvio_hc_pct,3)}%`],['Limite HC',`±${num(pvt.limite_hc_pct,1)}%`],['Desvio Total',`${num(resumo.desvio_total_pct,3)}%`],['Limite Total',`±${num(pvt.limite_total_pct,1)}%`],['K proposto',num(campaign.proposed_k_factor_hc,6)],['K aplicado',campaign.applied_k_factor ? num(campaign.applied_k_factor,6) : '—']]}
+    };
+  }
+
+  function render() {
+    const run = ctx.run || {};
+    const resumo = ctx.resumo || {};
+    const pvt = ctx.pvt || ctx.pvt_snapshot || {};
+    const syn = ctx.synoptic || {};
+    const nodes = buildNodes();
+    const current = nodes[selected] || nodes.topside;
+    const vHours = new Set(validHours());
+    $('root').innerHTML = `
+      <section class="content">
+        <div>
+          <div class="kpis">
+            ${kpi('Run', `#${run.id || '—'}`, `${run.bank || '—'} / ${run.tag || '—'}`)}
+            ${kpi('Data', dateBr(run.day_ref), `${run.campaign_phase || 'fase'} · campanha ${run.campaign_id || '—'}`)}
+            ${kpi('Cobertura', `${num(resumo.cobertura_pct,1)}%`, `${resumo.horas_validas || '—'} de ${resumo.horas_janela || 24} horas`)}
+            ${kpi('Status', resumo.status_final || resumo.status_linha || '—', 'reconciliação real')}
+          </div>
+          <section class="card synoptic">
+            <div class="synoptic-head">
+              <div><h2>Sinóptico operacional</h2><p>${esc(syn.campaign?.comparison || 'TS x SEP')} · ${esc(syn.campaign?.reference || 'Separador de Testes')} · hora ${String(selectedHour).padStart(2,'0')}:00</p></div>
+              <div class="decision">${esc(resumo.status_final || resumo.status_linha || '—')}</div>
+            </div>
+            <div class="stage">
+              <div class="flow-line"></div>
+              ${EQUIPMENT.map(eq => equipment(eq, nodes[eq[0]])).join('')}
+            </div>
+            <div class="hours">
+              ${Array.from({length:24}, (_, h) => `<button class="hour ${vHours.has(h) ? 'ok' : 'warn'}${h === selectedHour ? ' active' : ''}" data-hour="${h}">${String(h).padStart(2,'0')}</button>`).join('')}
+            </div>
+          </section>
+        </div>
+        <aside class="aside">
+          <section class="card panel">
+            <h2>Como usar</h2>
+            <p>Comece pelo run, depois clique no equipamento ou na hora para entender evidência e impacto.</p>
+            <div class="guide-list" style="margin-top:10px">
+              ${guide('1','Run real','A seleção acima troca todo o contexto do protótipo.')}
+              ${guide('2','Equipamentos','Cada objeto abre métricas do ponto da cadeia.')}
+              ${guide('3','Horas','A faixa 00-23 mostra a sustentação horária da decisão.')}
+              ${guide('4','Resultado','Os desvios usam valores calculados no backend.')}
+            </div>
+          </section>
+          <section class="card panel">
+            <h2>${esc((EQUIPMENT.find(eq => eq[0] === selected) || [,'Detalhe'])[1])}</h2>
+            <p>${esc(current.summary)}</p>
+            <div class="detail-status ${kind(current.status)}">${esc(current.status)}</div>
+            <div class="metric-grid">${(current.metrics || []).map(m => `<div class="metric"><span>${esc(m[0])}</span><strong>${esc(m[1] ?? '—')}</strong></div>`).join('')}</div>
+          </section>
+        </aside>
+      </section>
+      <section class="lower">
+        <section class="card panel">
+          <h2>Execução end-to-end</h2>
+          <p>Etapas reais do fluxo metodológico para o mesmo run selecionado.</p>
+          <div class="steps" style="margin-top:10px">${(syn.executionSteps || ctx.steps || []).slice(0,8).map(step).join('')}</div>
+        </section>
+        <section class="card panel">
+          <h2>Memorial aplicado</h2>
+          <p>Parâmetros do PVT no run: FE ${num(pvt.fe,6)} · ΔRs ${num(pvt.rs,4)}</p>
+          <div class="formula-list" style="margin-top:10px">
+            <code>NSV = GSV × (1 - BSW / 100)</code>
+            <code>V_STO = NSV × FE/SF</code>
+            <code>V_gas_total = V_gas_sep + V_STO × ΔRs</code>
+            <code>δ = 100 × (MPFM - REF) / REF</code>
+          </div>
+        </section>
+      </section>
+    `;
+  }
+
+  function kpi(label, value, sub) {
+    return `<div class="card kpi"><span>${esc(label)}</span><strong>${esc(value)}</strong><em>${esc(sub)}</em></div>`;
+  }
+  function guide(n, title, copy) {
+    return `<div class="guide-item"><b>${n}</b><div><strong>${esc(title)}</strong><span>${esc(copy)}</span></div></div>`;
+  }
+  function equipment(eq, node) {
+    const [id, label, img, slot] = eq;
+    const active = id === selected ? ' active' : '';
+    const k = kind(node?.status);
+    return `<button class="equip ${slot}${active} ${k}" data-node="${id}"><img src="${ASSET}${img}" alt=""><span>${esc(label)}</span><b>${esc(node?.status || '—')}</b></button>`;
+  }
+  function step(item) {
+    return `<div class="step"><b>${esc(item.num || '')}</b><strong>${esc(item.title || 'Etapa')}</strong><span>${esc(item.summary || '')}</span></div>`;
+  }
+
+  document.addEventListener('click', (ev) => {
+    const node = ev.target.closest('[data-node]');
+    if (node) {
+      selected = node.dataset.node;
+      render();
+      return;
+    }
+    const hour = ev.target.closest('[data-hour]');
+    if (hour) {
+      selectedHour = Number(hour.dataset.hour);
+      render();
+    }
+  });
+  $('reloadBtn').addEventListener('click', load);
+  $('runSelect').addEventListener('change', load);
+  $('clearBtn').addEventListener('click', () => {
+    $('bankInput').value = '';
+    $('tagInput').value = '';
+    $('dayInput').value = '';
+    $('runSelect').value = '';
+    selectedHour = 0;
+    load();
+  });
+  load();
+})();
+</script>
+</body>
+</html>

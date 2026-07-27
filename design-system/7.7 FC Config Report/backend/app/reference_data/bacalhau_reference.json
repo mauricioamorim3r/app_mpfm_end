@@ -1,0 +1,5118 @@
+[
+  {
+    "entity_type": "installation",
+    "record_key": "38480",
+    "name": "FPSO BACALHAU",
+    "description": "FPSO em ambiente MARÍTIMO operada por Equinor Brasil.",
+    "metadata": {
+      "Código da Instalação": 38480,
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Operadora": 51,
+      "Silga": "FPSO BACALHAU",
+      "Tipo": "FPSO",
+      "Estado": null,
+      "Ambiente": "MARÍTIMO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP instalação",
+    "is_default": true
+  },
+  {
+    "entity_type": "field",
+    "record_key": "4735",
+    "name": "BACALHAU",
+    "description": "Campo na bacia de Santos com operador contratual Equinor Brasil Energia Ltda..",
+    "metadata": {
+      "Código do Campo": 4735,
+      "Campo": "BACALHAU",
+      "Bacia": "Santos",
+      "Número Contrato": 486100038832000,
+      "Operador Contrato": "Equinor Brasil Energia Ltda.",
+      "Estado": "São Paulo",
+      "Sigla": "BAC",
+      "Situação": "Desenvolvimento"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Campo",
+    "is_default": true
+  },
+  {
+    "entity_type": "field",
+    "record_key": "4800",
+    "name": "BACALHAU NORTE",
+    "description": "Campo na bacia de Santos com operador contratual Equinor Brasil Energia Ltda..",
+    "metadata": {
+      "Código do Campo": 4800,
+      "Campo": "BACALHAU NORTE",
+      "Bacia": "Santos",
+      "Número Contrato": 48610012964201696,
+      "Operador Contrato": "Equinor Brasil Energia Ltda.",
+      "Estado": "São Paulo",
+      "Sigla": "BACN",
+      "Situação": "Desenvolvimento"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Campo",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "34271027149",
+    "name": "Dende1",
+    "description": "Poço ANP 1-PERN-4-ESS vinculado ao bloco ES-M-529.",
+    "metadata": {
+      "Código do Poço": 34271027149,
+      "NOME POÇO ANP": "1-PERN-4-ESS",
+      "POÇO OPERADOR": "Dende1",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": "BACALHAU",
+      "BLOCO": "ES-M-529",
+      "BACIA": "Espírito Santo",
+      "ESTADO": "Espírito Santo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": 4735,
+      "Código da Instalação": 38480,
+      "Instalação": "FPSO BACALHAU"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316022586",
+    "name": "1SPS52",
+    "description": "Poço ANP 1-BRSA-532-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316022586,
+      "NOME POÇO ANP": "1-BRSA-532-SPS",
+      "POÇO OPERADOR": "1SPS52",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": "BACALHAU NORTE",
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": 4800,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316022619",
+    "name": "1SPS52A",
+    "description": "Poço ANP 1-BRSA-532A-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316022619,
+      "NOME POÇO ANP": "1-BRSA-532A-SPS",
+      "POÇO OPERADOR": "1SPS52A",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025520",
+    "name": "4SPS71",
+    "description": "Poço ANP 4-BRSA-946-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025520,
+      "NOME POÇO ANP": "4-BRSA-946-SPS",
+      "POÇO OPERADOR": "4SPS71",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025548",
+    "name": "4SPS71A",
+    "description": "Poço ANP 4-BRSA-946A-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025548,
+      "NOME POÇO ANP": "4-BRSA-946A-SPS",
+      "POÇO OPERADOR": "4SPS71A",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025595",
+    "name": "4SPS71B",
+    "description": "Poço ANP 4-BRSA-946B-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025595,
+      "NOME POÇO ANP": "4-BRSA-946B-SPS",
+      "POÇO OPERADOR": "4SPS71B",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025637",
+    "name": "4SPS71C",
+    "description": "Poço ANP 4-BRSA-946C-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025637,
+      "NOME POÇO ANP": "4-BRSA-946C-SPS",
+      "POÇO OPERADOR": "4SPS71C",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025905",
+    "name": "4SPS86A",
+    "description": "Poço ANP 4-BRSA-971A-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025905,
+      "NOME POÇO ANP": "4-BRSA-971A-SPS",
+      "POÇO OPERADOR": "4SPS86A",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025667",
+    "name": "4SPS86",
+    "description": "Poço ANP 4-BRSA-971-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025667,
+      "NOME POÇO ANP": "4-BRSA-971-SPS",
+      "POÇO OPERADOR": "4SPS86",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316025925",
+    "name": "4SPS86B",
+    "description": "Poço ANP 4-BRSA-971B-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316025925,
+      "NOME POÇO ANP": "4-BRSA-971B-SPS",
+      "POÇO OPERADOR": "4SPS86B",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316027376",
+    "name": "3SPS104D",
+    "description": "Poço ANP 3-BRSA-1216D-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316027376,
+      "NOME POÇO ANP": "3-BRSA-1216D-SPS",
+      "POÇO OPERADOR": "3SPS104D",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316027781",
+    "name": "3SPS104DA",
+    "description": "Poço ANP 3-BRSA-1216DA-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316027781,
+      "NOME POÇO ANP": "3-BRSA-1216DA-SPS",
+      "POÇO OPERADOR": "3SPS104DA",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316027979",
+    "name": "3SPS105",
+    "description": "Poço ANP 3-BRSA-1290-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316027979,
+      "NOME POÇO ANP": "3-BRSA-1290-SPS",
+      "POÇO OPERADOR": "3SPS105",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029202",
+    "name": "GUANXUMA-1",
+    "description": "Poço ANP 1-STAT-10-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316029202,
+      "NOME POÇO ANP": "1-STAT-10-SPS",
+      "POÇO OPERADOR": "GUANXUMA-1",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029203",
+    "name": "GUANXUMA A",
+    "description": "Poço ANP 1-STAT-10A-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316029203,
+      "NOME POÇO ANP": "1-STAT-10A-SPS",
+      "POÇO OPERADOR": "GUANXUMA A",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029259",
+    "name": "GUANXUMA B",
+    "description": "Poço ANP 1-STAT-10B-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316029259,
+      "NOME POÇO ANP": "1-STAT-10B-SPS",
+      "POÇO OPERADOR": "GUANXUMA B",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029267",
+    "name": "Guanxuma B T2",
+    "description": "Poço ANP 1-STAT-10C-SPS vinculado ao bloco BM-S-8.",
+    "metadata": {
+      "Código do Poço": 86316029267,
+      "NOME POÇO ANP": "1-STAT-10C-SPS",
+      "POÇO OPERADOR": "Guanxuma B T2",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "BM-S-8",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029277",
+    "name": "CARCARA WEST",
+    "description": "Poço ANP 3-EQNR-1-SPS vinculado ao bloco N_CARCARA.",
+    "metadata": {
+      "Código do Poço": 86316029277,
+      "NOME POÇO ANP": "3-EQNR-1-SPS",
+      "POÇO OPERADOR": "CARCARA WEST",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "N_CARCARA",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029338",
+    "name": "CARCARA WEST U1",
+    "description": "Poço ANP 9-EQNR-2-SPS vinculado ao bloco N_CARCARA.",
+    "metadata": {
+      "Código do Poço": 86316029338,
+      "NOME POÇO ANP": "9-EQNR-2-SPS",
+      "POÇO OPERADOR": "CARCARA WEST U1",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "N_CARCARA",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029339",
+    "name": "CARCARA EAST",
+    "description": "Poço ANP 3-EQNR-3-SPS vinculado ao bloco N_CARCARA.",
+    "metadata": {
+      "Código do Poço": 86316029339,
+      "NOME POÇO ANP": "3-EQNR-3-SPS",
+      "POÇO OPERADOR": "CARCARA EAST",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": "N_CARCARA",
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316029925",
+    "name": "PE_2",
+    "description": "Poço ANP 7-BAC-1-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316029925,
+      "NOME POÇO ANP": "7-BAC-1-SPS",
+      "POÇO OPERADOR": "PE_2",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": "BACALHAU",
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": 4735,
+      "Código da Instalação": 38480,
+      "Instalação": "FPSO BACALHAU"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030008",
+    "name": "GI_4",
+    "description": "Poço ANP 8-BAC-2D-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030008,
+      "NOME POÇO ANP": "8-BAC-2D-SPS",
+      "POÇO OPERADOR": "GI_4",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030021",
+    "name": "ADR",
+    "description": "Poço ANP 9-BACN-1-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030021,
+      "NOME POÇO ANP": "9-BACN-1-SPS",
+      "POÇO OPERADOR": "ADR",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030028",
+    "name": "PE_EO105",
+    "description": "Poço ANP 7-BAC-3-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030028,
+      "NOME POÇO ANP": "7-BAC-3-SPS",
+      "POÇO OPERADOR": "PE_EO105",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030246",
+    "name": "PW-104DA",
+    "description": "Poço ANP 7-BAC-4D-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030246,
+      "NOME POÇO ANP": "7-BAC-4D-SPS",
+      "POÇO OPERADOR": "PW-104DA",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": "BACALHAU",
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": 4735,
+      "Código da Instalação": 38480,
+      "Instalação": "FPSO BACALHAU"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030250",
+    "name": "PE-4",
+    "description": "Poço ANP 7-BAC-5-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030250,
+      "NOME POÇO ANP": "7-BAC-5-SPS",
+      "POÇO OPERADOR": "PE-4",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030256",
+    "name": "PE-4A",
+    "description": "Poço ANP 7-BAC-5A-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030256,
+      "NOME POÇO ANP": "7-BAC-5A-SPS",
+      "POÇO OPERADOR": "PE-4A",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": "BACALHAU",
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": "FPSO BACALHAU",
+      "Código do Campo": 4735,
+      "Código da Instalação": 38480,
+      "Instalação": "FPSO BACALHAU"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030392",
+    "name": "WI-5",
+    "description": "Poço ANP 8-BACN-2-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030392,
+      "NOME POÇO ANP": "8-BACN-2-SPS",
+      "POÇO OPERADOR": "WI-5",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030416",
+    "name": "GIPE-105",
+    "description": "Poço ANP 8-BAC-7D-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030416,
+      "NOME POÇO ANP": "8-BAC-7D-SPS",
+      "POÇO OPERADOR": "GIPE-105",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030608",
+    "name": "GIPE-105A",
+    "description": "Poço ANP 8-BAC-7DA-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030608,
+      "NOME POÇO ANP": "8-BAC-7DA-SPS",
+      "POÇO OPERADOR": "GIPE-105A",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "well",
+    "record_key": "86316030658",
+    "name": "PE-8",
+    "description": "Poço ANP 7-BAC-6-SPS vinculado ao bloco -.",
+    "metadata": {
+      "Código do Poço": 86316030658,
+      "NOME POÇO ANP": "7-BAC-6-SPS",
+      "POÇO OPERADOR": "PE-8",
+      "OPERADOR": "Equinor Brasil",
+      "Campo": null,
+      "BLOCO": null,
+      "BACIA": "Santos",
+      "ESTADO": "São Paulo",
+      "Instalação de Destino Atual": null,
+      "Código do Campo": null,
+      "Código da Instalação": null,
+      "Instalação": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::Anp Poço",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "EST-VENT-TANK",
+    "name": "EST-VENT-TANK",
+    "description": "FISCAL / ESTIMADO / GÁS em COMBUSTIVEL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "EST-VENT-TANK",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ESTIMADO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "COMBUSTIVEL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13FT1703",
+    "name": "13FT1703",
+    "description": "FISCAL / TURBINA / ÓLEO em INJEÇÃO TOTAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13FT1703",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "INJEÇÃO TOTAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13FT1706",
+    "name": "13FT1706",
+    "description": "FISCAL / TURBINA / ÓLEO em INJEÇÃO TOTAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13FT1706",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "INJEÇÃO TOTAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "SIM",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13JX101",
+    "name": "13JX101",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13JX101",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "APROPRIAÇÃO AO POÇO",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13JX201",
+    "name": "13JX201",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13JX201",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT0906",
+    "name": "18FT0906",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT0906",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "APROPRIAÇÃO AO POÇO",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1906",
+    "name": "18FT1906",
+    "description": "OPERACIONAL / V-CONE / GÁS em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1906",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13JX301",
+    "name": "13JX301",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13JX301",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13JX401",
+    "name": "13JX401",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13JX401",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "APROPRIAÇÃO AO POÇO",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13JX501",
+    "name": "13JX501",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13JX501",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "13JX601",
+    "name": "13JX601",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "13JX601",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT0106",
+    "name": "18FT0106",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT0106",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT0306",
+    "name": "18FT0306",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT0306",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT0506",
+    "name": "18FT0506",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT0506",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT0706",
+    "name": "18FT0706",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT0706",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1106",
+    "name": "18FT1106",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1106",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1206",
+    "name": "18FT1206",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1206",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1406",
+    "name": "18FT1406",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1406",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1506",
+    "name": "18FT1506",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1506",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1706",
+    "name": "18FT1706",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1706",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "APROPRIAÇÃO AO POÇO",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT1806",
+    "name": "18FT1806",
+    "description": "APROPRIAÇÃO (AO POÇO) / MULTIFÁSICO / MULTIFÁSICO em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT1806",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MULTIFÁSICO",
+      "Fluido": "MULTIFÁSICO",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2006",
+    "name": "18FT2006",
+    "description": "OPERACIONAL / V-CONE / GÁS em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2006",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2106",
+    "name": "18FT2106",
+    "description": "OPERACIONAL / V-CONE / GÁS em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2106",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2206",
+    "name": "18FT2206",
+    "description": "OPERACIONAL / V-CONE / GÁS em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2206",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2306",
+    "name": "18FT2306",
+    "description": "OPERACIONAL / V-CONE / ÁGUA em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2306",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2406",
+    "name": "18FT2406",
+    "description": "OPERACIONAL / V-CONE / ÁGUA em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2406",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2506",
+    "name": "18FT2506",
+    "description": "OPERACIONAL / V-CONE / ÁGUA em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2506",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT2606",
+    "name": "18FT2606",
+    "description": "OPERACIONAL / V-CONE / ÁGUA em AREA DO POÇO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT2606",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "AREA DO POÇO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT8407",
+    "name": "18FT8407",
+    "description": "APROPRIAÇÃO (AO POÇO) / V-CONE / GÁS em GÁS LIFT INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT8407",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT8408",
+    "name": "18FT8408",
+    "description": "APROPRIAÇÃO (AO POÇO) / V-CONE / GÁS em GÁS LIFT INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT8408",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT8409",
+    "name": "18FT8409",
+    "description": "APROPRIAÇÃO (AO POÇO) / V-CONE / GÁS em GÁS LIFT INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT8409",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT8411",
+    "name": "18FT8411",
+    "description": "APROPRIAÇÃO (AO POÇO) / V-CONE / GÁS em GÁS LIFT INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT8411",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT8410",
+    "name": "18FT8410",
+    "description": "APROPRIAÇÃO (AO POÇO) / V-CONE / GÁS em GÁS LIFT INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT8410",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "18FT8412",
+    "name": "18FT8412",
+    "description": "APROPRIAÇÃO (AO POÇO) / V-CONE / GÁS em GÁS LIFT INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "18FT8412",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0116",
+    "name": "20FT0116",
+    "description": "OPERACIONAL / V-CONE / GÁS em SAÍDA DO SEPARADOR DE ALTA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0116",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "OPERACIONAL",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE ALTA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0244",
+    "name": "20FT0244",
+    "description": "APROPRIAÇÃO (AO POÇO) / PLACA DE ORIFÍCIO / GÁS em SAÍDA DO SEPARADOR DE TESTE.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0244",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PLACA DE ORIFÍCIO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE TESTE",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0247",
+    "name": "20FT0247",
+    "description": "APROPRIAÇÃO (AO POÇO) / CORIOLIS / ÓLEO em SAÍDA DO SEPARADOR DE TESTE.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0247",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "CORIOLIS",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE TESTE",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0251",
+    "name": "20FT0251",
+    "description": "APROPRIAÇÃO (AO POÇO) / MAGNÉTICO / ÁGUA em SAÍDA DO SEPARADOR DE TESTE.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0251",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MAGNÉTICO",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE TESTE",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0345A",
+    "name": "20FT0345A",
+    "description": "OPERACIONAL / CORIOLIS / ÓLEO em SAÍDA DO SEPARADOR DE ALTA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0345A",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "CORIOLIS",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE ALTA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0345B",
+    "name": "20FT0345B",
+    "description": "OPERACIONAL / CORIOLIS / ÓLEO em SAÍDA DO SEPARADOR DE ALTA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0345B",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "CORIOLIS",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE ALTA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0346A",
+    "name": "20FT0346A",
+    "description": "OPERACIONAL / MAGNÉTICO / ÁGUA em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0346A",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MAGNÉTICO",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0346B",
+    "name": "20FT0346B",
+    "description": "OPERACIONAL / MAGNÉTICO / ÁGUA em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0346B",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "OPERACIONAL",
+      "Tipo de Medidor": "MAGNÉTICO",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0347",
+    "name": "20FT0347",
+    "description": "OPERACIONAL / V-CONE / GÁS em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0347",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0517",
+    "name": "20FT0517",
+    "description": "OPERACIONAL / V-CONE / GÁS em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0517",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0613",
+    "name": "20FT0613",
+    "description": "OPERACIONAL / MAGNÉTICO / ÁGUA em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0613",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MAGNÉTICO",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0660",
+    "name": "20FT0660",
+    "description": "OPERACIONAL / V-CONE / GÁS em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0660",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT0763",
+    "name": "20FT0763",
+    "description": "OPERACIONAL / MAGNÉTICO / ÁGUA em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT0763",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MAGNÉTICO",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT2303",
+    "name": "20FT2303",
+    "description": "FISCAL / TURBINA / ÓLEO em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT2303",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT2353",
+    "name": "20FT2353",
+    "description": "FISCAL / TURBINA / ÓLEO em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT2353",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT2382",
+    "name": "20FT2382",
+    "description": "OPERACIONAL / TURBINA / ÓLEO em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT2382",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20FT2403",
+    "name": "20FT2403",
+    "description": "FISCAL / TURBINA / ÓLEO em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20FT2403",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "20JX103",
+    "name": "20JX103",
+    "description": "FISCAL / PROVADOR / ÓLEO em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "20JX103",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PROVADOR",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "SIM",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "21FT1002",
+    "name": "21FT1002",
+    "description": "TRANSFERÊNCIA DE CUSTÓDIA / ULTRASSÔNICO / ÓLEO em EXPORTAÇÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "21FT1002",
+      "Tipo de Medição Principal": "TRANSFERÊNCIA DE CUSTÓDIA",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "EXPORTAÇÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "21FT1052",
+    "name": "21FT1052",
+    "description": "TRANSFERÊNCIA DE CUSTÓDIA / ULTRASSÔNICO / ÓLEO em EXPORTAÇÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "21FT1052",
+      "Tipo de Medição Principal": "TRANSFERÊNCIA DE CUSTÓDIA",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "EXPORTAÇÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "21FT1102",
+    "name": "21FT1102",
+    "description": "TRANSFERÊNCIA DE CUSTÓDIA / ULTRASSÔNICO / ÓLEO em EXPORTAÇÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "21FT1102",
+      "Tipo de Medição Principal": "TRANSFERÊNCIA DE CUSTÓDIA",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "EXPORTAÇÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "21FT1152",
+    "name": "21FT1152",
+    "description": "TRANSFERÊNCIA DE CUSTÓDIA / TURBINA / ÓLEO em EXPORTAÇÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "21FT1152",
+      "Tipo de Medição Principal": "TRANSFERÊNCIA DE CUSTÓDIA",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "TURBINA",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "EXPORTAÇÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "SIM",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "21FT1161",
+    "name": "21FT1161",
+    "description": "OPERACIONAL / CORIOLIS / ÓLEO em EXPORTAÇÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "21FT1161",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "OPERACIONAL",
+      "Tipo de Medidor": "CORIOLIS",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "EXPORTAÇÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "21JX103",
+    "name": "21JX103",
+    "description": "TRANSFERÊNCIA DE CUSTÓDIA / PROVADOR / ÓLEO em EXPORTAÇÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "21JX103",
+      "Tipo de Medição Principal": "TRANSFERÊNCIA DE CUSTÓDIA",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PROVADOR",
+      "Fluido": "ÓLEO",
+      "Localização na Planta": "EXPORTAÇÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "SIM",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "26FT1306",
+    "name": "26FT1306",
+    "description": "APROPRIAÇÃO (AO POÇO) / PLACA DE ORIFÍCIO / GÁS em GÁS LIFT TOTAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "26FT1306",
+      "Tipo de Medição Principal": "APROPRIAÇÃO (AO POÇO)",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PLACA DE ORIFÍCIO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS LIFT TOTAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "26FT1501",
+    "name": "26FT1501",
+    "description": "OPERACIONAL / V-CONE / GÁS em INJEÇÃO INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "26FT1501",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "INJEÇÃO INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "26FT1502",
+    "name": "26FT1502",
+    "description": "OPERACIONAL / V-CONE / GÁS em INJEÇÃO INDIVIDUAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "26FT1502",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "GÁS",
+      "Localização na Planta": "INJEÇÃO INDIVIDUAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "29FT0102",
+    "name": "29FT0102",
+    "description": "OPERACIONAL / V-CONE / ÁGUA em INJEÇÃO TOTAL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "29FT0102",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "V-CONE",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "INJEÇÃO TOTAL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "43FT0102",
+    "name": "43FT0102",
+    "description": "FISCAL / ULTRASSÔNICO / GÁS em FLARE DE ALTA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "43FT0102",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "FLARE DE ALTA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "43FT0134",
+    "name": "43FT0134",
+    "description": "OPERACIONAL / ULTRASSÔNICO / GÁS em SAÍDA DO TRATADOR DE ÓLEO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "43FT0134",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO TRATADOR DE ÓLEO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "43FT0227",
+    "name": "43FT0227",
+    "description": "FISCAL / ULTRASSÔNICO / GÁS em FLARE DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "43FT0227",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "FLARE DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "43FT0256",
+    "name": "43FT0256",
+    "description": "OPERACIONAL / ULTRASSÔNICO / GÁS em SAÍDA DO SEPARADOR DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "43FT0256",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "ULTRASSÔNICO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "44FT0203",
+    "name": "44FT0203",
+    "description": "OPERACIONAL / MAGNÉTICO / ÁGUA em SAÍDA DO SEPARADOR DE ALTA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "44FT0203",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "MAGNÉTICO",
+      "Fluido": "ÁGUA",
+      "Localização na Planta": "SAÍDA DO SEPARADOR DE ALTA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "45FT0360",
+    "name": "45FT0360",
+    "description": "FISCAL / PLACA DE ORIFÍCIO / GÁS em GÁS DE PILOTO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "45FT0360",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PLACA DE ORIFÍCIO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "GÁS DE PILOTO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "45FT0555",
+    "name": "45FT0555",
+    "description": "FISCAL / PLACA DE ORIFÍCIO / GÁS em COMBUSTIVEL.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "45FT0555",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PLACA DE ORIFÍCIO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "COMBUSTIVEL",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "45FT0627",
+    "name": "45FT0627",
+    "description": "OPERACIONAL / PLACA DE ORIFÍCIO / GÁS em COMBUSTÍVEL DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "45FT0627",
+      "Tipo de Medição Principal": "OPERACIONAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PLACA DE ORIFÍCIO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "COMBUSTÍVEL DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "meter_point",
+    "record_key": "45FT0640",
+    "name": "45FT0640",
+    "description": "FISCAL / PLACA DE ORIFÍCIO / GÁS em COMBUSTÍVEL DE BAIXA PRESSÃO.",
+    "metadata": {
+      "Instalação": "FPSO BACALHAU",
+      "Operadora": "Equinor Brasil",
+      "Código da Instalação": 38480,
+      "TAG do Ponto de Medição": "45FT0640",
+      "Tipo de Medição Principal": "FISCAL",
+      "Tipo de Medição Secundária": "NÃO SE APLICA",
+      "Tipo de Medidor": "PLACA DE ORIFÍCIO",
+      "Fluido": "GÁS",
+      "Localização na Planta": "COMBUSTÍVEL DE BAIXA PRESSÃO",
+      "Fora de Operação": "Não",
+      "Medidor Padrão": "NÃO",
+      "IND_ATIVO": "ATIVO"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::ANP Ponto medição",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN101A",
+    "name": "21JN101A",
+    "description": "FC01 com IP 10.0.1.1 e aplicação 01_LIQ_2R_TURBINE_REV11.fxa.",
+    "metadata": {
+      "cv_id": "FC01",
+      "cv_tag_device": "21JN101A",
+      "serial_number": "20-50-01-002",
+      "cv_version": "3.2.8.17090",
+      "application_name": "01_LIQ_2R_TURBINE_REV11.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.1",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Turbina"
+      ],
+      "system_groups": [
+        "Fiscal Metering - 3S"
+      ],
+      "measurement_points": [
+        "SALES OIL -TRAIN A",
+        "SALES OIL -TRAIN B"
+      ],
+      "connected_tags": [
+        "20FT2303",
+        "20FT2353"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN101B",
+    "name": "21JN101B",
+    "description": "FC02 com IP 10.0.1.2 e aplicação 01_LIQ_2R_TURBINE_REV11.fxa.",
+    "metadata": {
+      "cv_id": "FC02",
+      "cv_tag_device": "21JN101B",
+      "serial_number": "20-50-1-003",
+      "cv_version": "3.2.8.17090",
+      "application_name": "01_LIQ_2R_TURBINE_REV11.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.2",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Turbina"
+      ],
+      "system_groups": [
+        "Fiscal Metering - 3S"
+      ],
+      "measurement_points": [
+        "SALES OIL -TRAIN A",
+        "SALES OIL -TRAIN B"
+      ],
+      "connected_tags": [
+        "20FT2303 (Redundância)",
+        "20FT2353 (Redundância)"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN102A",
+    "name": "21JN102A",
+    "description": "FC03 com IP 10.0.1.3 e aplicação 01_LIQ_2R_TURBINE_REV11.fxa.",
+    "metadata": {
+      "cv_id": "FC03",
+      "cv_tag_device": "21JN102A",
+      "serial_number": "20-50-01-004",
+      "cv_version": "3.2.8.17090",
+      "application_name": "01_LIQ_2R_TURBINE_REV11.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.3",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Turbina"
+      ],
+      "system_groups": [
+        "Fiscal Metering - 3S"
+      ],
+      "measurement_points": [
+        "SALES OIL -TRAIN C",
+        "Calibration Stream"
+      ],
+      "connected_tags": [
+        "20FT2403",
+        "20FT2382"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN102B",
+    "name": "21JN102B",
+    "description": "FC04 com IP 10.0.1.4 e aplicação 01_LIQ_2R_TURBINE_REV11.fxa.",
+    "metadata": {
+      "cv_id": "FC04",
+      "cv_tag_device": "21JN102B",
+      "serial_number": "20-50-1-028",
+      "cv_version": "3.2.8.17090",
+      "application_name": "01_LIQ_2R_TURBINE_REV11.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.4",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Turbina"
+      ],
+      "system_groups": [
+        "Fiscal Metering - 3S"
+      ],
+      "measurement_points": [
+        "SALES OIL -TRAIN C",
+        "Calibration Stream"
+      ],
+      "connected_tags": [
+        "20FT2403 (Redundância)",
+        "20FT2382 (Redundância)"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN103",
+    "name": "21JN103",
+    "description": "FC05 com IP 10.0.1.5 e aplicação 02_LIQ_PROVER_TO1_REV02.fxa.",
+    "metadata": {
+      "cv_id": "FC05",
+      "cv_tag_device": "21JN103",
+      "serial_number": "20-50-01-011",
+      "cv_version": "3.2.8.17090",
+      "application_name": "02_LIQ_PROVER_TO1_REV02.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.5",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Provador Compacto"
+      ],
+      "system_groups": [
+        "Fiscal Metering - 3S"
+      ],
+      "measurement_points": [
+        "CV Proving"
+      ],
+      "connected_tags": [
+        "20JX103"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN104A",
+    "name": "21JN104A",
+    "description": "FC06 com IP 10.0.1.6 e aplicação 03_LIQ_2R_US_TO1_REV10.fxa.",
+    "metadata": {
+      "cv_id": "FC06",
+      "cv_tag_device": "21JN104A",
+      "serial_number": "20-50-01-013",
+      "cv_version": "3.2.8.17090",
+      "application_name": "03_LIQ_2R_US_TO1_REV10.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.6",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Ultrassonico"
+      ],
+      "system_groups": [
+        "OFFLOADING 7P"
+      ],
+      "measurement_points": [
+        "OFFLOADING - TRAIN A",
+        "OFFLOADING - TRAIN B"
+      ],
+      "connected_tags": [
+        "21FT1002",
+        "21FT1052"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN104B",
+    "name": "21JN104B",
+    "description": "FC07 com IP 10.0.1.7 e aplicação 03_LIQ_2R_US_TO1_REV10.fxa.",
+    "metadata": {
+      "cv_id": "FC07",
+      "cv_tag_device": "21JN104B",
+      "serial_number": "20-50-1-019",
+      "cv_version": "3.2.8.17090",
+      "application_name": "03_LIQ_2R_US_TO1_REV10.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.7",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Ultrassonico"
+      ],
+      "system_groups": [
+        "OFFLOADING 7P"
+      ],
+      "measurement_points": [
+        "OFFLOADING - TRAIN A",
+        "OFFLOADING - TRAIN B"
+      ],
+      "connected_tags": [
+        "21FT1002 (Redundância)",
+        "21FT1052 (Redundância)"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN105A",
+    "name": "21JN105A",
+    "description": "FC08 com IP 10.0.1.8 e aplicação 04_LIQ_2R_US_TO2_REV10.fxa.",
+    "metadata": {
+      "cv_id": "FC08",
+      "cv_tag_device": "21JN105A",
+      "serial_number": "20-50-01-020",
+      "cv_version": "3.2.8.17090",
+      "application_name": "04_LIQ_2R_US_TO2_REV10.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.8",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Ultrassonico"
+      ],
+      "system_groups": [
+        "OFFLOADING 7P"
+      ],
+      "measurement_points": [
+        "OFFLOADING - TRAIN C"
+      ],
+      "connected_tags": [
+        "21FT1102"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN105B",
+    "name": "21JN105B",
+    "description": "FC09 com IP 10.0.1.9 e aplicação 04_LIQ_2R_US_TO2_REV10.fxa.",
+    "metadata": {
+      "cv_id": "FC09",
+      "cv_tag_device": "21JN105B",
+      "serial_number": "20-50-01-021",
+      "cv_version": "3.2.8.17090",
+      "application_name": "04_LIQ_2R_US_TO2_REV10.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.9",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Ultrassonico"
+      ],
+      "system_groups": [
+        "OFFLOADING 7P"
+      ],
+      "measurement_points": [
+        "OFFLOADING - TRAIN C"
+      ],
+      "connected_tags": [
+        "21FT1102 (Redundância)"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN106A",
+    "name": "21JN106A",
+    "description": "FC10 com IP 10.0.1.10 e aplicação 05_LIQ_2R_MM_REV11.fxa.",
+    "metadata": {
+      "cv_id": "FC10",
+      "cv_tag_device": "21JN106A",
+      "serial_number": "20-50-01-024",
+      "cv_version": "3.2.8.17090",
+      "application_name": "05_LIQ_2R_MM_REV11.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.10",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Turbina",
+        "Coriolis"
+      ],
+      "system_groups": [
+        "OFFLOADING 7P"
+      ],
+      "measurement_points": [
+        "OFFLOADING - MASTER",
+        "OFFLOADING CALIBRATION"
+      ],
+      "connected_tags": [
+        "21FT1152",
+        "21FT1161"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN106B",
+    "name": "21JN106B",
+    "description": "FC11 com IP 10.0.1.11 e aplicação 06_LIQ_PROVER_TO2_REV03.fxa.",
+    "metadata": {
+      "cv_id": "FC11",
+      "cv_tag_device": "21JN106B",
+      "serial_number": "20-50-01-027",
+      "cv_version": "3.2.8.17090",
+      "application_name": "06_LIQ_PROVER_TO2_REV03.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.11",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Provador Compacto"
+      ],
+      "system_groups": [
+        "OFFLOADING 7P"
+      ],
+      "measurement_points": [
+        "CV Proving"
+      ],
+      "connected_tags": [
+        "21JX103"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN107",
+    "name": "21JN107",
+    "description": "FC12 com IP 10.0.1.12 e aplicação 07_LIQ_2R_TURBINE_MM_REV06.fxa.",
+    "metadata": {
+      "cv_id": "FC12",
+      "cv_tag_device": "21JN107",
+      "serial_number": "20-50-01-007",
+      "cv_version": "3.2.8.17090",
+      "application_name": "07_LIQ_2R_TURBINE_MM_REV06.fxa",
+      "application_date": 45884,
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.12",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Turbina"
+      ],
+      "system_groups": [
+        "7P"
+      ],
+      "measurement_points": [
+        "FLOW LINE - Train A",
+        "FLOW LINE - Master"
+      ],
+      "connected_tags": [
+        "13FT1703",
+        "13FT1706"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN108",
+    "name": "21JN108",
+    "description": "FC13 com IP 10.0.1.13 e aplicação 08_LIQ_4R_CORIOLIS_REV12.fxa.",
+    "metadata": {
+      "cv_id": "FC13",
+      "cv_tag_device": "21JN108",
+      "serial_number": "20-50-01-035",
+      "cv_version": "3.2.8.17090",
+      "application_name": "08_LIQ_4R_CORIOLIS_REV12.fxa",
+      "application_date": "2025-08-30",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.13",
+      "fluids": [
+        "Óleo"
+      ],
+      "technologies": [
+        "Coriolis"
+      ],
+      "system_groups": [
+        "2SW",
+        "2S"
+      ],
+      "measurement_points": [
+        "Test Separator - Oil",
+        "Free Water Knockout Drum - Oil"
+      ],
+      "connected_tags": [
+        "20FT0247",
+        "20FT0345A",
+        "20FT0345B"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN109",
+    "name": "21JN109",
+    "description": "FC14 com IP 10.0.1.14 e aplicação 09_LIQ_4R_R05.fxa.",
+    "metadata": {
+      "cv_id": "FC14",
+      "cv_tag_device": "21JN109",
+      "serial_number": "20-50-01-039",
+      "cv_version": "3.2.8.17090",
+      "application_name": "09_LIQ_4R_R05.fxa",
+      "application_date": "2025-08-30",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.14",
+      "fluids": [
+        "Água"
+      ],
+      "technologies": [
+        "Magnético"
+      ],
+      "system_groups": [
+        "2S",
+        "4S"
+      ],
+      "measurement_points": [
+        "Produced Water -Test Separator",
+        "Produced Water - Free Water KO Drum",
+        "Produced Water - Water to Overboard"
+      ],
+      "connected_tags": [
+        "20FT0251",
+        "20FT0346A",
+        "20FT0346B",
+        "44FT0203"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN110",
+    "name": "21JN110",
+    "description": "FC15 com IP 10.0.1.15 e aplicação 09_LIQ_4R_R05.fxa.",
+    "metadata": {
+      "cv_id": "FC15",
+      "cv_tag_device": "21JN110",
+      "serial_number": "20-50-01-041",
+      "cv_version": "3.2.8.17090",
+      "application_name": "09_LIQ_4R_R05.fxa",
+      "application_date": "2025-07-22",
+      "application_version": "3.1.0.0",
+      "ip_address": "10.0.1.15",
+      "fluids": [
+        "Água"
+      ],
+      "technologies": [
+        "Magnético",
+        "Cone"
+      ],
+      "system_groups": [
+        "3S",
+        "1SW"
+      ],
+      "measurement_points": [
+        "ET 1ST Stage Water Pump",
+        "ET 2ND Stage Water Pump",
+        "Sea Water - Injection"
+      ],
+      "connected_tags": [
+        "20FT0613",
+        "20FT0763",
+        "29FT0102"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN111",
+    "name": "21JN111",
+    "description": "FC16 com IP 10.0.1.16 e aplicação 10_GAS_3R_FLUENTA_REV07.fxa.",
+    "metadata": {
+      "cv_id": "FC16",
+      "cv_tag_device": "21JN111",
+      "serial_number": "20-50-01-042",
+      "cv_version": "3.2.8.17090",
+      "application_name": "10_GAS_3R_FLUENTA_REV07.fxa",
+      "application_date": "2025-08-14",
+      "application_version": "2.3.1.0",
+      "ip_address": "10.0.1.16",
+      "fluids": [
+        "Gás Linear"
+      ],
+      "technologies": [
+        "Ultrassonico de Queima"
+      ],
+      "system_groups": [
+        "1S",
+        "1SW"
+      ],
+      "measurement_points": [
+        "HP Flare Gas",
+        "LP Flare Gas"
+      ],
+      "connected_tags": [
+        "43FT0102",
+        "43FT0227"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN112",
+    "name": "21JN112",
+    "description": "FC17 com IP 10.0.1.17 e aplicação 11_GAS_3R_TO1_REV08.fxa.",
+    "metadata": {
+      "cv_id": "FC17",
+      "cv_tag_device": "21JN112",
+      "serial_number": "20-50-01-048",
+      "cv_version": "3.2.8.17090",
+      "application_name": "11_GAS_3R_TO1_REV08.fxa",
+      "application_date": "2025-08-15",
+      "application_version": "2.3.1.0",
+      "ip_address": "10.0.1.17",
+      "fluids": [
+        "Gás Diferencial"
+      ],
+      "technologies": [
+        "Placa de Orifício"
+      ],
+      "system_groups": [
+        "4S",
+        "2SW"
+      ],
+      "measurement_points": [
+        "GTG Fuel Gas",
+        "Test Separator - Outlet Gas",
+        "Gas Lift Header"
+      ],
+      "connected_tags": [
+        "45FT0555",
+        "20FT0244",
+        "26FT1306"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN113",
+    "name": "21JN113",
+    "description": "FC18 com IP 10.0.1.18 e aplicação 12_GAS_3R_TO2_REV09.fxa.",
+    "metadata": {
+      "cv_id": "FC18",
+      "cv_tag_device": "21JN113",
+      "serial_number": "20-50-01-050",
+      "cv_version": "3.2.8.17090",
+      "application_name": "12_GAS_3R_TO2_REV09.fxa",
+      "application_date": "2025-08-15",
+      "application_version": "2.3.1.0",
+      "ip_address": "10.0.1.18",
+      "fluids": [
+        "Gás Diferencial"
+      ],
+      "technologies": [
+        "Placa de Orifício"
+      ],
+      "system_groups": [
+        "1SW",
+        "4S",
+        "2S"
+      ],
+      "measurement_points": [
+        "Flare Pilot Gas",
+        "Total Low Pressure - Fuel Gas",
+        "HP Separator A - Gas Outlet"
+      ],
+      "connected_tags": [
+        "45FT0360",
+        "45FT0627",
+        "20FT0116"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN114",
+    "name": "21JN114",
+    "description": "FC19 com IP 10.0.1.19 e aplicação 13_GAS_3R_TO2_REV09-FC-19.fxa.",
+    "metadata": {
+      "cv_id": "FC19",
+      "cv_tag_device": "21JN114",
+      "serial_number": "20-50-02-001",
+      "cv_version": "3.2.8.17090",
+      "application_name": "13_GAS_3R_TO2_REV09-FC-19.fxa",
+      "application_date": "2025-08-15",
+      "application_version": "2.3.1.0",
+      "ip_address": "10.0.1.19",
+      "fluids": [
+        "Gás Diferencial"
+      ],
+      "technologies": [
+        "Cone"
+      ],
+      "system_groups": [
+        "2S",
+        "3S"
+      ],
+      "measurement_points": [
+        "Free Water KO Drum - Gas Outlet",
+        "ET 1ST Stage Flash Vessel - Gas Outlet",
+        "ET 2ND Stage Flash Vessel - Gas Outlet"
+      ],
+      "connected_tags": [
+        "20FT0347",
+        "20FT0517",
+        "20FT0660"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN115",
+    "name": "21JN115",
+    "description": "FC20 com IP 10.0.1.20 e aplicação 14_GAS_3R_TO4_REV09.fxa.",
+    "metadata": {
+      "cv_id": "FC20",
+      "cv_tag_device": "21JN115",
+      "serial_number": "20-50-02-002",
+      "cv_version": "3.2.8.17090",
+      "application_name": "14_GAS_3R_TO4_REV09.fxa",
+      "application_date": "2025-08-15",
+      "application_version": "2.3.1.0",
+      "ip_address": "10.0.1.20",
+      "fluids": [
+        "Gás Diferencial"
+      ],
+      "technologies": [
+        "Cone",
+        "Placa de Orifício"
+      ],
+      "system_groups": [
+        "2WS",
+        "3WS",
+        "7P"
+      ],
+      "measurement_points": [
+        "Gas Injection - Riser 1",
+        "Gas Injection - Riser 2",
+        "LP Fuel Gas Supply to IGG"
+      ],
+      "connected_tags": [
+        "26FT1501",
+        "26FT1502",
+        "45FT0640"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "flow_computer",
+    "record_key": "21JN116",
+    "name": "21JN116",
+    "description": "FC21 com IP 10.0.1.21 e aplicação 10_GAS_3R_FLUENTA_REV07.fxa.",
+    "metadata": {
+      "cv_id": "FC21",
+      "cv_tag_device": "21JN116",
+      "serial_number": "20-50-01-037",
+      "cv_version": "3.2.8.17090",
+      "application_name": "10_GAS_3R_FLUENTA_REV07.fxa",
+      "application_date": "2025-08-19",
+      "application_version": "2.3.1.0",
+      "ip_address": "10.0.1.21",
+      "fluids": [
+        "Gás Linear"
+      ],
+      "technologies": [
+        "Ultrassonico de Queima"
+      ],
+      "system_groups": [
+        "1S"
+      ],
+      "measurement_points": [
+        "HP KO Drum to ET 2 Stage Flash Vessel",
+        "LP KO Drum to VRU Inlet line"
+      ],
+      "connected_tags": [
+        "43FT0134",
+        "43FT0256"
+      ]
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::CVs Monofásico",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank10 Stream01",
+    "name": "Bank10 Stream01",
+    "description": "Tramo Bank10 Stream01 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank10 Stream01",
+      "Sistema": "PE-2",
+      "Fluido": "Multifásico",
+      "Loop": "South",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT0506",
+      "NOME ANP": "7-BAC-1-SPS",
+      "POÇO EQUINOR": "PE_2",
+      "CHEGA NO RISER": "Riser P2",
+      "TAG MEDIDOR ASSOCIADO": "18FT0506",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "South"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank10 Stream02",
+    "name": "Bank10 Stream02",
+    "description": "Tramo Bank10 Stream02 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank10 Stream02",
+      "Sistema": "PE_8",
+      "Fluido": "Multifásico",
+      "Loop": "South",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT0306",
+      "NOME ANP": "7-BAC-6-SPS",
+      "POÇO EQUINOR": "PE-8",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT0306",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "South"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank10 Stream03",
+    "name": "Bank10 Stream03",
+    "description": "Tramo Bank10 Stream03 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank10 Stream03",
+      "Sistema": "PE_9",
+      "Fluido": "Multifásico",
+      "Loop": "South",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT0106",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": "PE_9",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT0106",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "South"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank15 Stream01",
+    "name": "Bank15 Stream01",
+    "description": "Tramo Bank15 Stream01 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank15 Stream01",
+      "Sistema": "PL_2",
+      "Fluido": "Multifásico",
+      "Loop": "West",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT1206",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": "PI_2",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT1206",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "West"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank15 Stream02",
+    "name": "Bank15 Stream02",
+    "description": "Tramo Bank15 Stream02 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank15 Stream02",
+      "Sistema": "PW_104DA",
+      "Fluido": "Multifásico",
+      "Loop": "West",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT1106",
+      "NOME ANP": "7-BAC-4D-SPS",
+      "POÇO EQUINOR": "PW_104DA",
+      "CHEGA NO RISER": "Riser P4",
+      "TAG MEDIDOR ASSOCIADO": "18FT1106",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "West"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank15 Stream03",
+    "name": "Bank15 Stream03",
+    "description": "Tramo Bank15 Stream03 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank15 Stream03",
+      "Sistema": "PL_1",
+      "Fluido": "Multifásico",
+      "Loop": "West",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT0906",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": "PI_1",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT0906",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "West"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank15 Stream04",
+    "name": "Bank15 Stream04",
+    "description": "Tramo Bank15 Stream04 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank15 Stream04",
+      "Sistema": "PE_1",
+      "Fluido": "Multifásico",
+      "Loop": "West",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT0706",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": "PE_1",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT0706",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "West"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank05 Stream01",
+    "name": "Bank05 Stream01",
+    "description": "Tramo Bank05 Stream01 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank05 Stream01",
+      "Sistema": "PE_E04",
+      "Fluido": "Multifásico",
+      "Loop": "North",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT1806",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": "PE_EO4",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT1806",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "North"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank05 Stream02",
+    "name": "Bank05 Stream02",
+    "description": "Tramo Bank05 Stream02 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank05 Stream02",
+      "Sistema": "PE_E105",
+      "Fluido": "Multifásico",
+      "Loop": "North",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT1706",
+      "NOME ANP": "7-BAC-3-SPS",
+      "POÇO EQUINOR": "PE_EO105",
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "18FT1706",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "North"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank05 Stream03",
+    "name": "Bank05 Stream03",
+    "description": "Tramo Bank05 Stream03 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank05 Stream03",
+      "Sistema": "PE_4",
+      "Fluido": "Multifásico",
+      "Loop": "North",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT1506",
+      "NOME ANP": "7-BAC-5A-SPS",
+      "POÇO EQUINOR": "PE-4A",
+      "CHEGA NO RISER": "Riser P5",
+      "TAG MEDIDOR ASSOCIADO": "18FT1506",
+      "TECNOLOGIA": "Multifásico Subsea",
+      "LOOP": "North"
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank05 Stream04",
+    "name": "Bank05 Stream04",
+    "description": "Tramo Bank05 Stream04 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank05 Stream04",
+      "Sistema": "PE_EO10",
+      "Fluido": "Multifásico",
+      "Loop": "North",
+      "Tecnologia": "Multifásico Subsea",
+      "Tag Associado": "18FT1406",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank08 Stream01",
+    "name": "Bank08 Stream01",
+    "description": "Tramo Bank08 Stream01 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank08 Stream01",
+      "Sistema": "Riser P1",
+      "Fluido": "Multifásico",
+      "Loop": "South",
+      "Tecnologia": "Multifásico Topside",
+      "Tag Associado": "13FT0167",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank08 Stream02",
+    "name": "Bank08 Stream02",
+    "description": "Tramo Bank08 Stream02 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank08 Stream02",
+      "Sistema": "Riser P2",
+      "Fluido": "Multifásico",
+      "Loop": "South",
+      "Tecnologia": "Multifásico Topside",
+      "Tag Associado": "13FT0217",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank13 Stream01",
+    "name": "Bank13 Stream01",
+    "description": "Tramo Bank13 Stream01 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank13 Stream01",
+      "Sistema": "Riser P3",
+      "Fluido": "Multifásico",
+      "Loop": "West",
+      "Tecnologia": "Multifásico Topside",
+      "Tag Associado": "13FT0267",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank13 Stream02",
+    "name": "Bank13 Stream02",
+    "description": "Tramo Bank13 Stream02 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank13 Stream02",
+      "Sistema": "Riser P4",
+      "Fluido": "Multifásico",
+      "Loop": "West",
+      "Tecnologia": "Multifásico Topside",
+      "Tag Associado": "13FT0317",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank03 Stream01",
+    "name": "Bank03 Stream01",
+    "description": "Tramo Bank03 Stream01 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank03 Stream01",
+      "Sistema": "Riser P5",
+      "Fluido": "Multifásico",
+      "Loop": "North",
+      "Tecnologia": "Multifásico Topside",
+      "Tag Associado": "13FT0367",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank03 Stream02",
+    "name": "Bank03 Stream02",
+    "description": "Tramo Bank03 Stream02 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank03 Stream02",
+      "Sistema": "Riser P6",
+      "Fluido": "Multifásico",
+      "Loop": "North",
+      "Tecnologia": "Multifásico Topside",
+      "Tag Associado": "13FT0417",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank09 Stream02",
+    "name": "Bank09 Stream02",
+    "description": "Tramo Bank09 Stream02 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank09 Stream02",
+      "Sistema": "P1 Gas Lift",
+      "Fluido": "Gas",
+      "Loop": "South",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT8412",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank09 Stream01",
+    "name": "Bank09 Stream01",
+    "description": "Tramo Bank09 Stream01 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank09 Stream01",
+      "Sistema": "P2 Gas Lift",
+      "Fluido": "Gas",
+      "Loop": "South",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT8411",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank14 Stream02",
+    "name": "Bank14 Stream02",
+    "description": "Tramo Bank14 Stream02 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank14 Stream02",
+      "Sistema": "P3 Gas Lift",
+      "Fluido": "Gas",
+      "Loop": "West",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT8410",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank14 Stream01",
+    "name": "Bank14 Stream01",
+    "description": "Tramo Bank14 Stream01 do 13JC100 no loop West.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank14 Stream01",
+      "Sistema": "P4 Gas Lift",
+      "Fluido": "Gas",
+      "Loop": "West",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT8409",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank04 Stream02",
+    "name": "Bank04 Stream02",
+    "description": "Tramo Bank04 Stream02 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank04 Stream02",
+      "Sistema": "P5 Gas Lift",
+      "Fluido": "Gas",
+      "Loop": "North",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT8408",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank04 Stream01",
+    "name": "Bank04 Stream01",
+    "description": "Tramo Bank04 Stream01 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank04 Stream01",
+      "Sistema": "P6 Gas Lift",
+      "Fluido": "Gas",
+      "Loop": "North",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT8407",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank02 Stream01",
+    "name": "Bank02 Stream01",
+    "description": "Tramo Bank02 Stream01 do 13JC100 no loop -.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank02 Stream01",
+      "Sistema": "GL Riser",
+      "Fluido": "Gas",
+      "Loop": "-",
+      "Tecnologia": "Orifice Plate TopSide",
+      "Tag Associado": "26FT1306",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank18 Stream02",
+    "name": "Bank18 Stream02",
+    "description": "Tramo Bank18 Stream02 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank18 Stream02",
+      "Sistema": "G1 Gas Inj. Riser",
+      "Fluido": "Gas",
+      "Loop": "South",
+      "Tecnologia": "Cone Top side",
+      "Tag Associado": "26FT1501",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank18 Stream01",
+    "name": "Bank18 Stream01",
+    "description": "Tramo Bank18 Stream01 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank18 Stream01",
+      "Sistema": "G2 Gas Inj. Riser",
+      "Fluido": "Gas",
+      "Loop": "North",
+      "Tecnologia": "Cone Top side",
+      "Tag Associado": "26FT1502",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank19 Stream03",
+    "name": "Bank19 Stream03",
+    "description": "Tramo Bank19 Stream03 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank19 Stream03",
+      "Sistema": "GI_S",
+      "Fluido": "Gas",
+      "Loop": "South",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT1906",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank19 Stream04",
+    "name": "Bank19 Stream04",
+    "description": "Tramo Bank19 Stream04 do 13JC100 no loop South.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank19 Stream04",
+      "Sistema": "GI_1",
+      "Fluido": "Gas",
+      "Loop": "South",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT2006",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank19 Stream01",
+    "name": "Bank19 Stream01",
+    "description": "Tramo Bank19 Stream01 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank19 Stream01",
+      "Sistema": "GI_4",
+      "Fluido": "Gas",
+      "Loop": "North",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT2106",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank19 Stream02",
+    "name": "Bank19 Stream02",
+    "description": "Tramo Bank19 Stream02 do 13JC100 no loop North.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank19 Stream02",
+      "Sistema": "GIPE_105",
+      "Fluido": "Gas",
+      "Loop": "North",
+      "Tecnologia": "Venturi Subsea",
+      "Tag Associado": "18FT2206",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank20 Stream01",
+    "name": "Bank20 Stream01",
+    "description": "Tramo Bank20 Stream01 do 13JC100 no loop -.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank20 Stream01",
+      "Sistema": "WI Water Inj. Top side",
+      "Fluido": "Water",
+      "Loop": "-",
+      "Tecnologia": "Cone Topside",
+      "Tag Associado": "29FT0102",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank21 Stream01",
+    "name": "Bank21 Stream01",
+    "description": "Tramo Bank21 Stream01 do 13JC100 no loop -.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank21 Stream01",
+      "Sistema": "WIPE_11",
+      "Fluido": "Water",
+      "Loop": "-",
+      "Tecnologia": "Venturi subsea",
+      "Tag Associado": "18FT2306",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank21 Stream02",
+    "name": "Bank21 Stream02",
+    "description": "Tramo Bank21 Stream02 do 13JC100 no loop -.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank21 Stream02",
+      "Sistema": "WI_6",
+      "Fluido": "Water",
+      "Loop": "-",
+      "Tecnologia": "Venturi subsea",
+      "Tag Associado": "18FT2406",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank21 Stream03",
+    "name": "Bank21 Stream03",
+    "description": "Tramo Bank21 Stream03 do 13JC100 no loop -.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank21 Stream03",
+      "Sistema": "WI_5",
+      "Fluido": "Water",
+      "Loop": "-",
+      "Tecnologia": "Venturi subsea",
+      "Tag Associado": "18FT2506",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "13JC100:Bank21 Stream04",
+    "name": "Bank21 Stream04",
+    "description": "Tramo Bank21 Stream04 do 13JC100 no loop -.",
+    "metadata": {
+      "CV": "FPM207",
+      "CV_Tag": "13JC100",
+      "Nome do Tramo no CV": "Bank21 Stream04",
+      "Sistema": "WIE_3",
+      "Fluido": "Water",
+      "Loop": "-",
+      "Tecnologia": "Venturi subsea",
+      "Tag Associado": "18FT2606",
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Well / Element",
+    "name": "Well / Element",
+    "description": "Tramo Well / Element do None no loop Well Loc Number (Subsea).",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Well / Element",
+      "Sistema": "Stream name in FCS320",
+      "Fluido": "Flow Computer #",
+      "Loop": "Well Loc Number (Subsea)",
+      "Tecnologia": "MPFM / SPFM",
+      "Tag Associado": "mPm meter Identifier",
+      "NOME ANP": "Loop",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "ANP Name",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Production subsea meters (by well)",
+    "name": "Production subsea meters (by well)",
+    "description": "Tramo Production subsea meters (by well) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Production subsea meters (by well)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE_2",
+    "name": "PE_2",
+    "description": "Tramo PE_2 do None no loop 5.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE_2",
+      "Sistema": "Bank10.Stream01",
+      "Fluido": "MPM 17",
+      "Loop": 5,
+      "Tecnologia": "18FT0506",
+      "Tag Associado": "14-100261",
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "7-BAC-1-SPS",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE-8",
+    "name": "PE-8",
+    "description": "Tramo PE-8 do None no loop 3.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE-8",
+      "Sistema": "Bank10.Stream02",
+      "Fluido": "MPM 18",
+      "Loop": 3,
+      "Tecnologia": "18FT0306",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "7-BAC-6-SPS",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE_9",
+    "name": "PE_9",
+    "description": "Tramo PE_9 do None no loop 1.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE_9",
+      "Sistema": "Bank10.Stream03",
+      "Fluido": "MPM 19",
+      "Loop": 1,
+      "Tecnologia": "18FT0106",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "-",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PI_2",
+    "name": "PI_2",
+    "description": "Tramo PI_2 do None no loop 12.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PI_2",
+      "Sistema": "Bank15.Stream01",
+      "Fluido": "MPM 24",
+      "Loop": 12,
+      "Tecnologia": "18FT1206",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "-",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PW_104DA",
+    "name": "PW_104DA",
+    "description": "Tramo PW_104DA do None no loop 11.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PW_104DA",
+      "Sistema": "Bank15.Stream02",
+      "Fluido": "MPM 25",
+      "Loop": 11,
+      "Tecnologia": "18FT1106",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "7-BAC-4D-SPS",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PI_1",
+    "name": "PI_1",
+    "description": "Tramo PI_1 do None no loop 9.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PI_1",
+      "Sistema": "Bank15.Stream03",
+      "Fluido": "MPM 26",
+      "Loop": 9,
+      "Tecnologia": "18FT0906",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "-",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE_1",
+    "name": "PE_1",
+    "description": "Tramo PE_1 do None no loop 7.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE_1",
+      "Sistema": "Bank15.Stream04",
+      "Fluido": "MPM 27",
+      "Loop": 7,
+      "Tecnologia": "18FT0706",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "-",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE_EO4",
+    "name": "PE_EO4",
+    "description": "Tramo PE_EO4 do None no loop 18.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE_EO4",
+      "Sistema": "Bank05.Stream01",
+      "Fluido": "MPM 09",
+      "Loop": 18,
+      "Tecnologia": "18FT1806",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "-",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE_EO105",
+    "name": "PE_EO105",
+    "description": "Tramo PE_EO105 do None no loop 17.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE_EO105",
+      "Sistema": "Bank05.Stream02",
+      "Fluido": "MPM 10",
+      "Loop": 17,
+      "Tecnologia": "18FT1706",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "7-BAC-3-SPS",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE-4A",
+    "name": "PE-4A",
+    "description": "Tramo PE-4A do None no loop 15.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE-4A",
+      "Sistema": "Bank05.Stream03",
+      "Fluido": "MPM 11",
+      "Loop": 15,
+      "Tecnologia": "18FT1506",
+      "Tag Associado": "14-100625",
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "7-BAC-5A-SPS",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:PE_EO10",
+    "name": "PE_EO10",
+    "description": "Tramo PE_EO10 do None no loop 14.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "PE_EO10",
+      "Sistema": "Bank05.Stream04",
+      "Fluido": "MPM 12",
+      "Loop": 14,
+      "Tecnologia": "18FT1406",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": "-",
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Production topside meters (by riser)",
+    "name": "Production topside meters (by riser)",
+    "description": "Tramo Production topside meters (by riser) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Production topside meters (by riser)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Riser P1",
+    "name": "Riser P1",
+    "description": "Tramo Riser P1 do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Riser P1",
+      "Sistema": "Bank08.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "13FT0167",
+      "Tag Associado": "13-100057",
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Riser P2",
+    "name": "Riser P2",
+    "description": "Tramo Riser P2 do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Riser P2",
+      "Sistema": "Bank08.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "13FT0217",
+      "Tag Associado": "13-100058",
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Riser P3",
+    "name": "Riser P3",
+    "description": "Tramo Riser P3 do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Riser P3",
+      "Sistema": "Bank13.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "13FT0267",
+      "Tag Associado": "13-100059",
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Riser P4",
+    "name": "Riser P4",
+    "description": "Tramo Riser P4 do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Riser P4",
+      "Sistema": "Bank13.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "13FT0317",
+      "Tag Associado": "13-100060",
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Riser P5",
+    "name": "Riser P5",
+    "description": "Tramo Riser P5 do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Riser P5",
+      "Sistema": "Bank03.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "13FT0367",
+      "Tag Associado": "13-100061",
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Riser P6",
+    "name": "Riser P6",
+    "description": "Tramo Riser P6 do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Riser P6",
+      "Sistema": "Bank03.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "13FT0417",
+      "Tag Associado": "13-100062",
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Flowline totalizers (calculated by FCS320)",
+    "name": "Flowline totalizers (calculated by FCS320)",
+    "description": "Tramo Flowline totalizers (calculated by FCS320) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Flowline totalizers (calculated by FCS320)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P1 Totalizer",
+    "name": "P1 Totalizer",
+    "description": "Tramo P1 Totalizer do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P1 Totalizer",
+      "Sistema": "Bank11.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "-",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P2 Totalizer",
+    "name": "P2 Totalizer",
+    "description": "Tramo P2 Totalizer do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P2 Totalizer",
+      "Sistema": "Bank11.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "-",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P3 Totalizer",
+    "name": "P3 Totalizer",
+    "description": "Tramo P3 Totalizer do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P3 Totalizer",
+      "Sistema": "Bank16.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "-",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P4 Totalizer",
+    "name": "P4 Totalizer",
+    "description": "Tramo P4 Totalizer do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P4 Totalizer",
+      "Sistema": "Bank16.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "-",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P5 Totalizer",
+    "name": "P5 Totalizer",
+    "description": "Tramo P5 Totalizer do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P5 Totalizer",
+      "Sistema": "Bank06.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "-",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P6 Totalizer",
+    "name": "P6 Totalizer",
+    "description": "Tramo P6 Totalizer do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P6 Totalizer",
+      "Sistema": "Bank06.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "-",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Gas lift subsea injection meters (by riser)",
+    "name": "Gas lift subsea injection meters (by riser)",
+    "description": "Tramo Gas lift subsea injection meters (by riser) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Gas lift subsea injection meters (by riser)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P1 Gas Lift",
+    "name": "P1 Gas Lift",
+    "description": "Tramo P1 Gas Lift do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P1 Gas Lift",
+      "Sistema": "Bank09.Stream02",
+      "Fluido": "GLSF 16",
+      "Loop": "-",
+      "Tecnologia": "18FT8412",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P2 Gas Lift",
+    "name": "P2 Gas Lift",
+    "description": "Tramo P2 Gas Lift do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P2 Gas Lift",
+      "Sistema": "Bank09.Stream01",
+      "Fluido": "GLSF 15",
+      "Loop": "-",
+      "Tecnologia": "18FT8411",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P3 Gas Lift",
+    "name": "P3 Gas Lift",
+    "description": "Tramo P3 Gas Lift do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P3 Gas Lift",
+      "Sistema": "Bank14.Stream02",
+      "Fluido": "GLSF 23",
+      "Loop": "-",
+      "Tecnologia": "18FT8410",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P4 Gas Lift",
+    "name": "P4 Gas Lift",
+    "description": "Tramo P4 Gas Lift do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P4 Gas Lift",
+      "Sistema": "Bank14.Stream01",
+      "Fluido": "GLSF 22",
+      "Loop": "-",
+      "Tecnologia": "18FT8409",
+      "Tag Associado": null,
+      "NOME ANP": "West",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P5 Gas Lift",
+    "name": "P5 Gas Lift",
+    "description": "Tramo P5 Gas Lift do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P5 Gas Lift",
+      "Sistema": "Bank04.Stream02",
+      "Fluido": "GLSF 08",
+      "Loop": "-",
+      "Tecnologia": "18FT8408",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:P6 Gas Lift",
+    "name": "P6 Gas Lift",
+    "description": "Tramo P6 Gas Lift do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "P6 Gas Lift",
+      "Sistema": "Bank04.Stream01",
+      "Fluido": "GLSF 07",
+      "Loop": "-",
+      "Tecnologia": "18FT8407",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Gas lift topside meter",
+    "name": "Gas lift topside meter",
+    "description": "Tramo Gas lift topside meter do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Gas lift topside meter",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:GL Riser",
+    "name": "GL Riser",
+    "description": "Tramo GL Riser do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "GL Riser",
+      "Sistema": "Bank02.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "26FT1306",
+      "Tag Associado": null,
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Gas injection topside meters (by riser/flowline)",
+    "name": "Gas injection topside meters (by riser/flowline)",
+    "description": "Tramo Gas injection topside meters (by riser/flowline) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Gas injection topside meters (by riser/flowline)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:G1 Gas Inj.",
+    "name": "G1 Gas Inj.",
+    "description": "Tramo G1 Gas Inj. do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "G1 Gas Inj.",
+      "Sistema": "Bank18.Stream02",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "26FT1501",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:G2 Gas Inj.",
+    "name": "G2 Gas Inj.",
+    "description": "Tramo G2 Gas Inj. do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "G2 Gas Inj.",
+      "Sistema": "Bank18.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "26FT1502",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Gas injection subsea meters (by well)",
+    "name": "Gas injection subsea meters (by well)",
+    "description": "Tramo Gas injection subsea meters (by well) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Gas injection subsea meters (by well)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:GI_S",
+    "name": "GI_S",
+    "description": "Tramo GI_S do None no loop 19.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "GI_S",
+      "Sistema": "Bank19.Stream03",
+      "Fluido": "GIW 1",
+      "Loop": 19,
+      "Tecnologia": "18FT1906",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:GI_1",
+    "name": "GI_1",
+    "description": "Tramo GI_1 do None no loop 20.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "GI_1",
+      "Sistema": "Bank19.Stream04",
+      "Fluido": "GIW 2",
+      "Loop": 20,
+      "Tecnologia": "18FT2006",
+      "Tag Associado": null,
+      "NOME ANP": "South",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:GI_4",
+    "name": "GI_4",
+    "description": "Tramo GI_4 do None no loop 21.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "GI_4",
+      "Sistema": "Bank19.Stream01",
+      "Fluido": "GIN 1",
+      "Loop": 21,
+      "Tecnologia": "18FT2106",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:GIPE_105",
+    "name": "GIPE_105",
+    "description": "Tramo GIPE_105 do None no loop 22.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "GIPE_105",
+      "Sistema": "Bank19.Stream02",
+      "Fluido": "GIN 2",
+      "Loop": 22,
+      "Tecnologia": "18FT2206",
+      "Tag Associado": null,
+      "NOME ANP": "North",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Water injection topside meter",
+    "name": "Water injection topside meter",
+    "description": "Tramo Water injection topside meter do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Water injection topside meter",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:WI Water Inj.",
+    "name": "WI Water Inj.",
+    "description": "Tramo WI Water Inj. do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "WI Water Inj.",
+      "Sistema": "Bank20.Stream01",
+      "Fluido": "-",
+      "Loop": "-",
+      "Tecnologia": "29FT0102",
+      "Tag Associado": null,
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:Water injection subsea meters (by well)",
+    "name": "Water injection subsea meters (by well)",
+    "description": "Tramo Water injection subsea meters (by well) do None no loop -.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "Water injection subsea meters (by well)",
+      "Sistema": null,
+      "Fluido": null,
+      "Loop": null,
+      "Tecnologia": null,
+      "Tag Associado": null,
+      "NOME ANP": null,
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:WIPE_11",
+    "name": "WIPE_11",
+    "description": "Tramo WIPE_11 do None no loop 23.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "WIPE_11",
+      "Sistema": "Bank21.Stream01",
+      "Fluido": "WI 1",
+      "Loop": 23,
+      "Tecnologia": "18FT2306",
+      "Tag Associado": null,
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:WI_6",
+    "name": "WI_6",
+    "description": "Tramo WI_6 do None no loop 24.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "WI_6",
+      "Sistema": "Bank21.Stream02",
+      "Fluido": "WI 2",
+      "Loop": 24,
+      "Tecnologia": "18FT2406",
+      "Tag Associado": null,
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:WI_5",
+    "name": "WI_5",
+    "description": "Tramo WI_5 do None no loop 25.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "WI_5",
+      "Sistema": "Bank21.Stream03",
+      "Fluido": "WI 3",
+      "Loop": 25,
+      "Tecnologia": "18FT2506",
+      "Tag Associado": null,
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  },
+  {
+    "entity_type": "mpfm_stream",
+    "record_key": "None:WIE_3",
+    "name": "WIE_3",
+    "description": "Tramo WIE_3 do None no loop 26.",
+    "metadata": {
+      "CV": null,
+      "CV_Tag": null,
+      "Nome do Tramo no CV": "WIE_3",
+      "Sistema": "Bank21.Stream04",
+      "Fluido": "WI 4",
+      "Loop": 26,
+      "Tecnologia": "18FT2606",
+      "Tag Associado": null,
+      "NOME ANP": "-",
+      "POÇO EQUINOR": null,
+      "CHEGA NO RISER": null,
+      "TAG MEDIDOR ASSOCIADO": null,
+      "TECNOLOGIA": null,
+      "LOOP": null
+    },
+    "source_label": "cola_Dados_Bacalhau.xlsx::FCS320 MPFM",
+    "is_default": true
+  }
+]

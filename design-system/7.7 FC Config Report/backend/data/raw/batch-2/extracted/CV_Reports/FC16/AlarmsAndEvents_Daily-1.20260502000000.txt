@@ -1,0 +1,36 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Flare Gas
+
+System                             21JN111
+Description                        FPSO Bacalhau
+Flow computer                      21JN111
+
+Start date/time                    01/05/26 00:00:00
+End date/time                      02/05/26 00:00:00
+
+Active at end                      6
+05/01/26 21:51:55                  Run 2 Flow rate lo lo alm
+05/01/26 21:51:55                  Run 2 Flow rate lo lo alm
+04/28/26 16:11:10                  Run 1 Flow rate hi hi alm
+05/01/26 16:52:47                  Run 1 Flow rate roc alm
+05/01/26 10:12:18                  Run 1 Flow meter communication fail
+05/01/26 10:12:18                  Run 1 Flow rate lo lo alm
+
+Events                             14
+05/01/26 23:20:01                  System-time was changed from 01/05/2026 23:20:03.500 to 01/05/2026 23:20:01.000 by  (-1)
+05/01/26 21:52:06                  Run 2 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/01/26 21:52:06                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/01/26 21:51:55                  Run 2 Flow meter communication fail changed from (Unacked) Normal to Alarm
+05/01/26 21:51:55                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/01/26 10:12:29                  Run 1 Flow rate alarm from Low Low to Normal [118.96]
+05/01/26 10:12:18                  Run 1 Flow meter communication fail changed from (Unacked) Normal to (Blocked) Alarm
+05/01/26 10:12:18                  Run 1 Flow rate alarm from Normal to Low Low [118.96]
+05/01/26 03:21:42                  Run 2 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/01/26 03:21:42                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/01/26 03:21:32                  Run 2 Flow meter communication fail changed from (Unacked) Normal to Alarm
+05/01/26 03:21:32                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/01/26 01:21:07                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/01/26 00:21:07                  User administrator (Web: 10.0.1.50) has logged in
+

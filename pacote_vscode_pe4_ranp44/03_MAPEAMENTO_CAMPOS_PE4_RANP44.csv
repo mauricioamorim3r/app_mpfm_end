@@ -1,0 +1,25 @@
+Campo_template,Aba,Coluna,Fonte_preferencial,Campo_origem,Regra_transformacao,Obrigatorio,Observacao
+ProductionDate,05_Historico_Diario_180d,A,app_db/drive_excel,ProductionDate,normalizar data local,SIM,Uma linha por dia
+Usar?,05_Historico_Diario_180d,E,validacao,quality_status,SIM se dado valido,SIM,Usar SIM apenas se dado coerente
+MPFM_Tag,05_Historico_Diario_180d,F,cadastro/app,Tag ou Instrumento,tag do MPFM PE_4,SIM,Ex.: 18FT1506 conforme arquivos mensais encontrados
+Ref_ID,05_Historico_Diario_180d,G,cadastro/app,reference_id,separador ou referência autorizada,SIM,Se ausente status parcial
+GVF_avg_%,05_Historico_Diario_180d,I,app_hourly,GVF,media diaria,NÃO,Condição de contorno
+GVF_min_%,05_Historico_Diario_180d,J,app_hourly,GVF,min diario,NÃO,Condição de contorno
+GVF_max_%,05_Historico_Diario_180d,K,app_hourly,GVF,max diario,NÃO,Condição de contorno
+BSW_avg_%,05_Historico_Diario_180d,M,app/lab/xml042,BSW,media diaria ou laudo,NÃO,Indicar fonte
+Pressao_min_bar,05_Historico_Diario_180d,N,app_hourly,P,min diario,NÃO,Condição de contorno
+Pressao_max_bar,05_Historico_Diario_180d,O,app_hourly,P,max diario,NÃO,Condição de contorno
+Temperatura_min_C,05_Historico_Diario_180d,P,app_hourly,T,min diario,NÃO,Condição de contorno
+Temperatura_max_C,05_Historico_Diario_180d,Q,app_hourly,T,max diario,NÃO,Condição de contorno
+Massa_oleo_MPFM_t,05_Historico_Diario_180d,R,drive_mpfm/app,MPFM corr Óleo (t),usar massa corrigida se aprovada,SIM,Se só existir uncorr registrar observação
+Massa_gas_MPFM_t,05_Historico_Diario_180d,S,drive_mpfm/app,MPFM corr Gás (t),usar massa corrigida se aprovada,SIM,
+Massa_agua_MPFM_t,05_Historico_Diario_180d,T,drive_mpfm/app,MPFM corr Água (t),usar massa corrigida se aprovada,SIM,
+Massa_oleo_REF_t,05_Historico_Diario_180d,U,drive_recon/app_ref,REF/Oil mass,recon ou referência diária,SIM se disponível,
+Massa_gas_REF_t,05_Historico_Diario_180d,V,drive_recon/app_ref,REF/Gas mass,recon ou referência diária,SIM se disponível,
+Massa_agua_REF_t,05_Historico_Diario_180d,W,drive_recon/app_ref,REF/Water mass,recon ou referência diária,SIM se disponível,
+Volume_oleo_MPFM_Sm3,05_Historico_Diario_180d,X,xml042/app,oil volume,normalizar unidade,NÃO,Para histórico/regulatório
+Volume_gas_MPFM_kSm3,05_Historico_Diario_180d,Y,xml042/app,gas volume,converter para kSm3,NÃO,Para histórico/regulatório
+Volume_agua_MPFM_m3,05_Historico_Diario_180d,Z,xml042/app,water volume,normalizar unidade,NÃO,Para histórico/regulatório
+Fonte_arquivo,05_Historico_Diario_180d,AP,drive/app,file_name,registrar origem,SIM,Auditoria
+XML042_ref,05_Historico_Diario_180d,AQ,drive_xml042,xml_file/protocol,registrar arquivo XML/SIMP,NÃO,Quando aplicável
+Qualidade,05_Historico_Diario_180d,AR,validacao,quality_flags,OK/PARCIAL/BLOQUEIO,SIM,

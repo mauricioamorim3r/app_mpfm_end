@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "workspaceRoot": "C:\\MPFM\\NOVO\\Painel_Operador",
+  "sources": [
+    {
+      "id": "dailyReports",
+      "label": "Pacotes diarios FPSO",
+      "description": "Pastas FPSO-Bacalhau_Daily reports_* com CV_Reports, IHM_Reports e 05 - XML.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\03 REPORTS\\00 - Daily Reports\\2026"
+      ]
+    },
+    {
+      "id": "xmlSent",
+      "label": "XML e ZIP enviados",
+      "description": "Arquivos 001/002/003/004, extraidos ou compactados, enviados para ANP.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\03 REPORTS\\00 - Daily Reports\\2026"
+      ]
+    },
+    {
+      "id": "alarmsEvents",
+      "label": "Alarmes, eventos e mudancas de parametros",
+      "description": "PMAE 004, AlarmsAndEvents, eventos de configuracao e historico de alteracao de parametros que impactam densidade, cromatografia, PVT, BSW, fatores, ranges e limites.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\03 REPORTS\\00 - Daily Reports\\2026"
+      ]
+    },
+    {
+      "id": "cvRaw",
+      "label": "Raw CV Run_Daily",
+      "description": "Relatorios TXT dos computadores de vazao usados na reconciliacao raw -> XML.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\03 REPORTS\\00 - Daily Reports\\2026"
+      ]
+    },
+    {
+      "id": "anpPanel",
+      "label": "Exports Painel ANP",
+      "description": "Planilhas exportadas do Painel do Operador ANP: Oleo Linear, Gas Linear, Gas Diferencial, BSW e Falhas.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\AplicativosMau\\PainelOperador"
+      ]
+    },
+    {
+      "id": "cadastro",
+      "label": "Cadastros ANP",
+      "description": "Pontos de Medicao, Dados do Ponto, Campos, Instalacoes e pocos.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\AplicativosMau\\PainelOperador"
+      ]
+    },
+    {
+      "id": "mpfm",
+      "label": "MPFM e reconciliacao interna",
+      "description": "Planilha mensal MPFM_JUN_2026.xlsx com STATUS_MES, ALERTAS_MES e DAILYS.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\Desktop\\NOVO\\data\\outputs"
+      ]
+    },
+    {
+      "id": "regulations",
+      "label": "Regulamentos e manuais",
+      "description": "PDFs e documentos de referencia para prazos, periodicidades e validacoes.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\00 - Resoluções e Portarias"
+      ]
+    },
+    {
+      "id": "requirementsMatrix",
+      "label": "Matriz de requisitos SGM",
+      "description": "Matriz consolidada de requisitos metrologicos e operacionais usada para gerar obrigacoes, regras e evidencias esperadas.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\02 Multiphase Metering System Documentation\\3.2 Multiphase System - Procedures\\Em Elaboração\\Definir Requisitos Metrológicos e Operacionais (MN e FM)"
+      ]
+    },
+    {
+      "id": "calibration",
+      "label": "Certificados e calibracao",
+      "description": "Certificados de calibracao, faixas calibradas, validade, rastreabilidade RBC/fornecedor e evidencias por instrumento.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\01 METERING"
+      ]
+    },
+    {
+      "id": "uncertainty",
+      "label": "Incerteza de medicao",
+      "description": "Memorias de calculo e certificados de incerteza do ponto, malha, equipamento e sistema de medicao.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\01 METERING"
+      ]
+    },
+    {
+      "id": "physchem",
+      "label": "Analises fisico-quimicas",
+      "description": "Planos e resultados laboratoriais de oleo, gas, BSW, densidade, cromatografia, API e boletins analiticos.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\03 REPORTS"
+      ]
+    },
+    {
+      "id": "samplingPlans",
+      "label": "Planos de coleta",
+      "description": "Planos, frequencias, periodicidades e evidencias de coleta/amostragem exigidas pela regulamentacao.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\03 REPORTS"
+      ]
+    },
+    {
+      "id": "equipmentDocs",
+      "label": "Equipamentos, folhas de dados e PAM",
+      "description": "Folhas de dados, PAM, datasheets, desenhos, limites de operacao, faixa de medicao e cadastro tecnico dos equipamentos.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\04 PROJECT"
+      ]
+    },
+    {
+      "id": "checklistDiario",
+      "label": "Checklist Diário mensal",
+      "description": "Planilhas mensais de fechamento diário: Lab-Report, tank balance, off spec, MPFM vs fiscal, balanço de gás.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\02 INTERNAL CONTROL\\00 - Check Diário\\2026"
+      ]
+    },
+    {
+      "id": "calibrationControl",
+      "label": "Controle de calibração",
+      "description": "Planos e controles de calibração dos instrumentos primários e secundários, datas de validade e certificados.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\02 INTERNAL CONTROL\\01 - Calibration Control"
+      ]
+    },
+    {
+      "id": "operatingRanges",
+      "label": "Faixas operacionais",
+      "description": "Process condition FPSO Bacalhau - faixas de processo min/max por ponto de medição.",
+      "kind": "folder",
+      "recursive": false,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\02 INTERNAL CONTROL\\11 - Operating Ranges"
+      ]
+    },
+    {
+      "id": "sfpRegistration",
+      "label": "Cadastro SFP",
+      "description": "Cadastro dos pontos de medição no Sistema de Fiscalização da Produção da ANP.",
+      "kind": "folder",
+      "recursive": false,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\02 INTERNAL CONTROL\\04 - SFP\\SFP Registration"
+      ]
+    },
+    {
+      "id": "cartasAnp",
+      "label": "Cartas e Ofícios ANP",
+      "description": "Correspondência oficial com a ANP: aprovações, NFSMs, operação em falha, calibração, MPFM.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\02 INTERNAL CONTROL\\16 - Cartas e Oficios"
+      ]
+    },
+    {
+      "id": "gestaoAlarmes",
+      "label": "Gestão de alarmes",
+      "description": "Planilhas de gestão e análise de alarmes de medição do FPSO Bacalhau.",
+      "kind": "folder",
+      "recursive": true,
+      "paths": [
+        "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 01 FPSO Bacalhau - Metering Management\\02 INTERNAL CONTROL\\00_1 - Gestão de Alarmes\\2026"
+      ]
+    }
+  ]
+}

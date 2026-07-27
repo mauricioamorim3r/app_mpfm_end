@@ -1,0 +1,211 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - button "Editar" [ref=e7] [cursor=pointer]
+      - generic [ref=e8]: PulseFlow Ops Studio
+      - generic [ref=e9]: Local · editável
+    - button "Resumo do Mês" [ref=e10] [cursor=pointer]:
+      - generic [ref=e11]: Resumo do Mês
+    - button "Processar Arquivos" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: Processar Arquivos
+    - button "Dados MPFM" [ref=e14] [cursor=pointer]:
+      - generic [ref=e15]: Dados MPFM
+    - button "Monitoramento MPFM" [ref=e16] [cursor=pointer]:
+      - generic [ref=e17]: Monitoramento MPFM
+    - button "XML 042" [ref=e18] [cursor=pointer]:
+      - generic [ref=e19]: XML 042
+    - button "Relatórios Mensais" [ref=e20] [cursor=pointer]:
+      - generic [ref=e21]: Relatórios Mensais
+    - button "Dados Separador" [ref=e22] [cursor=pointer]:
+      - generic [ref=e23]: Dados Separador
+    - button "Cards Diários" [ref=e24] [cursor=pointer]:
+      - generic [ref=e25]: Cards Diários
+    - button "Gráficos" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: Gráficos
+    - button "Alarmes MPFM" [ref=e28] [cursor=pointer]:
+      - generic [ref=e29]: Alarmes MPFM
+    - button "Prazos" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: Prazos
+    - button "Cadastro" [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: Cadastro
+    - button "Reconciliação" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: Reconciliação
+    - button "Fluxo Metodológico" [active] [ref=e36] [cursor=pointer]:
+      - generic [ref=e37]: Fluxo Metodológico
+    - button "Registros do SGM-FM" [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: Registros do SGM-FM
+    - button "Exportar" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]: Exportar
+    - button "Assistente IA" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: Assistente IA
+    - generic [ref=e44]: Equinor Brasil Energia Ltda.
+  - main [ref=e45]:
+    - generic [ref=e46]:
+      - generic [ref=e47]:
+        - heading "Fluxo Metodológico" [level=1] [ref=e183]
+        - generic [ref=e49]: Fluxo visual com dados reais de reconciliação, PVT, separador e memorial de cálculo
+      - generic [ref=e50]:
+        - combobox "Mês de referência" [ref=e51]
+        - 'button "⏱ Auto: ON" [ref=e52] [cursor=pointer]'
+        - button "◐ Claro" [ref=e53] [cursor=pointer]
+        - button "⚙ Config." [ref=e54] [cursor=pointer]
+        - button "↻ Atualizar" [ref=e55] [cursor=pointer]
+    - generic [ref=e184]:
+      - generic [ref=e185]:
+        - generic [ref=e186]:
+          - generic [ref=e187]: Fluxo Metodológico
+          - heading "Balanço de massas por fase com rastreabilidade real da campanha" [level=2] [ref=e188]
+          - paragraph [ref=e189]: Visualize o caminho completo entre PVT, operação MPFM, separador, decisão técnica e investigação, usando os runs de reconciliação já gravados no banco.
+        - generic [ref=e190]:
+          - generic [ref=e191]:
+            - generic [ref=e192]: Fonte
+            - strong [ref=e193]: recon_runs + PVT + medições
+          - generic [ref=e194]:
+            - generic [ref=e195]: Memorial
+            - strong [ref=e196]: NSV · SF · ΔRs · En
+      - generic [ref=e197]:
+        - generic [ref=e198]:
+          - generic [ref=e199]: Banco
+          - textbox "Banco" [ref=e200]:
+            - /placeholder: Todos
+        - generic [ref=e201]:
+          - generic [ref=e202]: TAG
+          - textbox "TAG" [ref=e203]:
+            - /placeholder: Todas
+        - generic [ref=e204]:
+          - generic [ref=e205]: Data
+          - textbox "Data" [ref=e206]
+        - generic [ref=e207]:
+          - generic [ref=e208]: Run de reconciliação
+          - combobox "Run de reconciliação" [ref=e209]:
+            - option "Último run disponível"
+            - option "#15 · 2026-05-19 · B08 / Riser_P2 · OK" [selected]
+            - option "#14 · 2026-05-16 · B08 / Riser_P2 · OK"
+            - option "#13 · 2026-05-16 · B08 / Riser_P2 · OK"
+            - option "#12 · 2026-05-16 · B08 / Riser_P2 · OK"
+            - option "#11 · 2026-05-16 · B08 / Riser_P2 · OK"
+            - option "#10 · 2026-05-15 · B08 / Riser_P2 · OK"
+            - option "#9 · 2026-05-19 · B08 / Riser_P2 · INDISPONÍVEL"
+            - option "#8 · 2026-05-01 · B08 / Riser_P2 · OK"
+            - option "#7 · 2026-05-16 · B08 / Riser_P1 · VERIFICAR"
+            - option "#6 · 2026-05-16 · B08 / Riser_P1 · VERIFICAR"
+            - option "#5 · 2026-04-19 · B15 / PW-104DA · VERIFICAR"
+            - option "#4 · 2026-04-19 · B15 / PW-104DA · VERIFICAR"
+            - option "#3 · 2026-04-19 · B15 / PW-104DA · VERIFICAR"
+            - option "#2 · 2026-04-19 · B15 / PW-104DA · VERIFICAR"
+            - option "#1 · 2026-04-19 · B15 / PW-104DA · VERIFICAR"
+        - generic [ref=e210]:
+          - button "Limpar" [ref=e211] [cursor=pointer]
+          - button "Carregar fluxo" [ref=e212] [cursor=pointer]
+      - status [ref=e213]: "Run #15 carregado com dados reais."
+      - generic [ref=e214]:
+        - generic [ref=e215]:
+          - generic [ref=e216]:
+            - generic [ref=e217]: Run
+            - generic [ref=e218]: "#15"
+            - generic [ref=e219]: B08 / Riser_P2
+          - generic [ref=e220]:
+            - generic [ref=e221]: Data
+            - generic [ref=e222]: 2026-05-19
+            - generic [ref=e223]: post · campanha 12
+          - generic [ref=e224]:
+            - generic [ref=e225]: Status
+            - generic [ref=e226]: OK
+            - generic [ref=e227]: 95,8% cobertura
+          - generic [ref=e228]:
+            - generic [ref=e229]: PVT
+            - generic [ref=e230]: "#2"
+            - generic [ref=e231]: 0,8689 FE · 64,24 ΔRs
+        - generic [ref=e232]:
+          - generic [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]:
+                - heading "Fluxo vivo da campanha" [level=3] [ref=e236]
+                - paragraph [ref=e237]: Os nós abaixo usam o run selecionado e os snapshots salvos no banco.
+              - generic [ref=e238]: OK
+            - img [ref=e239]:
+              - button "Calibração / PVT" [ref=e243] [cursor=pointer]:
+                - generic [ref=e245]: Calibração / PVT
+                - generic [ref=e246]: parâmetros versionados
+              - button "Comissionamento" [ref=e247] [cursor=pointer]:
+                - generic [ref=e249]: Comissionamento
+                - generic [ref=e250]: FE · ΔRs · densidades
+              - button "Operação MPFM" [ref=e251] [cursor=pointer]:
+                - generic [ref=e253]: Operação MPFM
+                - generic [ref=e254]: daily/hourly reais
+              - button "Verificação SEP" [ref=e255] [cursor=pointer]:
+                - generic [ref=e257]: Verificação SEP
+                - generic [ref=e258]: balanço de massa
+              - button "Critério técnico" [ref=e259] [cursor=pointer]:
+                - generic [ref=e261]: Critério técnico
+                - generic [ref=e262]: status + desvios
+              - button "Aprovado" [ref=e263] [cursor=pointer]:
+                - generic [ref=e265]: Aprovado
+                - generic [ref=e266]: manter / monitorar
+              - button "Investigar" [ref=e267] [cursor=pointer]:
+                - generic [ref=e269]: Investigar
+                - generic [ref=e270]: causa raiz
+              - button "Diagnóstico diferencial" [ref=e271] [cursor=pointer]:
+                - generic [ref=e273]: Diagnóstico diferencial
+                - generic [ref=e274]: sensor · PVT · EOS
+              - button "Memorial aplicado NSV = GSV × (1 - BSW) V_STO = NSV × SF m_gás = (V_sep + V_flash) × ρ δ = 100 × (MPFM - REF) / REF En = Δ / √(U²mpfm + U²ref) Clique nos nós para ver evidências" [ref=e275] [cursor=pointer]:
+                - generic [ref=e277]: Memorial aplicado
+                - generic [ref=e278]: NSV = GSV × (1 - BSW)
+                - generic [ref=e279]: V_STO = NSV × SF
+                - generic [ref=e280]: m_gás = (V_sep + V_flash) × ρ
+                - generic [ref=e281]: δ = 100 × (MPFM - REF) / REF
+                - generic [ref=e282]: En = Δ / √(U²mpfm + U²ref)
+                - generic [ref=e283]: Clique nos nós para ver evidências
+          - complementary [ref=e284]:
+            - generic [ref=e285]:
+              - generic [ref=e286]: "4"
+              - generic [ref=e287]:
+                - heading "Verificacao MPFM x Separador" [level=3] [ref=e288]
+                - paragraph [ref=e289]: Balanço de massa por fase conforme memorial, com conversao PVT e comparacao por janela.
+            - generic [ref=e290]: Conforme
+            - generic [ref=e291]:
+              - generic [ref=e292]:
+                - generic [ref=e293]: Cobertura
+                - strong [ref=e294]: 95,8 %
+              - generic [ref=e295]:
+                - generic [ref=e296]: Horas validas
+                - strong [ref=e297]: "23"
+              - generic [ref=e298]:
+                - generic [ref=e299]: HC REF
+                - strong [ref=e300]: 7.349,308 t
+              - generic [ref=e301]:
+                - generic [ref=e302]: HC MPFM
+                - strong [ref=e303]: 7.841,279 t
+            - generic [ref=e304]:
+              - generic [ref=e305]: Evidências e premissas
+              - generic [ref=e306]: "Fontes SEP: 3 arquivo(s)"
+              - generic [ref=e307]: "Janela: - ate -"
+              - generic [ref=e308]: "Calculo backend: recon_engine.calcular_hora/calcular_24h"
+        - generic [ref=e309]:
+          - generic [ref=e310]:
+            - heading "Rastreabilidade operacional" [level=3] [ref=e311]
+            - generic [ref=e312]:
+              - generic [ref=e313]:
+                - generic [ref=e314]: Separador
+                - generic [ref=e315]:
+                  - strong [ref=e316]: sep_agua · 20FT0251
+                  - generic [ref=e317]: Run_24Hours1-1.20260520000000.txt
+                - generic [ref=e318]:
+                  - strong [ref=e319]: sep_gas · 20FT0244
+                  - generic [ref=e320]: Run_24Hours2-1.20260520000000.txt
+                - generic [ref=e321]:
+                  - strong [ref=e322]: sep_oleo · 20FT0247
+                  - generic [ref=e323]: Run_24Hours1-1.20260520000000.txt
+              - generic [ref=e324]:
+                - generic [ref=e325]: Alarmes / atividades
+                - generic [ref=e326]: Sem alarme direto encontrado para o run.
+                - generic [ref=e327]: 4 prazo(s) metodológicos disponíveis.
+          - generic [ref=e328]:
+            - heading "Memorial de cálculo aplicado" [level=3] [ref=e329]
+            - generic [ref=e330]:
+              - code [ref=e331]: NSV_sep = GSV_sep × (1 - BSW/100)
+              - code [ref=e332]: V_STO = NSV_sep × SF_sep→tank
+              - code [ref=e333]: V_gas_total = V_gas_sep + V_STO × ΔRs
+              - code [ref=e334]: m_HC_REF = m_oil_REF + m_gas_REF
+              - code [ref=e335]: δ_HC = 100 × (m_HC_MPFM - m_HC_REF) / m_HC_REF
+            - paragraph [ref=e336]: A tolerância fixa não é tratada como norma universal; o fluxo privilegia incerteza, envelope e critério aprovado, conforme o memorial.

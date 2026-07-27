@@ -1,0 +1,29 @@
+{
+  "well": "PE_4",
+  "days_expected": 180,
+  "validation_status": "BLOQUEADO",
+  "blocking_errors": 1,
+  "warnings": 3,
+  "datas_esperadas": 180,
+  "linhas_dataframe": 180,
+  "datas_preenchidas": "180",
+  "linhas_sem_fonte": "91",
+  "datas_validas": "89",
+  "datas_sem_dados": "91",
+  "massa_oleo_total_t": 1406103.016,
+  "massa_gas_total_t": 71086.666,
+  "massa_agua_total_t": 664.288,
+  "dias_usar_sim": "89",
+  "dias_usar_nao": "91",
+  "status_breakdown": {
+    "BLOQUEIO_SEM_DADOS": 91,
+    "OK_COMPLETO": 83,
+    "PARCIAL_DADOS_INCOMPLETOS": 6
+  },
+  "arquivos_consumidos": 3,
+  "arquivos_lista": [
+    "MPFM_parte 2.xlsx",
+    "MPFM_parte 3.xlsx",
+    "MPFM_parte1.xlsx"
+  ]
+}

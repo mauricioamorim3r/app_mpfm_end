@@ -1,0 +1,11 @@
+﻿python : ERROR: file or directory not found: tests/
+At line:1 char:1
++ python -m pytest tests/ -q --tb=short 2>&1 | Out-File -FilePath "pyte ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: file or ...t found: tests/ 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+
+no tests ran in 0.03s

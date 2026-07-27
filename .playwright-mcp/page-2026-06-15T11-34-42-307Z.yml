@@ -1,0 +1,165 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - button "Editar" [ref=e7] [cursor=pointer]
+      - generic [ref=e8]: PulseFlow Ops Studio
+      - generic [ref=e9]: Local · editável
+    - button "Resumo do Mês" [ref=e10] [cursor=pointer]:
+      - generic [ref=e11]: Resumo do Mês
+    - button "Processar Arquivos" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: Processar Arquivos
+    - button "Dados MPFM" [ref=e14] [cursor=pointer]:
+      - generic [ref=e15]: Dados MPFM
+    - button "Monitoramento MPFM" [ref=e16] [cursor=pointer]:
+      - generic [ref=e17]: Monitoramento MPFM
+    - button "XML 042" [ref=e18] [cursor=pointer]:
+      - generic [ref=e19]: XML 042
+    - button "Relatórios Mensais" [ref=e20] [cursor=pointer]:
+      - generic [ref=e21]: Relatórios Mensais
+    - button "Dados Separador" [ref=e22] [cursor=pointer]:
+      - generic [ref=e23]: Dados Separador
+    - button "Cards Diários" [ref=e24] [cursor=pointer]:
+      - generic [ref=e25]: Cards Diários
+    - button "Gráficos" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: Gráficos
+    - button "Alarmes MPFM" [ref=e28] [cursor=pointer]:
+      - generic [ref=e29]: Alarmes MPFM
+    - button "Prazos" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: Prazos
+    - button "Cadastro" [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: Cadastro
+    - button "Reconciliação" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: Reconciliação
+    - button "Fluxo Metodológico" [ref=e36] [cursor=pointer]:
+      - generic [ref=e37]: Fluxo Metodológico
+    - button "Twin MPFM" [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: Twin MPFM
+    - button "Registros do SGM-FM" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]: Registros do SGM-FM
+    - button "Exportar" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: Exportar
+    - button "Assistente IA" [ref=e44] [cursor=pointer]:
+      - generic [ref=e45]: Assistente IA
+    - generic [ref=e46]: Equinor Brasil Energia Ltda.
+  - main [ref=e47]:
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - heading "Resumo do Mês" [level=1] [ref=e50]
+        - generic [ref=e51]: Produção multifásica acumulada do mês — por banco e por TAG
+      - generic [ref=e52]:
+        - combobox "Mês de referência" [ref=e53]
+        - 'button "⏱ Auto: ON" [ref=e54] [cursor=pointer]'
+        - button "◐ Claro" [ref=e55] [cursor=pointer]
+        - button "⚙ Config." [ref=e56] [cursor=pointer]
+        - button "↻ Atualizar" [ref=e57] [cursor=pointer]
+    - generic [ref=e58]:
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]: Painel Operacional
+          - heading "Leitura mensal para produção, cobertura e desvios" [level=2] [ref=e62]
+          - paragraph [ref=e63]: Use esta visão para acompanhar o mês ativo, identificar lacunas de medição e priorizar os bancos ou TAGs que precisam de investigação.
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - generic [ref=e66]: Foco
+            - strong [ref=e67]: Resumo + cobertura + recon
+          - generic [ref=e68]:
+            - generic [ref=e69]: Modo
+            - strong [ref=e70]: Operação mensal
+      - generic [ref=e72]:
+        - heading "Prazos e contagem regressiva" [level=3] [ref=e73]
+        - button "Gerenciar" [ref=e74] [cursor=pointer]
+      - generic [ref=e76]:
+        - heading "Cobertura de dados — mês" [level=3] [ref=e77]
+        - generic [ref=e78]:
+          - generic [ref=e79]: MPFM
+          - generic [ref=e81]: Sep
+          - generic [ref=e83]: MPFM + Sep
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - heading "Produção por banco" [level=3] [ref=e88]
+          - table [ref=e90]:
+            - rowgroup [ref=e91]:
+              - row "Banco Dias Horas HC (t) Total (t) Óleo (t) Gás (t) Água (t) Óleo (m³) Gás (mil sm³) Água (m³) Óleo (bbl) BOE Total" [ref=e92]:
+                - columnheader "Banco" [ref=e93]
+                - columnheader "Dias" [ref=e94]
+                - columnheader "Horas" [ref=e95]
+                - columnheader "HC (t)" [ref=e96]
+                - columnheader "Total (t)" [ref=e97]
+                - columnheader "Óleo (t)" [ref=e98]
+                - columnheader "Gás (t)" [ref=e99]
+                - columnheader "Água (t)" [ref=e100]
+                - columnheader "Óleo (m³)" [ref=e101]
+                - columnheader "Gás (mil sm³)" [ref=e102]
+                - columnheader "Água (m³)" [ref=e103]
+                - columnheader "Óleo (bbl)" [ref=e104]
+                - columnheader "BOE Total" [ref=e105]
+            - rowgroup
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - generic [ref=e109]: Dia a dia por banco
+              - generic [ref=e110]: Mantenha o consolidado acima e, se precisar, abra a evolução diária do banco selecionado.
+            - combobox "Banco" [ref=e111]
+        - generic [ref=e113]:
+          - heading "Produção por TAG" [level=3] [ref=e114]
+          - table [ref=e116]:
+            - rowgroup [ref=e117]:
+              - row "Banco TAG Dias HC (t) Total (t) Óleo (t) Gás (t) Água (t) Óleo (m³) Gás (mil sm³) Água (m³) Óleo (bbl) BOE Total" [ref=e118]:
+                - columnheader "Banco" [ref=e119]
+                - columnheader "TAG" [ref=e120]
+                - columnheader "Dias" [ref=e121]
+                - columnheader "HC (t)" [ref=e122]
+                - columnheader "Total (t)" [ref=e123]
+                - columnheader "Óleo (t)" [ref=e124]
+                - columnheader "Gás (t)" [ref=e125]
+                - columnheader "Água (t)" [ref=e126]
+                - columnheader "Óleo (m³)" [ref=e127]
+                - columnheader "Gás (mil sm³)" [ref=e128]
+                - columnheader "Água (m³)" [ref=e129]
+                - columnheader "Óleo (bbl)" [ref=e130]
+                - columnheader "BOE Total" [ref=e131]
+            - rowgroup
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]: Dia a dia por TAG
+              - generic [ref=e136]: Escolha a TAG que deseja investigar e veja a composição diária sem perder o consolidado mensal.
+            - combobox "TAG" [ref=e137]
+      - generic [ref=e139]:
+        - generic [ref=e140]:
+          - heading "Produção diária do mês" [level=3] [ref=e141]
+          - generic [ref=e142]:
+            - combobox "Detalhes diários" [ref=e143]
+            - generic [ref=e144]: Aguardando atualização
+        - generic [ref=e147]:
+          - generic [ref=e148]:
+            - generic [ref=e149]: Composição do dia selecionado
+            - generic [ref=e150]: A decomposição abaixo mostra as parcelas de óleo, gás, água, HC e total que formaram o valor diário exibido acima.
+          - generic [ref=e151]: Selecione um dia com dados.
+      - generic [ref=e152]:
+        - generic [ref=e153]:
+          - generic [ref=e154]:
+            - heading "Desvio MPFM vs Separador — por dia" [level=3] [ref=e155]
+            - generic [ref=e156]: "Linhas de limite: ± HC 10% · ± Total 7%"
+          - generic [ref=e157]:
+            - generic [ref=e158] [cursor=pointer]:
+              - 'radio "Modo: MPFM × Separador" [checked] [ref=e159]'
+              - generic [ref=e160]: "Modo: MPFM × Separador"
+            - generic [ref=e161] [cursor=pointer]:
+              - 'radio "Modo: Subsea × Topside" [ref=e162]'
+              - generic [ref=e163]: "Modo: Subsea × Topside"
+            - generic [ref=e164] [cursor=pointer]:
+              - checkbox "Exibir limite HC" [checked] [ref=e165]
+              - generic [ref=e166]: Exibir limite HC
+            - generic [ref=e167] [cursor=pointer]:
+              - checkbox "Exibir limite Total" [checked] [ref=e168]
+              - generic [ref=e169]: Exibir limite Total
+            - generic [ref=e170] [cursor=pointer]:
+              - checkbox "Exibir valores nos pontos" [ref=e171]
+              - generic [ref=e172]: Exibir valores nos pontos
+            - button "Abrir página imprimível" [ref=e173] [cursor=pointer]
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: Grupos Subsea × Topside no gráfico
+            - generic [ref=e178]: Selecione os pares que devem aparecer no gráfico e na página imprimível.
+          - generic [ref=e179]:
+            - button "Todos" [ref=e180] [cursor=pointer]
+            - button "Limpar" [ref=e181] [cursor=pointer]

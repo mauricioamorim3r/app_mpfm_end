@@ -1,0 +1,54 @@
+                                         Hourly Report
+
+  Start date / time             16/04/26 12:00:00
+  End date / time               16/04/26 13:00:00
+
+  Meter ID                      20FT2303              Flow computer   21JN101A
+  System                        20JX101               Company         Equinor
+  Description                   FPSO Bacalhau         Location        Sales Oil Skid21JN101A
+
+  Hourly totals
+  Indicated                     m3           183.60500
+  Gross volume                  m3           183.89200
+  Mass                          tonne        153.43900
+  Gross standard volume         sm3          179.90200
+  Net standard volume           sm3          179.90300
+  Good pulses                   pls              70321
+  Error pulses                  pls                  0
+
+  Cumulative totals at hour end
+  Indicated                     m3        481704.20600
+  Gross volume                  m3        482135.16000
+  Mass                          tonne     402386.22400
+  Gross standard volume         sm3       470544.23400
+  Net standard volume           sm3       470543.19700
+  Good pulses                   pls          184492711
+  Error pulses                  pls             864487
+
+  Time weighted average flow rates
+  Indicated                     m3/h            183.61
+  Gross volume                  m3/h            183.90
+  Mass                          tonne/h         153.45
+  Gross std. volume             sm3/h           179.91
+  Net std. volume               sm3/h           179.91
+
+  Flow weighted averages
+  Meter temperature             deg c            46.61
+  Meter pressure                kPa(g)        1045.557
+  Standard density              kg/sm3          852.90
+  Meter density                 kg/m3           834.40
+  BSW                           %vol/vol         0.000
+  Ctl                           -             0.977430
+  Cpl                           -             1.000895
+  Ctpl                          -             0.978305
+  F (compressibility)           1/bar         0.000086
+  Meter k factor                pls/m3         383.000
+  Meter factor                  -              1.00156
+
+  System information
+  Flowcomputer Firmware         3.2.8.17090           Ref. Temperaturedeg c 20
+  Application Version           3.1.0.0               Ref. Pressure   kPa (a)101.325
+  Application Name              01_LIQ_2R_TURBINE_REV12.fxa
+
+  * indicates a transmitter override
+

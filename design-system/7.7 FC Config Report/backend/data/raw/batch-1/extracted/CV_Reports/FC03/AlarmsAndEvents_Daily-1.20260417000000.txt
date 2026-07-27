@@ -1,0 +1,21 @@
+                                   DAILY ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Sales Oil Skid
+
+System                             20JX101
+Description                        FPSO Bacalhau
+Flow computer                      21JN102A
+
+Start date/time                    16/04/26 00:00:00
+End date/time                      17/04/26 00:00:00
+
+Amount                             7
+04/16/26 23:20:00                  System-time was changed from 16/04/2026 23:19:56.999 to 16/04/2026 23:20:00.000 by  (-1)
+04/16/26 05:53:56                  Parameter Product 2 standard density override was changed from 851.4 to 852.9 by CommDrivers (10000)
+04/16/26 05:53:55                  Parameter Product 1 standard density override was changed from 851.4 to 852.9 by CommDrivers (10000)
+04/16/26 01:22:10                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 01:21:23                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 00:22:09                  User administrator (Web: 10.0.1.50) has logged in
+04/16/26 00:21:22                  User administrator (Web: 10.0.1.50) has logged in
+

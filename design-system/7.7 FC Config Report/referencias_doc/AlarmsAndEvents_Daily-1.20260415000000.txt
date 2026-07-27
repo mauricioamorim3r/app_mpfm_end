@@ -1,0 +1,26 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Tot. Fuel Gas & Test Sep. Gas & Gas Lift
+
+System                             21JN112
+Description                        FPSO Bacalhau
+Flow computer                      21JN112
+
+Start date/time                    14/04/26 00:00:00
+End date/time                      15/04/26 00:00:00
+
+Active at end                      3
+04/11/26 10:36:03                  Run 1 Heating value calc out of range
+02/06/26 10:28:37                  Run 3 Volume flow rate lo lo alm
+04/14/26 23:59:01                  Run 2 Volume flow rate lo lo alm
+
+Events                             7
+04/14/26 23:20:00                  System-time was changed from 14/04/2026 23:20:02.000 to 14/04/2026 23:20:00.000 by  (-1)
+04/14/26 17:50:22                  User  has acknowledged all alarms
+04/14/26 17:50:21                  'Acknowledge all' executed by CommDrivers (10000)
+04/14/26 12:55:17                  User  has acknowledged all alarms
+04/14/26 12:55:16                  'Acknowledge all' executed by CommDrivers (10000)
+04/14/26 01:21:44                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/14/26 00:21:43                  User administrator (Web: 10.0.1.50) has logged in
+

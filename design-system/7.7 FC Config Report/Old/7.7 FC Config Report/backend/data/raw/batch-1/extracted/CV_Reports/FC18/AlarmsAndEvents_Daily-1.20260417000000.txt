@@ -1,0 +1,24 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Flare Pilot & LP Fuel Gas & HP Sep. Gas
+
+System                             21JN113
+Description                        FPSO Bacalhau
+Flow computer                      21JN113
+
+Start date/time                    16/04/26 00:00:00
+End date/time                      17/04/26 00:00:00
+
+Active at end                      5
+04/15/26 02:25:32                  Run 3 Volume flow rate lo lo alm
+04/09/26 19:11:20                  Run 2 Volume flow rate lo lo alm
+04/09/26 17:09:17                  Run 1 Heating value calc out of range
+04/09/26 09:45:47                  Run 1 dP calc Reynolds out of range
+04/15/26 15:06:27                  Run 2 Heating value calc out of range
+
+Events                             3
+04/16/26 23:20:00                  System-time was changed from 16/04/2026 23:19:57.000 to 16/04/2026 23:20:00.000 by  (-1)
+04/16/26 01:21:37                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 00:21:37                  User administrator (Web: 10.0.1.50) has logged in
+

@@ -1,0 +1,167 @@
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\AppData\Roaming\Python\Python313\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:799: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  fallback_dates = br_dates[2] + "-" + br_dates[1] + "-" + br_dates[0]
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\scripts\build_dashboard_data.py:796: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  timestamp_text = working["timestamp"].map(clean_model_text)
+wrote C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\src\data\dashboard-data.json
+wrote C:\Users\mauri\OneDrive\Documentos\Painel_Operador\dashboard-anp-radar\data\radar-anp.sqlite
+{"dates": ["2026-06-01", "2026-06-02"], "comparisons": 24, "xmlAnpOk": 24, "rawXmlOk": 22, "alerts": 15, "proposals": 57, "measurementModels": {"files": 32, "rows": 5814729, "numericRows": 5794694, "textRows": 20035, "signals": 2370, "dateStart": "2026-03-25", "dateEnd": "2026-12-06"}, "calendar": {"days": 61, "loaded": 2, "ok": 0, "warn": 2, "critical": 0, "notLoaded": 59, "resolved": 0, "openPendencies": 71}, "eventEvidence": {"eventFilesScanned": 1258, "eventLinesScanned": 35778, "parameterChanges": 57, "evidenceIndexed": 1711, "ok": 4, "warn": 53, "critical": 0, "confirmed": 4, "supporting": 53, "candidateOnly": 0}, "sqlite": {"metadata": 6, "kpis": 11, "sources": 14, "files": 14, "comparisons": 24, "closing": 2, "alerts": 15, "limit_monitors": 12, "uncertainty_monitor": 24, "event_evidence_events": 57, "regulatory_requirements": 42, "change_proposals": 57, "operational_calendar": 61, "calendar_pendencies": 71}}

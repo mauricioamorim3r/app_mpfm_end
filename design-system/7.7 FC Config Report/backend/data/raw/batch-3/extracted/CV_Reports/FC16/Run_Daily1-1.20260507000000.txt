@@ -1,0 +1,51 @@
+                                                              Daily Report
+
+  Meter ID                43FT0102                               Flow computer           21JN111
+
+  Period start            06/05/26 00:00:00                      Company                 Equinor
+  Period end              07/05/26 00:00:00                      Location                Flare Gas
+
+  Totals                                                 Daily                Day Closing
+  Indicated                                              12.50                59305258.80
+  Gross volume            m3                             12.50                59305258.80
+  Mass                    kg                             10.30               100287911.90
+  Base volume             sm3                            12.30               114888584.20
+  Energy                  GJ                              0.50                 5244971.10
+
+  Time weighted averages
+  Indicated flow rate                                    80.47
+  Gross volume flow rate  m3/h                           80.47
+  Mass flow rate          t/h                            66.31
+  Base volume flow rate   sm3/h                          78.53
+  Energy flow rate        GJ/h                            3.54
+  Flow Rate Duration      min                        1440.0831
+
+  Flow weighted averages
+  Meter temperature       deg C                          25.89   Heating value           MJ/sm3      45.070
+  Meter pressure          kPa(a)                       100.889   Heating value           MJ/kg       53.370
+  Density temperature     deg C                           0.00   Wobbe index             MJ/sm3      53.825
+  Density pressure        kPa(a)                         0.000   Line compressibility    -         0.997075
+  Observed density        kg/m3                          0.000   Base compressibility    -         0.996857
+  Unfactored density      kg/m3                          0.000   Volume correction factor-          0.97589
+  Density factor          -                             0.0000   Meter body factor       -          0.00000
+  Base density            kg/sm3                         0.844   Meter factor            -          1.00000
+  Relative density        -                           0.701128   Meter error             %          0.00000
+  Specific gravity        -                           0.699183   Meter K factor                       0.000
+  Meter density           kg/m3                          0.824
+
+  Flow weighted average composition [mol-%]
+  Methane                                             81.29100   n-Butane                           1.06100
+  Nitrogen                                             0.61500   i-Pentane                          0.26600
+  Carbon Dioxide                                       0.04400   n-Pentane                          0.22500
+  Ethane                                              10.54500   n-Hexane                           0.06000
+  Propane                                              4.94100   n-Heptane                          0.03300
+  Water                                                0.00000   n-Octane                           0.08400
+  Hydrogen Sulphide                                    0.00000   n-Nonane                           0.03000
+  Hydrogen                                             0.00000   n-Decane                           0.01100
+  Carbon Monoxide                                      0.00000   Helium                             0.00000
+  Oxygen                                               0.00000   Argon                              0.00000
+  i-Butane                                             0.79400   neo-Pentane                        0.00000
+
+  # indicates a totalizer rollover
+  * indicates a transmitter override
+

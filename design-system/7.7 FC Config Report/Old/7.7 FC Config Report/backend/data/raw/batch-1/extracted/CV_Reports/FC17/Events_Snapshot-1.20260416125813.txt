@@ -1,0 +1,103 @@
+                                   DAILY EVENTS REPORT ON DEMAND
+
+Company                            Equinor
+Location                           Tot. Fuel Gas & Test Sep. Gas & Gas Lift
+
+System                             21JN112
+Description                        FPSO Bacalhau
+Flow computer                      21JN112
+
+Start date/time                    16/04/26 00:00:00
+End date/time                      16/04/26 12:58:12
+
+Events                             89
+04/16/26 12:58:12                  'Print snapshot report' executed by administrator (2000)
+04/16/26 12:57:28                  Parameter DPA High alarm Limit was changed from 420 to 600 by administrator (2000)
+04/16/26 12:57:23                  Parameter DPA High high alarm Limit was changed from 420 to 600 by administrator (2000)
+04/16/26 12:53:50                  Parameter Run 1 Diff. pressure A HART full scale was changed from 420 to 600 by administrator (2000)
+04/16/26 12:49:09                  User Administrator (Web: 10.0.1.51) failed to log in
+04/16/26 12:49:09                  User administrator (Web: 10.0.1.51) has logged in
+04/16/26 11:12:30                  Run 1 Temperature alarm from Normal to Low Low [0]
+04/16/26 11:09:46                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 11:09:30                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 11:08:16                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 11:08:09                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 11:07:24                  Run 1 Pressure alarm from Low Low to Normal [0]
+04/16/26 11:01:17                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 11:01:16                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:59:57                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:59:27                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:57:34                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:57:24                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:56:17                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:56:11                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:54:15                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:53:56                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:53:48                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:53:38                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:52:08                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:52:01                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:50:36                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:50:24                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:46:03                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:44:18                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:40:31                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:40:14                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:34:54                  Run 1 DPA alarm from High High to Normal [42]
+04/16/26 10:33:32                  Run 1 DPA alarm from Normal to High High [42]
+04/16/26 10:30:27                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:30:01                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:29:44                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:25:58                  User administrator (Web: 10.0.1.51) has been automatically logged off
+04/16/26 10:23:19                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:23:10                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:22:52                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:22:21                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:20:31                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:20:24                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:20:20                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:20:15                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:19:58                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:19:57                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:19:54                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:19:47                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:19:42                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:18:22                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:18:20                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:18:19                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:17:52                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:17:49                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:17:35                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:17:29                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:17:23                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:17:21                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:17:18                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:15:16                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:15:09                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:13:27                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:13:04                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:09:14                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:05:09                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:02:22                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:01:44                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 10:01:43                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 10:00:21                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 09:53:23                  Run 1 Pressure alarm from Normal to Low Low [0]
+04/16/26 09:52:10                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 09:52:05                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 09:51:57                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 09:51:54                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 09:51:47                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 09:51:43                  Run 1 DPA alarm from Low Low to Normal [0]
+04/16/26 09:51:32                  Run 1 DPA alarm from Normal to Low Low [0]
+04/16/26 09:26:37                  Parameter Run 1 Meter temperature override was changed from Disabled to Enabled by CommDrivers (10000)
+04/16/26 09:26:37                  Parameter Run 1 Meter temperature override was changed from 51.07 to 51.86 by CommDrivers (10000)
+04/16/26 09:26:22                  Parameter Run 1 Meter pressure override was changed from Disabled to Enabled by CommDrivers (10000)
+04/16/26 09:26:22                  Parameter Run 1 Meter pressure override was changed from 45.88817 to 47.1712 by CommDrivers (10000)
+04/16/26 09:25:58                  Parameter Run 1 Differential pressure override was changed from Disabled to Enabled by administrator (2000)
+04/16/26 09:25:44                  Parameter Run 1 Differential pressure override was changed from 106.24 to 305.45 by administrator (2000)
+04/16/26 09:23:22                  User Administrator (Web: 10.0.1.51) failed to log in
+04/16/26 09:23:22                  User administrator (Web: 10.0.1.51) has logged in
+04/16/26 01:21:43                  User administrator (Web: 10.0.1.50) has been automatically logged off
+04/16/26 00:21:42                  User administrator (Web: 10.0.1.50) has logged in
+

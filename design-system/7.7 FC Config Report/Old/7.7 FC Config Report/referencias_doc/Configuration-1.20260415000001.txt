@@ -1,0 +1,1125 @@
+
+
+Applies for up to four unidirectional gas meter runs with single P and T
+transmitters. Control related settings are not shown on this report
+
+Date / time                                  15/04/26 00:00:01
+
+DEVICE INFORMATION
+
+Name                                         21JN112
+Type                                         Flow-X/C
+
+
+VERSION INFORMATION                          Display: System, (Modules,) Versions
+
+Application version                          2.3.1.0
+Application date/time                        Feb 25 2026 20:17:58
+Application checksum                         215D6456A8
+
+                                             Module 1
+Product nr                                   85-102-3
+Serial nr.                                   20-50-1-48
+Software                                     3.2.8.17090
+Addons                                       2.4.0.12900
+FPGA                                         0000.0000.2244.331C
+OS                                           2
+
+
+NETWORK SETTINGS                             Display: System, Network
+
+IP address 1                                 10.0.1.17
+Subnet mask 1                                255.255.255.0
+Default Gateway 1                            0.0.0.0
+IP address 2                                 10.0.2.17
+Subnet mask 2                                255.255.255.0
+Default Gateway 2                            0.0.0.0
+
+
+COM-PORT SETTINGS                            Display: System, COM ports
+
+                                             Module 1
+COM1
+ Baud rate                                   9600
+ Data bits                                   8
+ Parity                                      None
+ Stop bits                                   1
+ Mode                                        RS-232
+
+COM2
+ Baud rate                                   9600
+ Data bits                                   8
+ Parity                                      None
+ Stop bits                                   1
+ Mode                                        RS-232
+
+COM3
+ Baud rate
+ Data bits
+ Parity
+ Stop bits
+ Mode
+
+
+SYSTEM DATA                                  Display: Configuration, Overall setup, System data
+
+Flow computer tag                            21JN112
+System tag                                   21JN112
+System description                           FPSO Bacalhau
+Company                                      Equinor
+Location                                     Tot. Fuel Gas & Test Sep. Gas & Gas Lift
+
+
+STATION DATA                                 Display: Configuration, Station, Station setup
+
+Station tag
+Station ID
+
+
+METER DATA                                   Display: Configuration, Run, Flow meter, Meter data
+
+                                             Run 1                                    Run 2                                    Run 3
+Meter tag                                    45FT0555                                 20FT0244                                 26FT1306                                 -
+Meter ID                                     45FT0555                                 20FT0244                                 26FT1306                                 -
+Meter serial nr                              4014013                                  4014004                                  4014008                                  -
+Meter manufacturer                           EPS                                      EPS                                      EPS                                      -
+Meter model                                  Orifice                                  Orifice                                  Orifice                                  -
+Meter size                                   6"                                       10"                                      6"                                       -
+PT serial nr                                 90X928480 141 7                          90X928478 140 7                          90X928477                                -
+TT serial nr                                 C0X904247                                C0X904246                                C0X904245                                -
+dPA serial nr                                90XA10473                                90XA10466                                90X928468                                -
+dPB serial nr                                N/A                                      N/A                                      N/A                                      -
+
+FLOW RATE ALARM LIMITS                       Display: Flow Rates, Run
+
+                                             Run 1                                    Run 2                                    Run 3
+Hi hi limit [Sm³/h]                          8487.41                                  175947.22                                84925.27                                 -
+Hi limit [Sm³/h]                             8487.41                                  175947.22                                84925.27                                 -
+Lo limit [Sm³/h]                             1693.16                                  31923.73                                 24939.05                                 -
+Lo lo limit [Sm³/h]                          1696.16                                  31923.73                                 24939.05                                 -
+
+COMMON SETTINGS                              Display: Configuration, Overall setup, Common settings
+
+Flow computer type                           Run only
+Station product                              Disabled
+Use net HV for energy                        No
+Averaging method                             Flow weighted on gross volume
+Dis. totals on inactive                      Yes
+Flow 0 on inactive                           Yes
+Auto reset maint totals                      No
+Reverse totals                               Disabled
+Station totals method                        Station totals
+Dis. alarms on inactive                      Yes
+Dis. alarms on maint                         No
+Deviation alm delay [s]                      10
+MID compliance                               Disabled
+Energy in acc. alarm                         Disabled
+Allow overrides                              Yes
+Date format                                  dd/mm/yy
+Time set inhibit [s]                         30
+
+
+ANALOG INPUTS                                Display: IO, Module, Configuration, Analog inputs
+
+                                             Module 1
+Analog input 1
+ Tag                                         20FT0244,TT,P
+ Type                                        4-20 mA
+ Averaging                                   Arithmetic me
+ Zero scale                                  0
+ Full scale                                  100
+ Low fail                                    -2.4
+ High fail                                   102.4
+
+Analog input 2
+ Tag                                         26FT1306,TT,P
+ Type                                        4-20 mA
+ Averaging                                   Arithmetic me
+ Zero scale                                  0
+ Full scale                                  100
+ Low fail                                    -2.4
+ High fail                                   102.4
+
+Analog input 3
+ Tag                                         -----
+ Type                                        4-20 mA
+ Averaging                                   Arithmetic me
+ Zero scale                                  0
+ Full scale                                  100
+ Low fail                                    -2.4
+ High fail                                   102.4
+
+Analog input 4
+ Tag                                         45FT0555
+ Type                                        4-20 mA
+ Averaging                                   Arithmetic me
+ Zero scale                                  0
+ Full scale                                  420
+ Low fail                                    -2.4
+ High fail                                   110
+
+Analog input 5
+ Tag                                         45PT0555
+ Type                                        4-20 mA
+ Averaging                                   Arithmetic me
+ Zero scale                                  0
+ Full scale                                  50
+ Low fail                                    -2.4
+ High fail                                   102.4
+
+Analog input 6
+ Tag                                         45TT0555
+ Type                                        4-20 mA
+ Averaging                                   Arithmetic me
+ Zero scale                                  0
+ Full scale                                  70
+ Low fail                                    -2.4
+ High fail                                   102.4
+
+
+PT100 INPUTS                                 Display: IO, Module, Configuration, Pt100 inputs
+
+                                             Module 1
+Pt100 input 1
+ Tag                                         ---
+ Type                                        European
+ Low fail [°C]                               -190
+ High fail [°C]                              200
+
+Pt100 input 2
+ Tag                                         ---
+ Type                                        European
+ Low fail [°C]                               -190
+ High fail [°C]                              200
+
+
+DIGITAL SIGNALS                              Display: IO, Configuration, Digital IO settings
+
+                                             Module 1
+Digital 1
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 2
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 3
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 4
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 5
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 6
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 7
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 8
+ Tag                                         20XA112
+ Type                                        Digital outpu
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]                         0
+ Output delay [ms]                           0
+Digital 9
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 10
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 11
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 12
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 13
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 14
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 15
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+Digital 16
+ Tag                                         ---
+ Type                                        Not used
+ Polarity                                    Normal
+ Input latch mode
+ Output min act [ms]
+ Output delay [ms]
+
+
+STATION SETUP                                Display: Configuration, Station, Meter runs
+
+
+Module location
+Remote module device
+Totalizer type
+
+
+STATION SETUP                                Display: Configuration, Station, Station setup
+
+Obs density input
+Dens temp input
+Dens pres input
+Base density input
+Relative density input
+Specific gravity input
+Density configuration
+Gas composition input
+Heating value input
+
+
+METER RUN SETUP                              Display: Configuration, Run, Run setup
+
+                                             Run 1                                    Run 2                                    Run 3
+Meter device type                            Orifice                                  Orifice                                  Orifice                                  -
+Temp. transmitter(s)                         Single                                   Single                                   Single                                   -
+Pres. transmitter(s)                         Single                                   Single                                   Single                                   -
+Obs density input                            None                                     None                                     None                                     -
+Dens temp input                              None                                     None                                     None                                     -
+Dens pres input                              None                                     None                                     None                                     -
+Base density input                           Base compress                            Base compress                            Base compress                            -
+Relative density input                       Calculated                               Calculated                               Calculated                               -
+Specific gravity input                       Calculated                               Calculated                               Calculated                               -
+Meter density calc                           Compressibili                            Compressibili                            Compressibili                            -
+Density configuration                        OK                                       OK                                       OK                                       -
+Gas composition input                        Always use ov                            Always use ov                            Always use ov                            -
+Heating value input                          Calculated                               Calculated                               Calculated                               -
+
+
+DP METER                                     Display: Configuration, Run, Flow meter, Orifice/Venturi/V-cone/Nozzle
+
+                                             Run 1                                    Run 2                                    Run 3                                    -
+Pipe ref diameter [mm]                       156.13                                   258.91                                   130.19                                   -
+Pipe exp coef type                           User-defined                             User-defined                             User-defined                             -
+Pipe exp coef [1/°C]                         1.28e-005                                1.29e-005                                1.116e-005                               -
+Pipe ref temp [°C]                           20                                       20                                       20                                       -
+Device ref diam [mm]                         48                                       173.67                                   45.63                                    -
+Device exp coef type                         User-defined                             User-defined                             User-defined                             -
+Device exp coef [1/°C]                       1.28e-005                                1.3e-005                                 1.665e-005                               -
+Device ref temp [°C]                         20                                       20                                       20                                       -
+Calc method                                  ISO5167                                  ISO5167                                  ISO5167                                  -
+Orifice tapping                              Flange tappin                            Flange tappin                            Flange tappin                            -
+ISO5167 edition                              2003                                     2003                                     2003                                     -
+Drain hole [mm]                              0                                        0                                        0                                        -
+Pressure location                            Upstream tapp                            Upstream tapp                            Upstream tapp                            -
+Temperature location                         Recovered pre                            Recovered pre                            Recovered pre                            -
+Temperature correction                       Joule Thomson                            Joule Thomson                            Joule Thomson                            -
+Temp exponent [°C/bar]                       0                                        0                                        0                                        -
+Joule-Thomson coef                           Calculated                               Calculated                               Calculated                               -
+Density exponent                             0                                        0                                        0                                        -
+AGA 3 grav corr fact fpwl                    1                                        1                                        1                                        -
+Dynamic viscosity [Pa.s]                     3.459e-005                               3.501e-005                               3.26e-005                                -
+Isentropic exp                               1.247                                    1.296                                    1.8                                      -
+
+
+DP INPUTS                                    Display: Configuration, Run, Flow meter, dP inputs
+
+                                             Run 1                                    Run 2                                    Run 3                                    -
+dP input selection                           1 cell full r                            1 cell full r                            1 cell full r                            -
+dp threshold [kPa]                           0.105                                    0.113                                    0.124                                    -
+dP switch-up                                 95                                       95                                       95                                       -
+dP switch-down                               90                                       90                                       90                                       -
+
+dP A
+ Type                                        Analog input                             HART                                     HART                                     -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     4                                        1                                        2                                        -
+ HART device                                 No device                                1 : 20FT0244                             5 : 26FT1306                             -
+ HART High scale (kPa)                       42                                       45                                       50                                       -
+ HART Low scale (kPa)                        0                                        0                                        0                                        -
+
+dP A                                         Display: Differential Pressure, Run, dPA (dPA)
+                                             Run 1                                    Run 2                                    Run 3
+ Cell Range                                  Full range                               Full range                               Full range                               -
+ Hi hi limit [kPa]                           42                                       45                                       50                                       -
+ Hi limit [kPa]                              42                                       45                                       50                                       -
+ Lo limit [kPa]                              0                                        0                                        0                                        -
+ Lo lo limit [kPa]                           0                                        0                                        0                                        -
+ ROC limit [kPa/s]                           0                                        0                                        0                                        -
+
+dP B
+ Type                                        None                                     None                                     None                                     -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     4                                        4                                        4                                        -
+ HART device                                 No device                                No device                                No device                                -
+ HART High scale (kPa)                       50                                       50                                       50                                       -
+ HART Low scale (kPa)                        0                                        0                                        0                                        -
+
+dP B                                         Display: Differential Pressure, Run, dPB (dPB)
+                                             Run 1                                    Run 2                                    Run 3
+ Cell Range                                  None                                     None                                     None                                     -
+ Hi hi limit [kPa]                           100                                      100                                      100                                      -
+ Hi limit [kPa]                              100                                      100                                      100                                      -
+ Lo limit [kPa]                              -100                                     -100                                     -100                                     -
+ Lo lo limit [kPa]                           -100                                     -100                                     -100                                     -
+ ROC limit [kPa/s]                           0                                        0                                        0                                        -
+
+dP C
+ Type                                        Analog input                             Analog input                             Analog input                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     5                                        5                                        5                                        -
+ HART device                                 No device                                No device                                No device                                -
+ HART High scale (kPa)                       50                                       50                                       50                                       -
+ HART Low scale (kPa)                        0                                        0                                        0                                        -
+
+dP C                                         Display: Differential Pressure, Run, dPC (dPC)
+                                             Run 1                                    Run 2                                    Run 3
+ Cell Range                                  None                                     None                                     None                                     -
+ Hi hi limit [kPa]                           100                                      100                                      100                                      -
+ Hi limit [kPa]                              100                                      100                                      100                                      -
+ Lo limit [kPa]                              -100                                     -100                                     -100                                     -
+ Lo lo limit [kPa]                           -100                                     -100                                     -100                                     -
+ ROC limit [kPa/s]                           0                                        0                                        0                                        -
+
+PULSE INPUT                                  Display: Configuration, Run, Flow meter, Pulse input
+
+                                                                                                                                                                        -
+Pulse single / dual                                                                                                                                                     -
+Pulse quantity type                                                                                                                                                     -
+Pulse HF/LF mode                                                                                                                                                        -
+Pulse HF/LF blade ratio                                                                                                                                                 -
+Pulse mtr active t.h. [Hz]                                                                                                                                              -
+
+
+PULSE INPUT                                  Display: IO, Module, Configuration, Pulse input
+
+                                                                                                                                                                        -
+Pulse fidelity level                                                                                                                                                    -
+Fallback pulse B (level B)                                                                                                                                              -
+Error pulses limit                                                                                                                                                      -
+Good pulses reset limit                                                                                                                                                 -
+Error rate limit [Hz]                                                                                                                                                   -
+Pulse fidelity thresh [Hz]                                                                                                                                              -
+
+
+METER K-FACTOR                               Display: Configuration, Run, Flow meter, Meter K-factor
+
+                                                                                                                                                                        -
+Pulse K-factor curve                                                                                                                                                    -
+Pulse nominal K-factor                                                                                                                                                  -
+Pulse inuse K-Factor                                                                                                                                                    -
+K-Factor units                               pls/kg                                   pls/kg                                   pls/kg                                   -
+Frequency point 1                                                                                                                                                       -
+K-Factor 1                                                                                                                                                              -
+Frequency point 2                                                                                                                                                       -
+K-Factor 2                                                                                                                                                              -
+Frequency point 3                                                                                                                                                       -
+K-Factor 3                                                                                                                                                              -
+Frequency point 4                                                                                                                                                       -
+K-Factor 4                                                                                                                                                              -
+Frequency point 5                                                                                                                                                       -
+K-Factor 5                                                                                                                                                              -
+Frequency point 6                                                                                                                                                       -
+K-Factor 6                                                                                                                                                              -
+Frequency point 7                                                                                                                                                       -
+K-Factor 7                                                                                                                                                              -
+Frequency point 8                                                                                                                                                       -
+K-Factor 8                                                                                                                                                              -
+Frequency point 9                                                                                                                                                       -
+K-Factor 9                                                                                                                                                              -
+Frequency point 10                                                                                                                                                      -
+K-Factor 10                                                                                                                                                             -
+Frequency point 11                                                                                                                                                      -
+K-Factor 11                                                                                                                                                             -
+Frequency point 12                                                                                                                                                      -
+K-Factor 12                                                                                                                                                             -
+
+METER FACTOR                                 Display: Configuration, Run, Flow meter, Meter factor
+
+                                             Run 1                                    Run 2                                    Run 3
+Meter factor curve                           Disabled                                 Disabled                                 Disabled                                 -
+Nominal meter factor                         1                                        1                                        1                                        -
+Meter factor / error                         Meter factor                             Meter factor                             Meter factor                             -
+Flow rate units                              kg/h                                     kg/h                                     kg/h                                     -
+Flow rate 1                                                                                                                                                             -
+MF/error 1                                                                                                                                                              -
+Flow rate 2                                                                                                                                                             -
+MF/error 2                                                                                                                                                              -
+Flow rate 3                                                                                                                                                             -
+MF/error 3                                                                                                                                                              -
+Flow rate 4                                                                                                                                                             -
+MF/error 4                                                                                                                                                              -
+Flow rate 5                                                                                                                                                             -
+MF/error 5                                                                                                                                                              -
+Flow rate 6                                                                                                                                                             -
+MF/error 6                                                                                                                                                              -
+Flow rate 7                                                                                                                                                             -
+MF/error 7                                                                                                                                                              -
+Flow rate 8                                                                                                                                                             -
+MF/error 8                                                                                                                                                              -
+Flow rate 9                                                                                                                                                             -
+MF/error 9                                                                                                                                                              -
+Flow rate 10                                                                                                                                                            -
+MF/error 10                                                                                                                                                             -
+Flow rate 11                                                                                                                                                            -
+MF/error 11                                                                                                                                                             -
+Flow rate 12                                                                                                                                                            -
+MF/error 12                                                                                                                                                             -
+
+
+SMART METER                                  Display: Configuration, Run, Flow meter, Smart meter
+
+                                                                                                                                                                        -
+Smart meter type                                                                                                                                                        -
+Smart comm device                                                                                                                                                       -
+Smart AIN module                                                                                                                                                        -
+Smart AIN channel                                                                                                                                                       -
+Smart AIN quantity                                                                                                                                                      -
+Smart active threshold                                                                                                                                                  -
+
+
+METER BODY CORRECTION                        Display: Configuration, Run, Flow meter, Meter body correction
+
+                                             Run 1                                    Run 2                                    Run 3
+Body correction                              Disabled                                 Disabled                                 Disabled                                 -
+Correction type                                                                                                                                                         -
+Coefficient select                                                                                                                                                      -
+Reference temp [°C]                                                                                                                                                     -
+Cub temp exp [1/°C]                                                                                                                                                     -
+Reference pres [kPa(a)]                                                                                                                                                 -
+Cub pres exp [1/bar]                                                                                                                                                    -
+
+
+DATA VALID INPUT                             Display: Configuration, Run Flow meter, Data valid input
+
+                                             Run 1                                    Run 2                                    Run 3
+Data valid input type                        None                                     None                                     None                                     -
+Digital input module                                                                                                                                                    -
+Digital input channel                                                                                                                                                   -
+
+
+SERIAL MODE                                  Display: Configuration, Run, Flow meter, Serial mode
+
+
+Serial mode input type                                                                                                                                                  -
+Digital input module                                                                                                                                                    -
+Digital input channel                                                                                                                                                   -
+Digital input polarity                                                                                                                                                  -
+
+
+METER TEMPERATURE                            Display: Configuration, Run, Temperature (, Meter temperature)
+
+                                             Run 1                                    Run 2                                    Run 3
+Input tag                                    45TT0555                                 ---                                      ---                                      -
+Input type                                   Analog input                             HART                                     HART                                     -
+AIN module                                   Local module                             Local module                             Local module                             -
+AIN channel                                  6                                        2                                        2                                        -
+HART device                                  No device                                2 : 20TT0244                             4 : 26TT1306                             -
+HART variable                                1                                        1                                        1                                        -
+HART offset [°C]                             0                                        0                                        0                                        -
+HART to AIN fallback                         Disabled                                 Disabled                                 Disabled                                 -
+Fallback type                                Override valu                            Override valu                            Override valu                            -
+Fallback value                               0                                        0                                        0                                        -
+
+
+METER TEMPERATURE                            Display: Temperature, Run (, Meter temperature)
+
+                                             Run 1                                    Run 2                                    Run 3
+Override                                     Disabled                                 Disabled                                 Disabled                                 -
+Override [°C]                                51.07                                    28.2                                     0                                        -
+Hi hi limit [°C]                             70                                       70                                       40                                       -
+Hi limit [°C]                                70                                       70                                       40                                       -
+Lo limit [°C]                                0                                        0                                        0                                        -
+Lo lo limit [°C]                             0                                        0                                        0                                        -
+ROC limit [°C/s]                             0                                        0                                        0                                        -
+
+
+METER PRESSURE                               Display: Configuration, Run, Pressure (, Meter pressure)
+
+                                             Run 1                                    Run 2                                    Run 3
+Input tag                                    45PT0555                                 ---                                      ---                                      -
+Input type                                   Analog input                             HART                                     HART                                     -
+Input gauge/absolute                         gauge                                    gauge                                    gauge                                    -
+AIN module                                   Local module                             Local module                             Local module                             -
+AIN channel                                  5                                        2                                        2                                        -
+HART device                                  No device                                3 : 20PT0244                             7 : 26PT1306                             -
+HART variable                                1                                        1                                        1                                        -
+HART offset  [bar]                           0                                        0                                        0                                        -
+HART to AIN fallback                         Disabled                                 Disabled                                 Disabled                                 -
+Fallback type                                Override valu                            Override valu                            Override valu                            -
+Fallback value                               0                                        0                                        0                                        -
+
+
+METER PRESSURE                               Display: Pressure, Run (, Meter pressure)
+
+                                             Run 1                                    Run 2                                    Run 3
+Override                                     Disabled                                 Disabled                                 Disabled                                 -
+Override [kPa]                               4588.817                                 526.95                                   0                                        -
+Hi hi limit [kPa]                            5000                                     9000                                     26000                                    -
+Hi limit [kPa]                               5000                                     9000                                     26000                                    -
+Lo limit [kPa]                               0                                        0                                        0                                        -
+Lo lo limit [kPa]                            0                                        0                                        0                                        -
+ROC limit [kPa/s]                            0                                        1000000                                  0                                        -
+
+
+DENSITY TEMPERATURE                          Display: Configuration, Run, Temperature, Density temperature
+
+                                                                                                                                                                        -
+Input tag                                                                                                                                                               -
+Input type                                                                                                                                                              -
+AIN module                                                                                                                                                              -
+AIN channel                                                                                                                                                             -
+HART device                                                                                                                                                             -
+HART variable                                                                                                                                                           -
+HART offset [°C]                                                                                                                                                        -
+HART to AIN fallback                                                                                                                                                    -
+Fallback type                                                                                                                                                           -
+Fallback value                                                                                                                                                          -
+
+
+DENSITY TEMPERATURE                          Display: Temperature, Run, Density temperature
+
+                                                                                                                                                                        -
+Override                                                                                                                                                                -
+Override [°C]                                                                                                                                                           -
+Hi hi limit [°C]                                                                                                                                                        -
+Hi limit [°C]                                                                                                                                                           -
+Lo limit [°C]                                                                                                                                                           -
+Lo lo limit [°C]                                                                                                                                                        -
+ROC limit [°C/s]                                                                                                                                                        -
+
+
+DENSITY PRESSURE                             Display: Configuration, Run, Pressure, Density pressure
+
+                                                                                                                                                                        -
+Input tag                                                                                                                                                               -
+Input type                                                                                                                                                              -
+Input gauge/absolute                                                                                                                                                    -
+AIN module                                                                                                                                                              -
+AIN channel                                                                                                                                                             -
+HART device                                                                                                                                                             -
+HART variable                                                                                                                                                           -
+HART offset  [bar]                                                                                                                                                      -
+HART to AIN fallback                                                                                                                                                    -
+Fallback type                                                                                                                                                           -
+Fallback value                                                                                                                                                          -
+
+
+DENSITY PRESSURE                             Display: Pressure, Run, Density pressure
+
+                                                                                                                                                                        -
+Override                                                                                                                                                                -
+Override [kPa]                                                                                                                                                          -
+Hi hi limit [kPa]                                                                                                                                                       -
+Hi limit [kPa]                                                                                                                                                          -
+Lo limit [kPa]                                                                                                                                                          -
+Lo lo limit [kPa]                                                                                                                                                       -
+ROC limit [kPa/s]                                                                                                                                                       -
+
+
+DENSITOMETER A SETUP                         Display: Configuration, Run, Density, Densitometer A
+* Applies for 1 densitometer only *
+
+                                                                                                                                                                        -
+Densitometer type                                                                                                                                                       -
+Densitometer units                                                                                                                                                      -
+Input tag                                                                                                                                                               -
+Input module                                                                                                                                                            -
+Input number                                                                                                                                                            -
+Digital channel                                                                                                                                                         -
+AGA-8 deviation limit                                                                                                                                                   -
+Density correction factor                                                                                                                                               -
+Temperature correction                                                                                                                                                  -
+Reference temp [°C]                                                                                                                                                     -
+Pressure correction                                                                                                                                                     -
+Reference pres [kPa(g)]                                                                                                                                                 -
+Solartron - K0                                                                                                                                                          -
+Solartron - K1                                                                                                                                                          -
+Solartron - K2                                                                                                                                                          -
+Solartron - K18                                                                                                                                                         -
+Solartron - K19                                                                                                                                                         -
+Solartron - VOS cor.                                                                                                                                                    -
+Solartron - K3                                                                                                                                                          -
+Solartron - K4                                                                                                                                                          -
+Solartron - G method                                                                                                                                                    -
+Solartron - G value                                                                                                                                                     -
+Cp / Cv                                                                                                                                                                 -
+Solartron - Kc                                                                                                                                                          -
+Sarasota - d0                                                                                                                                                           -
+Sarasota - tau0                                                                                                                                                         -
+Sarasota - K factor                                                                                                                                                     -
+Sarasota - temp coef                                                                                                                                                    -
+Sarasota - pres coef                                                                                                                                                    -
+UGC - K0                                                                                                                                                                -
+UGC - K1                                                                                                                                                                -
+UGC - K2                                                                                                                                                                -
+UGC - Kt1                                                                                                                                                               -
+UGC - Kt2                                                                                                                                                               -
+UGC - Kt3                                                                                                                                                               -
+UGC - Kp1                                                                                                                                                               -
+UGC - Kp2                                                                                                                                                               -
+UGC - Kp3                                                                                                                                                               -
+
+
+DENSITOMETER A INPUT                         Display: Density, Run, Densitometer A
+* Applies for 1 densitometer only *
+
+                                                                                                                                                                        -
+Override                                                                                                                                                                -
+Override [us]                                                                                                                                                           -
+Hi hi limit [us]                                                                                                                                                        -
+Hi limit [us]                                                                                                                                                           -
+Lo limit [us]                                                                                                                                                           -
+Lo lo limit [us]                                                                                                                                                        -
+ROC limit [us]                                                                                                                                                          -
+
+
+OBSERVED DENSITY                             Display: Density, Run, Observed density
+
+                                                                                                                                                                        -
+Override                                                                                                                                                                -
+Override [kg/m3]                                                                                                                                                        -
+Hi hi limit [kg/m3]                                                                                                                                                     -
+Hi limit [kg/m3]                                                                                                                                                        -
+Lo limit [kg/m3]                                                                                                                                                        -
+Lo lo limit [kg/m3]                                                                                                                                                     -
+ROC limit [kg/m3/s]                                                                                                                                                     -
+
+
+BASE DENSITY                                 Display: Density, Run, Base density
+
+                                             Run 1                                    Run 2                                    Run 3
+Override                                     Disabled                                 Disabled                                 Disabled                                 -
+Override [kg/sm3]                            0                                        0                                        0                                        -
+Hi hi limit [kg/sm3]                         1000                                     1000                                     1000                                     -
+Hi limit [kg/sm3]                            1000                                     1000                                     1000                                     -
+Lo limit [kg/sm3]                            -1000                                    -1000                                    -1000                                    -
+Lo lo limit [kg/sm3]                         -1000                                    -1000                                    -1000                                    -
+ROC limit [kg/sm3/s]                         0                                        0                                        0                                        -
+
+
+METER DENSITY                                Display: Density, Run, Meter density
+
+                                             Run 1                                    Run 2                                    Run 3
+Override                                     Disabled                                 Disabled                                 Disabled                                 -
+Override [kg/m3]                             0                                        0                                        0                                        -
+
+
+HEATING VALUE                                Display: Gas properties, Run, Heating value
+
+                                             Run 1                                    Run 2                                    Run 3
+Units                                        MJ/m3                                    MJ/m3                                    MJ/m3                                    -
+Override                                     Disabled                                 Disabled                                 Disabled                                 -
+Override                                     0                                        0                                        0                                        -
+Hi hi limit                                  1000                                     1000                                     1000                                     -
+Hi limit                                     1000                                     1000                                     1000                                     -
+Lo limit                                     -1000                                    -1000                                    -1000                                    -
+Lo lo limit                                  -1000                                    -1000                                    -1000                                    -
+ROC limit [/s]                               0                                        0                                        0                                        -
+
+
+GAS COMPOSITION                              Display: Configuration, Run, Gas properties, Gas composition
+
+                                             Run 1                                    Run 2                                    Run 3
+Composition input type                       Always use ov                            Always use ov                            Always use ov                            -
+Comp fallback type                           Use last rece                            Use last rece                            Use last rece                            -
+Comp fail on limit                           Disabled                                 Disabled                                 Disabled                                 -
+Normalization                                Enabled                                  Enabled                                  Enabled                                  -
+neo-Pentane mode                             Add to iC5                               Add to iC5                               Add to iC5                               -
+Live Cx+ split mode                          Not used                                 Not used                                 Not used                                 -
+Live C6 split [%]                            100                                      100                                      100                                      -
+Live C7 split [%]                            0                                        0                                        0                                        -
+Live C8 split [%]                            0                                        0                                        0                                        -
+Live C9 split [%]                            0                                        0                                        0                                        -
+Live C10 split [%]                           0                                        0                                        0                                        -
+Override Cx+ split mode                      Not used                                 Not used                                 Not used                                 -
+Override C6 split [%]                        100                                      100                                      100                                      -
+Override C7 split [%]                        0                                        0                                        0                                        -
+Override C8 split [%]                        0                                        0                                        0                                        -
+Override C9 split [%]                        0                                        0                                        0                                        -
+Override C10 split [%]                       0                                        0                                        0                                        -
+Analysis delayed alarm                       Disabled                                 Disabled                                 Disabled                                 -
+Ana delay timeout [min]                      10                                       10                                       10                                       -
+
+
+COMP. LIMITS [mol%]                          Display: Gas properties, Run, Composition limits
+
+                                             Run 1                                    Run 2                                    Run 3                                    -
+Sum lo                                       99.5                                     99.5                                     99.5                                     -
+Sum hi                                       100.5                                    100.5                                    100.5                                    -
+Methane lo                                   0                                        0                                        0                                        -
+Methane hi                                   100                                      100                                      100                                      -
+Nitrogen lo                                  0                                        0                                        0                                        -
+Nitrogen hi                                  100                                      100                                      100                                      -
+Carbon dioxide lo                            0                                        0                                        0                                        -
+Carbon dioxide hi                            100                                      100                                      100                                      -
+Ethane lo                                    0                                        0                                        0                                        -
+Ethane hi                                    100                                      100                                      100                                      -
+Propane lo                                   0                                        0                                        0                                        -
+Propane hi                                   100                                      100                                      100                                      -
+Water lo                                     0                                        0                                        0                                        -
+Water hi                                     100                                      100                                      100                                      -
+Hydrogen sulphide lo                         0                                        0                                        0                                        -
+Hydrogen sulphide hi                         100                                      100                                      100                                      -
+Hydrogen lo                                  0                                        0                                        0                                        -
+Hydrogen hi                                  100                                      100                                      100                                      -
+Carbon monoxide lo                           0                                        0                                        0                                        -
+Carbon monoxide hi                           100                                      100                                      100                                      -
+Oxygen lo                                    0                                        0                                        0                                        -
+Oxygen hi                                    100                                      100                                      100                                      -
+i-Butane lo                                  0                                        0                                        0                                        -
+i-Butane hi                                  100                                      100                                      100                                      -
+n-Butane lo                                  0                                        0                                        0                                        -
+n-Butane hi                                  100                                      100                                      100                                      -
+i-Pentane lo                                 0                                        0                                        0                                        -
+i-Pentane hi                                 100                                      100                                      100                                      -
+n-Pentane lo                                 0                                        0                                        0                                        -
+n-Pentane hi                                 100                                      100                                      100                                      -
+neo-Pentane lo                               0                                        0                                        0                                        -
+neo-Pentane hi                               100                                      100                                      100                                      -
+n-Hexane lo                                  0                                        0                                        0                                        -
+n-Hexane hi                                  100                                      100                                      100                                      -
+n-Heptane lo                                 0                                        0                                        0                                        -
+n-Heptane hi                                 100                                      100                                      100                                      -
+n-Octane lo                                  0                                        0                                        0                                        -
+n-Octane hi                                  100                                      100                                      100                                      -
+n-Nonane lo                                  0                                        0                                        0                                        -
+n-Nonane hi                                  100                                      100                                      100                                      -
+n-Decane lo                                  0                                        0                                        0                                        -
+n-Decane hi                                  100                                      100                                      100                                      -
+Helium lo                                    0                                        0                                        0                                        -
+Helium hi                                    100                                      100                                      100                                      -
+Argon lo                                     0                                        0                                        0                                        -
+Argon hi                                     100                                      100                                      100                                      -
+C6+ lo                                       0                                        0                                        0                                        -
+C6+ hi                                       100                                      100                                      100                                      -
+C7+ lo                                       0                                        0                                        0                                        -
+C7+ hi                                       100                                      100                                      100                                      -
+C8+ lo                                       0                                        0                                        0                                        -
+C8+ hi                                       100                                      100                                      100                                      -
+C9+ lo                                       0                                        0                                        0                                        -
+C9+ hi                                       100                                      100                                      100                                      -
+
+
+COMP. OVERRIDE [mol%]                        Display: Gas properties, Run, Override composition
+
+                                             Run 1                                    Run 2                                    Run 3                                    -
+Override                                     Enabled                                  Enabled                                  Enabled                                  -
+Methane                                      80.958                                   83.664                                   79.8706                                  -
+Nitrogen                                     0.587                                    0.702                                    0.7324                                   -
+Carbon dioxide                               4.e-002                                  2.4e-002                                 8.71e-002                                -
+Ethane                                       10.138                                   9.279                                    9.944                                    -
+Propane                                      5.359                                    3.739                                    5.7019                                   -
+Water                                        0                                        0                                        3.2e-003                                 -
+Hydrogen sulphide                            0                                        0                                        0                                        -
+Hydrogen                                     0                                        0                                        0                                        -
+Carbon monoxide                              0                                        0                                        0                                        -
+Oxygen                                       0                                        0                                        0                                        -
+i-Butane                                     0.938                                    0.71                                     0.9417                                   -
+n-Butane                                     1.27                                     0.995                                    1.6741                                   -
+i-Pentane                                    0.287                                    0.292                                    0.3895                                   -
+n-Pentane                                    0.223                                    0.268                                    0.3753                                   -
+neo-Pentane                                  0                                        0                                        0                                        -
+Hexane                                       4.7e-002                                 9.3e-002                                 0.1456                                   -
+Heptane                                      2.3e-002                                 5.5e-002                                 7.98e-002                                -
+Octane                                       8.8e-002                                 0.113                                    3.63e-002                                -
+Nonane                                       3.1e-002                                 4.7e-002                                 1.1e-002                                 -
+Decane                                       1.1e-002                                 1.9e-002                                 7.5e-003                                 -
+Helium                                       0                                        0                                        0                                        -
+Argon                                        0                                        0                                        0                                        -
+Sum                                          100                                      100                                      100                                      -
+
+
+GAS CHROMATOGRAPH                            Display: Gas properties, Run, Gas chromatograph(s)
+
+                                             Run 1                                    Run 2                                    Run 3                                    -
+GC selection mode                            Auto A                                   Auto A                                   Auto A                                   -
+GC analysis delay [s]                        10                                       10                                       10                                       -
+GC A device                                  No device                                No device                                No device                                -
+GC A multi-stream                            Disabled                                 Disabled                                 Disabled                                 -
+GC A stream nr                               1                                        1                                        1                                        -
+GC B device                                  No device                                No device                                No device                                -
+GC B multi-stream                            Disabled                                 Disabled                                 Disabled                                 -
+GC B stream nr                               1                                        1                                        1                                        -
+
+
+CALCULATION CONSTANTS                        Display: Configuration, Overall setup, Constants
+
+Atmospheric [kPa(a)]                         101.325
+Molar mass air [kg/kmol]                     28.9626
+Base dens air [kg/sm3]                       1.204449
+Reference pres [kPa(a)]                      101.325
+Reference temp [°C]                          20
+Gas constant R [J/K/mol]                     8.31451
+Gravity accelerat [m/s2]                     9.81
+
+
+STATION CALCULATION SETUP                    Display: Configuration, Station, Gas properties, Calculation setup
+
+Compressibility method
+Base compres method
+Molar mass method
+Heating value method
+SGERG input method
+SGERG reference cond
+NX19 G9 correction
+ISO6976:1995 ref [°C]
+ISO6976:1995 MM method
+ISO6976:1995 HV method
+ISO6976:1983 met [°C]
+ISO6976:1983 com [°C]
+GPA 2145 edition
+
+
+CALCULATION SETUP                            Display: Configuration, Run, Gas properties, Calculation setup
+
+                                             Run 1                                    Run 2                                    Run 3
+Compressibility method                       AGA8 (detaile                            AGA8 (detaile                            AGA8 (detaile                            -
+Base compres method                          AGA8 (detaile                            AGA8 (detaile                            AGA8 (detaile                            -
+Molar mass method                            AGA8 (detaile                            AGA8 (detaile                            AGA8 (detaile                            -
+Heating value method                         ISO6976 1995                             ISO6976 1995                             ISO6976 1995                             -
+SGERG input method                           All inputs kn                            All inputs kn                            All inputs kn                            -
+SGERG reference cond                         GHV/RD 25/0°C                            GHV/RD 25/0°C                            GHV/RD 25/0°C                            -
+NX19 G9 correction                           Disabled                                 Disabled                                 Disabled                                 -
+ISO6976:1995 ref [°C]                        20 / 20 °C                               20 / 20 °C                               20 / 20 °C                               -
+ISO6976:1995 MM method                       From atomic m                            Use table val                            From atomic m                            -
+ISO6976:1995 HV method                       Definitive (m                            Definitive (m                            Definitive (m                            -
+ISO6976:1983 met [°C]                        0 °C                                     0 °C                                     0 °C                                     -
+ISO6976:1983 com [°C]                        25 / 0 °C                                25 / 0 °C                                25 / 0 °C                                -
+GPA 2145 edition                             GPA2145-16                               GPA2145-16                               GPA2145-16                               -
+
+
+PERIODS                                      Display: Configuration, Overall setup, Periods
+
+Daily period start hour                      0
+Period A label                               Weekly
+Period A type                                Day
+Period A count                               7
+Period A start day                           2
+Period A start hour                          0
+Period A start minute                        0
+Period B label                               Monthly
+Period B type                                Month
+Period B count                               1
+Period B start day                           0
+Period B start hour                          0
+Period B start minute                        0
+
+
+TOTALS                                       Display: Configuration, Overall setup, Totals
+
+Gross vol dec places                         1
+Gross vol rollover [m3]                      1000000000
+Base vol dec places                          1
+Base vol rollover [m3]                       1000000000
+Mass dec places                              1
+Mass rollover [kg]                           1000000000
+Energy dec places                            1
+Energy rollover [GJ]                         1000000000
+
+
+ANALOG OUTPUTS                               Display: Configuration, Station / Run, Analog outputs
+
+                                             Run 1                                    Run 2                                    Run 3
+Analog output 1
+ Variable                                    Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     1                                        1                                        1                                        -
+
+Analog output 2
+ Variable                                    Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     2                                        2                                        2                                        -
+
+Analog output 3
+ Variable                                    Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     3                                        3                                        3                                        -
+
+Analog output 4
+ Variable                                    Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Channel                                     4                                        4                                        4                                        -
+
+
+ANALOG OUTPUTS                               Display: IO, Configuration, Analog outputs
+
+                                             Module 1
+Analog output 1
+ Tag                                         ---
+ Zero scale                                  0
+ Full scale                                  100
+
+Analog output 2
+ Tag                                         ---
+ Zero scale                                  0
+ Full scale                                  100
+
+Analog output 3
+ Tag                                         ---
+ Zero scale                                  0
+ Full scale                                  100
+
+Analog output 4
+ Tag                                         ---
+ Zero scale                                  0
+ Full scale                                  100
+
+
+PULSE OUTPUTS                                Display: Configuration, Station / Run, Pulse outputs
+
+                                             Run 1                                    Run 2                                    Run 3
+Pulse output 1
+ Totalizer                                   Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Output                                      1                                        1                                        1                                        -
+ Quantity pp                                 1000                                     1000                                     1000                                     -
+
+Pulse output 2
+ Totalizer                                   Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Output                                      2                                        2                                        2                                        -
+ Quantity pp                                 1000                                     1000                                     1000                                     -
+
+Pulse output 3
+ Totalizer                                   Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Output                                      3                                        3                                        3                                        -
+ Quantity pp                                 1000                                     1000                                     1000                                     -
+
+Pulse output 4
+ Totalizer                                   Not assigned                             Not assigned                             Not assigned                             -
+ Module                                      Local module                             Local module                             Local module                             -
+ Output                                      4                                        4                                        4                                        -
+ Quantity pp                                 1000                                     1000                                     1000                                     -
+
+
+PULSE OUTPUTS                                Display: IO, Configuration, Pulse outputs
+
+                                             Module 1
+Pulse output 1
+ Max frequency [Hz]                          5
+ Pulse duration [s]                          0.1
+ Reservoir limit                             1000000000
+
+Pulse output 2
+ Max frequency [Hz]                          5
+ Pulse duration [s]                          0.1
+ Reservoir limit                             1000000000
+
+Pulse output 3
+ Max frequency [Hz]                          5
+ Pulse duration [s]                          0.1
+ Reservoir limit                             1000000000
+
+Pulse output 4
+ Max frequency [Hz]                          5
+ Pulse duration [s]                          0.1
+ Reservoir limit                             1000000000
+
+
+Discharge coefficient curve extrapolation
+
+Point 1
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 2
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 3
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 4
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 5
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 6
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 7
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 8
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 9
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 10
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 11
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+Point 12
+ Reynolds                                    0                                        0                                        0                                        -
+ Discharge coefficient                       0                                        0                                        0                                        -
+
+* END OF CONFIGURATION REPORT *
+

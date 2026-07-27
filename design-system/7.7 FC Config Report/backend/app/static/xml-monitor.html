@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SGMed Inspector - Monitor XML</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root { color: #172033; background: #f4f7fb; font-family: Arial, sans-serif; }
+      body { margin: 0; padding: 24px; }
+      main { width: min(1240px, 100%); margin: 0 auto; }
+      a { color: #002060; font-weight: 700; }
+      .topbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 18px; }
+      .panel { background: #fff; border: 1px solid #d9e2ef; border-radius: 8px; padding: 18px; box-shadow: 0 16px 38px #1b2a4a12; }
+      .toolbar { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+      select, button { border: 1px solid #c7d4e7; border-radius: 8px; font: inherit; padding: 10px 12px; }
+      select { width: 100%; }
+      button { background: #002060; color: #fff; border-color: #002060; font-weight: 800; cursor: pointer; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 18px 0; }
+      .card { border: 1px solid #e5edf7; border-radius: 8px; background: #f8fbff; padding: 14px; }
+      .card strong { display: block; color: #002060; font-size: 28px; }
+      .status { color: #475467; white-space: pre-wrap; }
+      .status-offset { margin-top: 12px; }
+      .result-panel { margin-top: 18px; }
+      .is-hidden { display: none; }
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; background: #fff; }
+      th, td { text-align: left; border-bottom: 1px solid #e5edf7; padding: 10px; vertical-align: top; }
+      th { color: #002060; font-size: 13px; text-transform: uppercase; }
+      .badge { display: inline-block; border-radius: 999px; background: #eaf1ff; color: #002060; padding: 3px 8px; font-size: 12px; font-weight: 800; }
+      .danger { background: #fee4e2; color: #b42318; }
+      @media (max-width: 760px) { body { padding: 14px; } .toolbar, .topbar { display: grid; } button { width: 100%; } }
+    </style>
+  
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:b519d5ff8fc64ffea9cb9a4c0b377271 msdt:dt="string">Internal|3361fef0-33ac-457d-8a1d-df19735ffcb1</mso:b519d5ff8fc64ffea9cb9a4c0b377271>
+<mso:EIMInformationAsset msdt:dt="string">10;#Operation and Maintenance documentation|4767e6fc-97fe-4895-ba5a-80e461cbd45d</mso:EIMInformationAsset>
+<mso:EIMProcessArea msdt:dt="string">8;#Operation and maintenance (OM)|2f792156-1444-4990-b757-a571494857be</mso:EIMProcessArea>
+<mso:m0347c9175b146a684f1230523809245 msdt:dt="string">Fiscal metering systems &#65286; field allocation|9d88b364-b47a-4a1e-8100-07f26438537d</mso:m0347c9175b146a684f1230523809245>
+<mso:EIMStatus msdt:dt="string">2;#Draft|af4d3abd-d88d-48b7-8fea-db9baac9496f</mso:EIMStatus>
+<mso:gd56e2644879487f8da67586944cf0f5 msdt:dt="string">Draft|af4d3abd-d88d-48b7-8fea-db9baac9496f</mso:gd56e2644879487f8da67586944cf0f5>
+<mso:MediaServiceImageTags msdt:dt="string"></mso:MediaServiceImageTags>
+<mso:o6fe11a35735487dac377a215490fa4b msdt:dt="string">Office 365|23cc2eaf-b88f-49bf-9aee-2309aadb8846</mso:o6fe11a35735487dac377a215490fa4b>
+<mso:EIMSource msdt:dt="string">3;#Office 365|23cc2eaf-b88f-49bf-9aee-2309aadb8846</mso:EIMSource>
+<mso:EIMLegalEntity msdt:dt="string">7;#Equinor Brasil Energia Ltda.|5b4a339c-2b69-419f-be0c-27e975216a58</mso:EIMLegalEntity>
+<mso:hfb23c77fa4f4618a5f446ac03ac12ab msdt:dt="string">Operation and maintenance (OM)|2f792156-1444-4990-b757-a571494857be</mso:hfb23c77fa4f4618a5f446ac03ac12ab>
+<mso:m9e92212f5fa42fa9b52bc2f3224e0af msdt:dt="string">Equinor Brasil Energia Ltda.|5b4a339c-2b69-419f-be0c-27e975216a58</mso:m9e92212f5fa42fa9b52bc2f3224e0af>
+<mso:EIMSecurityClassification msdt:dt="string">4;#Internal|3361fef0-33ac-457d-8a1d-df19735ffcb1</mso:EIMSecurityClassification>
+<mso:EIMBusinessArea msdt:dt="string">5;#EXPLORATION &#65286; PRODUCTION INTERNATIONAL (EPI)|76777ab9-3b5c-45dc-b1bf-cae5e8c2a234</mso:EIMBusinessArea>
+<mso:TaxCatchAll msdt:dt="string">11;#Fiscal metering systems &#65286; field allocation|9d88b364-b47a-4a1e-8100-07f26438537d;#10;#Operation and Maintenance documentation|4767e6fc-97fe-4895-ba5a-80e461cbd45d;#9;#Technical integrity management|ce6b1ab7-1aca-4450-a1c0-cb6e89a524cc;#8;#Operation and maintenance (OM)|2f792156-1444-4990-b757-a571494857be;#7;#Equinor Brasil Energia Ltda.|5b4a339c-2b69-419f-be0c-27e975216a58;#6;#Brazil|d641e264-f157-42ed-8f97-e17c8f6cf33a;#5;#EXPLORATION &#65286; PRODUCTION INTERNATIONAL (EPI)|76777ab9-3b5c-45dc-b1bf-cae5e8c2a234;#4;#Internal|3361fef0-33ac-457d-8a1d-df19735ffcb1;#3;#Office 365|23cc2eaf-b88f-49bf-9aee-2309aadb8846;#2;#Draft|af4d3abd-d88d-48b7-8fea-db9baac9496f</mso:TaxCatchAll>
+<mso:lcf76f155ced4ddcb4097134ff3c332f msdt:dt="string"></mso:lcf76f155ced4ddcb4097134ff3c332f>
+<mso:c71f94430ee24530b6af52dc58e8598c msdt:dt="string">Operation and Maintenance documentation|4767e6fc-97fe-4895-ba5a-80e461cbd45d</mso:c71f94430ee24530b6af52dc58e8598c>
+<mso:d632f762b19c46329b06e4a329cb5038 msdt:dt="string">EXPLORATION &#65286; PRODUCTION INTERNATIONAL (EPI)|76777ab9-3b5c-45dc-b1bf-cae5e8c2a234</mso:d632f762b19c46329b06e4a329cb5038>
+<mso:EIMProcess msdt:dt="string">9;#Technical integrity management|ce6b1ab7-1aca-4450-a1c0-cb6e89a524cc</mso:EIMProcess>
+<mso:g971e9ce8060489b80a056801d36d93d msdt:dt="string">Technical integrity management|ce6b1ab7-1aca-4450-a1c0-cb6e89a524cc</mso:g971e9ce8060489b80a056801d36d93d>
+<mso:mbf6ec96a4d94feeaf76fee4d5d0c80e msdt:dt="string">Brazil|d641e264-f157-42ed-8f97-e17c8f6cf33a</mso:mbf6ec96a4d94feeaf76fee4d5d0c80e>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+  <body>
+    <main>
+      <div class="topbar">
+        <div>
+          <h1>Monitor XML</h1>
+          <p class="status">Resumo de XML 001-004, alarmes e parametros fora de referencia por importacao.</p>
+        </div>
+        <nav><a href="/">Aplicacao</a> &nbsp; <a href="/carga-pasta">Carga por pasta</a></nav>
+      </div>
+      <section class="panel">
+        <div class="toolbar">
+          <label>
+            Importacao
+            <select id="batchSelect"><option value="">Carregando...</option></select>
+          </label>
+          <button id="loadMonitor" type="button">Abrir monitor</button>
+        </div>
+        <div id="status" class="status status-offset">Selecione uma importacao.</div>
+      </section>
+      <section id="result" class="panel result-panel is-hidden"></section>
+    </main>
+    <script>
+      const batchSelect = document.getElementById('batchSelect');
+      const status = document.getElementById('status');
+      const result = document.getElementById('result');
+      const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+      const request = async (path, options) => {
+        const response = await fetch(`/api${path}`, options);
+        const payload = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(payload?.detail || 'Falha na requisicao.');
+        return payload;
+      };
+      const statusClass = (value) => value === 'out_of_reference' || value === 'changed_without_reference' ? 'badge danger' : 'badge';
+      const renderRows = (items, columns) => items.map((item) => `<tr>${columns.map((column) => `<td>${column(item)}</td>`).join('')}</tr>`).join('');
+      const renderMonitor = (monitor) => {
+        const totals = monitor.totals || {};
+        const parameters = (monitor.parameters || []).filter((item) => item.changed || item.validation_status !== 'ok').slice(0, 200);
+        const alarms = (monitor.alarms || []).slice(0, 200);
+        result.classList.remove('is-hidden');
+        result.innerHTML = `
+          <h2>${escapeHtml(monitor.batch_name)}</h2>
+          <div class="cards">
+            ${Object.entries(totals).map(([key, value]) => `<div class="card"><strong>${value}</strong><span>${escapeHtml(key.replaceAll('_', ' '))}</span></div>`).join('')}
+          </div>
+          <h3>Parametros alterados ou fora de referencia</h3>
+          ${parameters.length ? `<table><thead><tr><th>Arquivo</th><th>CV/Tag</th><th>Parametro</th><th>Atual</th><th>Referencia</th><th>Status</th></tr></thead><tbody>${renderRows(parameters, [
+            (item) => escapeHtml(item.source_file_name),
+            (item) => `${escapeHtml(item.cv_id)}<br>${escapeHtml(item.tag)}`,
+            (item) => escapeHtml(item.parameter_label || item.parameter_key),
+            (item) => escapeHtml(item.current_value),
+            (item) => escapeHtml(item.reference_value),
+            (item) => `<span class="${statusClass(item.validation_status)}">${escapeHtml(item.validation_status)}</span><br><small>${escapeHtml(item.validation_message)}</small>`
+          ])}</tbody></table>` : '<p class="status">Nenhum parametro critico encontrado.</p>'}
+          <h3>Alarmes e eventos</h3>
+          ${alarms.length ? `<table><thead><tr><th>Quando</th><th>Origem</th><th>Alarme</th><th>Status</th><th>Gestao</th></tr></thead><tbody>${renderRows(alarms, [
+            (item) => escapeHtml(item.occurred_at ? new Date(item.occurred_at).toLocaleString() : ''),
+            (item) => `${escapeHtml(item.source_document)}<br>${escapeHtml(item.cv_id)} / ${escapeHtml(item.tag)}`,
+            (item) => escapeHtml(item.alarm_text),
+            (item) => `<span class="${item.severity === 'critical' ? 'badge danger' : 'badge'}">${escapeHtml(item.priority || item.severity)}</span>`,
+            (item) => escapeHtml(item.management?.management_status || '')
+          ])}</tbody></table>` : '<p class="status">Nenhum alarme encontrado.</p>'}`;
+      };
+      const loadBatches = async () => {
+        const batches = await request('/ingestion/batches');
+        batchSelect.innerHTML = '<option value="">Selecione uma importacao</option>' + batches
+          .map((batch) => `<option value="${batch.id}">#${batch.id} - ${escapeHtml(batch.source_name)}</option>`)
+          .join('');
+      };
+      document.getElementById('loadMonitor').addEventListener('click', async () => {
+        const batchId = batchSelect.value;
+        if (!batchId) {
+          status.textContent = 'Selecione uma importacao.';
+          return;
+        }
+        status.textContent = 'Carregando monitor XML...';
+        try {
+          renderMonitor(await request(`/xml-monitor/batches/${batchId}`));
+          status.textContent = 'Monitor carregado.';
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : 'Falha ao carregar monitor.';
+        }
+      });
+      loadBatches().catch((error) => { batchSelect.innerHTML = '<option value="">Falha ao carregar</option>'; status.textContent = error.message; });
+    </script>
+  </body>
+</html>

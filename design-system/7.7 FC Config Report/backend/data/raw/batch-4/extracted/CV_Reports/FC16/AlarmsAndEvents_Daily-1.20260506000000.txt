@@ -1,0 +1,57 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Flare Gas
+
+System                             21JN111
+Description                        FPSO Bacalhau
+Flow computer                      21JN111
+
+Start date/time                    05/05/26 00:00:00
+End date/time                      06/05/26 00:00:00
+
+Active at end                      7
+05/05/26 20:54:01                  Run 2 Flow rate lo lo alm
+05/05/26 18:00:30                  Run 1 Flow meter communication fail
+05/05/26 17:55:34                  Run 1 Flow rate roc alm
+05/05/26 16:46:37                  Run 2 Flow meter communication fail
+05/05/26 21:02:16                  Run 1 Flow rate lo lo alm
+05/02/26 17:32:16                  Run 2 Molar mass calc out of range
+05/02/26 17:32:16                  Run 2 Compressibility calc out of range
+
+Events                             34
+05/05/26 23:20:01                  System-time was changed from 05/05/2026 23:19:58.500 to 05/05/2026 23:20:01.000 by  (-1)
+05/05/26 21:03:01                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/05/26 21:02:16                  Run 1 Flow rate alarm from Normal to Low Low [118.96]
+05/05/26 20:54:01                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/05/26 20:32:53                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/05/26 20:31:38                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/05/26 20:23:33                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/05/26 20:22:58                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/05/26 19:58:33                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/05/26 19:58:23                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/05/26 18:00:41                  Run 1 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/05/26 18:00:41                  Run 1 Flow rate alarm from Low Low to Normal [118.96]
+05/05/26 18:00:30                  Run 1 Flow meter communication fail changed from Normal to Alarm
+05/05/26 18:00:30                  Run 1 Flow rate alarm from Normal to Low Low [118.96]
+05/05/26 17:55:35                  Run 1 Flow rate roc alm changed from Alarm to (Unacked) Normal
+05/05/26 17:55:34                  Run 1 Flow rate roc alm changed from (Unacked) Normal to Alarm
+05/05/26 17:55:20                  Run 1 Flow rate roc alm changed from Alarm to (Unacked) Normal
+05/05/26 17:55:19                  Run 1 Flow rate roc alm changed from Normal to Alarm
+05/05/26 16:46:48                  Run 2 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/05/26 16:46:48                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/05/26 16:46:37                  Run 2 Flow meter communication fail changed from Normal to Alarm
+05/05/26 16:46:37                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/05/26 16:03:56                  User administrator (Web: 10.0.1.52) has been automatically logged off
+05/05/26 15:29:15                  User  has acknowledged all alarms
+05/05/26 15:29:15                  'Acknowledge all' executed by CommDrivers (10000)
+05/05/26 15:03:56                  User administrator (Web: 10.0.1.52) has logged in
+05/05/26 15:03:47                  User  (Web: 10.0.1.52) failed to log in
+05/05/26 07:16:36                  Run 1 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/05/26 07:16:36                  Run 1 Flow rate alarm from Low Low to Normal [118.96]
+05/05/26 07:16:25                  Run 1 Flow meter communication fail changed from Normal to Alarm
+05/05/26 07:16:25                  Run 1 Flow rate alarm from Normal to Low Low [118.96]
+05/05/26 06:26:41                  Run 1 Flow rate alarm from Low Low to Normal [118.96]
+05/05/26 01:21:19                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/05/26 00:21:19                  User administrator (Web: 10.0.1.50) has logged in
+

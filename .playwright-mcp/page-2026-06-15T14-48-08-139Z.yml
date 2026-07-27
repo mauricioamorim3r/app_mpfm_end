@@ -1,0 +1,87 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - button "Editar" [ref=e7] [cursor=pointer]
+      - generic [ref=e8]: PulseFlow Ops Studio
+      - generic [ref=e9]: Local · editável
+    - button "Resumo do Mês" [ref=e10] [cursor=pointer]:
+      - generic [ref=e11]: Resumo do Mês
+    - button "Processar Arquivos" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: Processar Arquivos
+    - button "Dados MPFM" [ref=e14] [cursor=pointer]:
+      - generic [ref=e15]: Dados MPFM
+    - button "Monitoramento MPFM" [ref=e16] [cursor=pointer]:
+      - generic [ref=e17]: Monitoramento MPFM
+    - button "XML 042" [ref=e18] [cursor=pointer]:
+      - generic [ref=e19]: XML 042
+    - button "Relatórios Mensais" [ref=e20] [cursor=pointer]:
+      - generic [ref=e21]: Relatórios Mensais
+    - button "Dados Separador" [ref=e22] [cursor=pointer]:
+      - generic [ref=e23]: Dados Separador
+    - button "Cards Diários" [ref=e24] [cursor=pointer]:
+      - generic [ref=e25]: Cards Diários
+    - button "Gráficos" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: Gráficos
+    - button "Alarmes MPFM" [ref=e28] [cursor=pointer]:
+      - generic [ref=e29]: Alarmes MPFM
+    - button "Prazos" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: Prazos
+    - button "Cadastro" [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: Cadastro
+    - button "Reconciliação" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: Reconciliação
+    - button "Fluxo Metodológico" [ref=e36] [cursor=pointer]:
+      - generic [ref=e37]: Fluxo Metodológico
+    - button "Twin MPFM" [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: Twin MPFM
+    - button "Registros do SGM-FM" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]: Registros do SGM-FM
+    - button "Exportar" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: Exportar
+    - button "Assistente IA" [ref=e44] [cursor=pointer]:
+      - generic [ref=e45]: Assistente IA
+    - generic [ref=e46]: Equinor Brasil Energia Ltda.
+  - main [ref=e47]:
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - heading "Fluxo Metodológico" [level=1] [ref=e50]
+        - generic [ref=e51]: Fluxo visual com dados reais de reconciliação, PVT, separador e memorial de cálculo
+      - generic [ref=e52]:
+        - combobox "Mês de referência" [ref=e53]
+        - 'button "⏱ Auto: ON" [ref=e54] [cursor=pointer]'
+        - button "◐ Claro" [ref=e55] [cursor=pointer]
+        - button "⚙ Config." [ref=e56] [cursor=pointer]
+        - button "↻ Atualizar" [ref=e57] [cursor=pointer]
+    - generic [ref=e58]:
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]: Fluxo Metodológico
+          - heading "Balanço de massas por fase com rastreabilidade real da campanha" [level=2] [ref=e62]
+          - paragraph [ref=e63]: Visualize o caminho completo entre PVT, operação MPFM, separador, decisão técnica e investigação, usando os runs de reconciliação já gravados no banco.
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - generic [ref=e66]: Fonte
+            - strong [ref=e67]: recon_runs + PVT + medições
+          - generic [ref=e68]:
+            - generic [ref=e69]: Memorial
+            - strong [ref=e70]: NSV · SF · ΔRs · En
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]: Banco
+          - textbox "Banco" [ref=e74]:
+            - /placeholder: Todos
+        - generic [ref=e75]:
+          - generic [ref=e76]: TAG
+          - textbox "TAG" [ref=e77]:
+            - /placeholder: Todas
+        - generic [ref=e78]:
+          - generic [ref=e79]: Data
+          - textbox "Data" [ref=e80]
+        - generic [ref=e81]:
+          - generic [ref=e82]: Run de reconciliação
+          - combobox "Run de reconciliação" [ref=e83]
+        - generic [ref=e84]:
+          - button "Limpar" [ref=e85] [cursor=pointer]
+          - button "Carregar fluxo" [ref=e86] [cursor=pointer]
+      - status [ref=e87]: Carregando fluxo metodológico com dados reais...
+      - generic [ref=e89]: Carregando run e evidências...

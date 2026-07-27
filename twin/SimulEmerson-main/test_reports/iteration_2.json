@@ -1,0 +1,33 @@
+{
+  "summary": "Twin MPFM v4 re-implementation tested end-to-end. Backend pytest suite (14 tests) covers all v4 endpoints: /api/health, /api/constants (13 keys), /api/consultor/analyze (full + persist=false), /api/separator-balance/calculate, /api/analyses list+detail+memorial+404, /api/pvt/catalog GET+POST, /api/import/mpfm-xlsx (valid xlsx + 400 on bad ext), /api/import/mpfm-records. 14/14 passing. Frontend SPA tested via Playwright: sidebar (8 nav items), Consultor view (6 KPI cards rendering 66.91% GVF / 0 WLR / 315.86 GOR / 33 IAJ / Bloqueada / 0.221 factor — matches v4 expected behavior), envelope chart, decision panel + badge, comparison-grid, quality-list, alert-list, history-table, history-strip. Run Atualizar Análise POSTs /api/consultor/analyze and api-status updates to 'API: ok • análise #<id>'. Editing qo input recomputes KPI live. Report dialog opens with 1545-char Markdown memorial containing all sections. Balance view computes and displays formula. PVT modal opens and saves new sample. Envelope/RCA/Memorial/Config views all render correctly. Theme toggle switches to dark via data-theme. Constants table shows all 13 keys. No console errors detected.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py (~530 lines) is well structured — clean separation between constants, schemas, calculations, importer, helpers, routes. Approaching 700-line guideline but acceptable for current scope.",
+    "All MongoDB queries correctly exclude _id with projection or {\"_id\":0} — no serialization issues observed.",
+    "/api/import/mpfm-xlsx properly validates file extension (.xlsx/.xlsm) and raises 400 on mismatch — good.",
+    "Memorial endpoint returns text/plain via PlainTextResponse and contains all 5 required sections (Identificação, Consultor de Aplicabilidade, Balanço Separador / Referência, Desvios relativos, Observações técnicas) — verified.",
+    "Faithful port of v4 calculations confirmed: NSV_sep=GSV_sep*(1-BSW/100), V_STO=NSV_sep*SF, classify_envelope/classify_iaj thresholds match spec. Default inputs (qg=252796) yield IAJ=33 → Bloqueada — expected per other_misc_info.",
+    "CORSMiddleware uses os.environ.get('CORS_ORIGINS','*').split(',') — fine as fallback.",
+    "Frontend uses data-testid extensively (all selectors in spec resolve). API integration uses REACT_APP_BACKEND_URL correctly."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (rewritten for v4 endpoints)"
+  ],
+  "success_rate": {"backend": "100% (14/14)", "frontend": "100% (all critical flows verified)"},
+  "test_credentials": "N/A — no auth in app",
+  "seed_data_creation": "Tests create TEST_-prefixed PVT entry + TEST_mpfm.xlsx import + analyses via /api/consultor/analyze. No bulk seed endpoint in v4.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression at /app/backend/tests/backend_test.py — run: pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml. Tests rely on REACT_APP_BACKEND_URL env var; fallback to http://localhost:8001. v4 endpoints in use; OLD endpoints (/api/seed, /api/windows, /api/dashboard/summary) NO LONGER EXIST. Frontend is a SPA with view switching via state — selectors documented in original review_request work as-is. Default analyze inputs intentionally yield Bloqueada — this is faithful to v4 and not a bug.",
+  "rca_of_the_issue": "N/A — no functional bugs found."
+}

@@ -1,0 +1,39 @@
+                                   ALARMS AND EVENTS REPORT
+
+Company                            Equinor
+Location                           Flare Gas
+
+System                             21JN111
+Description                        FPSO Bacalhau
+Flow computer                      21JN111
+
+Start date/time                    06/05/26 00:00:00
+End date/time                      07/05/26 00:00:00
+
+Active at end                      6
+05/06/26 20:50:10                  Run 2 Flow rate lo lo alm
+05/06/26 20:50:10                  Run 2 Flow rate lo lo alm
+05/06/26 12:13:49                  Run 1 Flow meter communication fail
+05/05/26 21:02:16                  Run 1 Flow rate lo lo alm
+05/02/26 17:32:16                  Run 2 Molar mass calc out of range
+05/02/26 17:32:16                  Run 2 Compressibility calc out of range
+
+Events                             17
+05/06/26 23:20:02                  System-time was changed from 06/05/2026 23:20:06.501 to 06/05/2026 23:20:02.000 by  (-1)
+05/06/26 20:50:21                  Run 2 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/06/26 20:50:21                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/06/26 20:50:10                  Run 2 Flow meter communication fail changed from Normal to Alarm
+05/06/26 20:50:10                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/06/26 18:06:57                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/06/26 18:05:31                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/06/26 12:14:00                  Run 1 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/06/26 12:13:49                  Run 1 Flow meter communication fail changed from Normal to Alarm
+05/06/26 11:26:25                  User  has acknowledged all alarms
+05/06/26 11:26:25                  'Acknowledge all' executed by CommDrivers (10000)
+05/06/26 06:59:12                  Run 2 Flow meter communication fail changed from Alarm to (Unacked) Normal
+05/06/26 06:59:12                  Run 2 Flow rate alarm from Low Low to Normal [28.16]
+05/06/26 06:59:01                  Run 2 Flow meter communication fail changed from (Unacked) Normal to Alarm
+05/06/26 06:59:01                  Run 2 Flow rate alarm from Normal to Low Low [28.16]
+05/06/26 01:20:50                  User administrator (Web: 10.0.1.50) has been automatically logged off
+05/06/26 00:20:50                  User administrator (Web: 10.0.1.50) has logged in
+

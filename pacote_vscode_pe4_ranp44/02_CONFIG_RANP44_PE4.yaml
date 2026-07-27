@@ -1,0 +1,91 @@
+job:
+  name: ranp44_desempenho_semestral_pe4
+  well: PE_4
+  days: 180
+  end_date: null  # preencher em execução; se null, usar maior ProductionDate encontrado
+  timezone: America/Sao_Paulo
+  output_prefix: Relatorio_Desempenho_Semestral_MPFM_PE4
+
+excel_template:
+  path: Template_Relatorio_Desempenho_Semestral_MPFM_RANP44.xlsx
+  master_sheet: 05_Historico_Diario_180d
+  first_data_row: 6
+  max_days: 180
+
+source_priority:
+  - app_db
+  - drive_mpfm_monthly_excel
+  - drive_xml042_excel
+  - manual_evidence
+
+filters:
+  entity_values: [PE_4]
+  well_values: [PE_4]
+  exclude_entities: [PE_2, PW-104DA, Riser_P4, Riser_P5]
+  valid_granularity: [Daily, Hourly, Recon]
+
+columns_05_historico:
+  A: ProductionDate
+  B: Mes_auto
+  C: Semana_ISO_auto
+  D: Tipo_dia
+  E: Usar_flag
+  F: MPFM_Tag
+  G: Ref_ID
+  H: Status_dados
+  I: GVF_avg_pct
+  J: GVF_min_pct
+  K: GVF_max_pct
+  L: Salinidade_avg
+  M: BSW_avg_pct
+  N: Pressao_min_bar
+  O: Pressao_max_bar
+  P: Temperatura_min_C
+  Q: Temperatura_max_C
+  R: Massa_oleo_MPFM_t
+  S: Massa_gas_MPFM_t
+  T: Massa_agua_MPFM_t
+  U: Massa_oleo_REF_t
+  V: Massa_gas_REF_t
+  W: Massa_agua_REF_t
+  X: Volume_oleo_MPFM_Sm3
+  Y: Volume_gas_MPFM_kSm3
+  Z: Volume_agua_MPFM_m3
+  AA: Volume_oleo_REF_Sm3
+  AB: Volume_gas_REF_kSm3
+  AC: Volume_agua_REF_m3
+  AD: Massa_HC_MPFM_t_auto
+  AE: Massa_HC_REF_t_auto
+  AF: Massa_Total_MPFM_t_auto
+  AG: Massa_Total_REF_t_auto
+  AH: Desvio_HC_pct_auto
+  AI: Desvio_Total_pct_auto
+  AJ: K_oleo_auto
+  AK: K_gas_auto
+  AL: K_agua_auto
+  AM: K_HC_auto
+  AN: K_Total_auto
+  AO: Fonte_mestre
+  AP: Fonte_arquivo
+  AQ: XML042_ref
+  AR: Qualidade
+  AS: Observacao
+
+validation:
+  require_180_dates: true
+  allow_missing_reference: true
+  missing_reference_status: PARCIAL_REFERENCIA_AUSENTE
+  no_auto_conformance_without_limits: true
+  duplicate_key: [ProductionDate, well]
+  formulas:
+    Massa_HC_MPFM_t: Massa_oleo_MPFM_t + Massa_gas_MPFM_t
+    Massa_HC_REF_t: Massa_oleo_REF_t + Massa_gas_REF_t
+    Massa_Total_MPFM_t: Massa_HC_MPFM_t + Massa_agua_MPFM_t
+    Massa_Total_REF_t: Massa_HC_REF_t + Massa_agua_REF_t
+    Desvio_HC_pct: (Massa_HC_MPFM_t - Massa_HC_REF_t) / Massa_HC_REF_t
+    Desvio_Total_pct: (Massa_Total_MPFM_t - Massa_Total_REF_t) / Massa_Total_REF_t
+    K_oleo: Massa_oleo_REF_t / Massa_oleo_MPFM_t
+    K_gas: Massa_gas_REF_t / Massa_gas_MPFM_t
+    K_agua: Massa_agua_REF_t / Massa_agua_MPFM_t
+    K_HC: Massa_HC_REF_t / Massa_HC_MPFM_t
+    K_Total: Massa_Total_REF_t / Massa_Total_MPFM_t

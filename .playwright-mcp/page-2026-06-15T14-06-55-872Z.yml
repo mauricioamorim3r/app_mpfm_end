@@ -1,0 +1,31 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Twin MPFM · protótipo operacional
+      - heading "Sinóptico com dados reais da reconciliação" [level=1] [ref=e7]
+      - paragraph [ref=e8]:
+        - text: Esta versão não usa dados mockados. Todos os valores vêm de
+        - code [ref=e9]: /api/twin/synoptic
+        - text: ", usando os runs e snapshots gravados na aplicação principal."
+    - generic [ref=e10]:
+      - link "Voltar para a aplicação" [ref=e11] [cursor=pointer]:
+        - /url: /#twin
+      - button "Atualizar dados" [ref=e12] [cursor=pointer]
+  - generic [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]: Banco
+      - textbox "Banco" [ref=e16]:
+        - /placeholder: Todos
+    - generic [ref=e17]:
+      - generic [ref=e18]: TAG
+      - textbox "TAG" [ref=e19]:
+        - /placeholder: Todas
+    - generic [ref=e20]:
+      - generic [ref=e21]: Data
+      - textbox "Data" [ref=e22]
+    - generic [ref=e23]:
+      - generic [ref=e24]: Run real
+      - combobox "Run real" [ref=e25]
+    - button "Limpar filtros" [ref=e26] [cursor=pointer]
+  - generic [ref=e27]: Carregando dados reais...
+  - main

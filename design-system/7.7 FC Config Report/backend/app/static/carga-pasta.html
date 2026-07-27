@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SGMed Inspector - Carga por pasta</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root { color: #172033; background: #f4f7fb; font-family: Arial, sans-serif; }
+      body { margin: 0; padding: 24px; }
+      main { width: min(1080px, 100%); margin: 0 auto; }
+      a { color: #002060; font-weight: 700; }
+      .topbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 18px; }
+      .panel { background: #fff; border: 1px solid #d9e2ef; border-radius: 8px; padding: 18px; box-shadow: 0 16px 38px #1b2a4a12; }
+      .grid { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+      label { display: grid; gap: 6px; font-weight: 700; }
+      input, select, button { border: 1px solid #c7d4e7; border-radius: 8px; font: inherit; padding: 10px 12px; }
+      button { background: #002060; color: #fff; border-color: #002060; font-weight: 800; cursor: pointer; }
+      button.secondary { background: #fff; color: #002060; }
+      .hint, .status { color: #475467; line-height: 1.45; }
+      .status { margin-top: 14px; white-space: pre-wrap; }
+      .stacked-panel { margin-top: 18px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 18px; background: #fff; }
+      th, td { text-align: left; border-bottom: 1px solid #e5edf7; padding: 10px; vertical-align: top; }
+      th { color: #002060; font-size: 13px; text-transform: uppercase; }
+      @media (max-width: 760px) { body { padding: 14px; } .grid, .topbar { display: grid; } button { width: 100%; } }
+    </style>
+  
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:b519d5ff8fc64ffea9cb9a4c0b377271 msdt:dt="string">Internal|3361fef0-33ac-457d-8a1d-df19735ffcb1</mso:b519d5ff8fc64ffea9cb9a4c0b377271>
+<mso:g971e9ce8060489b80a056801d36d93d msdt:dt="string">Technical integrity management|ce6b1ab7-1aca-4450-a1c0-cb6e89a524cc</mso:g971e9ce8060489b80a056801d36d93d>
+<mso:mbf6ec96a4d94feeaf76fee4d5d0c80e msdt:dt="string">Brazil|d641e264-f157-42ed-8f97-e17c8f6cf33a</mso:mbf6ec96a4d94feeaf76fee4d5d0c80e>
+<mso:m0347c9175b146a684f1230523809245 msdt:dt="string">Fiscal metering systems &#65286; field allocation|9d88b364-b47a-4a1e-8100-07f26438537d</mso:m0347c9175b146a684f1230523809245>
+<mso:o6fe11a35735487dac377a215490fa4b msdt:dt="string">Office 365|23cc2eaf-b88f-49bf-9aee-2309aadb8846</mso:o6fe11a35735487dac377a215490fa4b>
+<mso:gd56e2644879487f8da67586944cf0f5 msdt:dt="string">Draft|af4d3abd-d88d-48b7-8fea-db9baac9496f</mso:gd56e2644879487f8da67586944cf0f5>
+<mso:hfb23c77fa4f4618a5f446ac03ac12ab msdt:dt="string">Operation and maintenance (OM)|2f792156-1444-4990-b757-a571494857be</mso:hfb23c77fa4f4618a5f446ac03ac12ab>
+<mso:m9e92212f5fa42fa9b52bc2f3224e0af msdt:dt="string">Equinor Brasil Energia Ltda.|5b4a339c-2b69-419f-be0c-27e975216a58</mso:m9e92212f5fa42fa9b52bc2f3224e0af>
+<mso:d632f762b19c46329b06e4a329cb5038 msdt:dt="string">EXPLORATION &#65286; PRODUCTION INTERNATIONAL (EPI)|76777ab9-3b5c-45dc-b1bf-cae5e8c2a234</mso:d632f762b19c46329b06e4a329cb5038>
+<mso:c71f94430ee24530b6af52dc58e8598c msdt:dt="string">Operation and Maintenance documentation|4767e6fc-97fe-4895-ba5a-80e461cbd45d</mso:c71f94430ee24530b6af52dc58e8598c>
+<mso:TaxCatchAll msdt:dt="string">11;#Fiscal metering systems &#65286; field allocation;#10;#Operation and Maintenance documentation;#9;#Technical integrity management;#8;#Operation and maintenance (OM);#7;#Equinor Brasil Energia Ltda.;#6;#Brazil;#5;#EXPLORATION &#65286; PRODUCTION INTERNATIONAL (EPI);#4;#Internal;#3;#Office 365;#2;#Draft</mso:TaxCatchAll>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+  <body>
+    <main>
+      <div class="topbar">
+        <div>
+          <h1>Carga por pasta diaria</h1>
+          <p class="hint">Informe a pasta local que contem XML, CV reports, PDFs ou ZIPs. A importacao preserva cadastros e cria um novo lote.</p>
+        </div>
+        <nav><a href="/">Aplicacao</a> &nbsp; <a href="/xml-monitor">Monitor XML</a></nav>
+      </div>
+      <section class="panel">
+        <form id="folderForm" class="grid">
+          <label>
+            Pasta local
+            <input id="rootPath" name="rootPath" placeholder="C:\\ConfiguraCV\\7.7 FC Config Report\\referencias_doc" required />
+          </label>
+          <button type="submit">Importar pasta</button>
+        </form>
+        <p class="hint">A API processa arquivos esperados e ignora relatorios horarios. Caminhos inexistentes retornam erro sem alterar a base.</p>
+        <div id="status" class="status">Pronto para importar.</div>
+      </section>
+      <section class="panel stacked-panel">
+        <div class="topbar">
+          <h2>Importacoes recentes</h2>
+          <button id="refreshBatches" type="button" class="secondary">Atualizar</button>
+        </div>
+        <div id="batches"></div>
+      </section>
+    </main>
+    <script>
+      const status = document.getElementById('status');
+      const batchesContainer = document.getElementById('batches');
+      const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+      const request = async (path, options) => {
+        const response = await fetch(`/api${path}`, options);
+        const payload = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(payload?.detail || 'Falha na requisicao.');
+        return payload;
+      };
+      const renderBatches = (batches) => {
+        if (!batches.length) {
+          batchesContainer.innerHTML = '<p class="hint">Nenhuma importacao encontrada.</p>';
+          return;
+        }
+        batchesContainer.innerHTML = `<table><thead><tr><th>ID</th><th>Origem</th><th>Arquivos</th><th>Criado em</th></tr></thead><tbody>${batches.map((batch) => `
+          <tr>
+            <td>#${batch.id}</td>
+            <td>${escapeHtml(batch.source_name)}<br><small>${escapeHtml(batch.source_path || '')}</small></td>
+            <td>${escapeHtml(batch.file_type_summary || `${batch.files?.length || 0} arquivos`)}</td>
+            <td>${escapeHtml(new Date(batch.created_at).toLocaleString())}</td>
+          </tr>`).join('')}</tbody></table>`;
+      };
+      const loadBatches = async () => {
+        const batches = await request('/ingestion/batches');
+        renderBatches(batches);
+      };
+      document.getElementById('folderForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const rootPath = document.getElementById('rootPath').value.trim();
+        if (!rootPath) return;
+        status.textContent = 'Importando pasta...';
+        try {
+          const batch = await request('/ingestion/folder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ root_path: rootPath })
+          });
+          status.textContent = `Importacao #${batch.id} criada com ${batch.files.length} arquivo(s).`;
+          await loadBatches();
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : 'Falha ao importar pasta.';
+        }
+      });
+      document.getElementById('refreshBatches').addEventListener('click', () => loadBatches().catch((error) => { status.textContent = error.message; }));
+      loadBatches().catch((error) => { batchesContainer.innerHTML = `<p class="status">${escapeHtml(error.message)}</p>`; });
+    </script>
+  </body>
+</html>
