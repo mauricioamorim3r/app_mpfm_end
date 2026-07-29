@@ -1,5 +1,9 @@
 'use strict';
 
+function monitoringEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 function monitoringMonth() {
   return document.getElementById('globalMonth')?.value || '';
 }
@@ -35,7 +39,7 @@ function monitoringFillFilter(id, items) {
   const select = document.getElementById(id);
   if (!select) return;
   const current = select.value;
-  select.innerHTML = '<option value="">Todos</option>' + (items || []).map(item => `<option value="${item}">${item}</option>`).join('');
+  select.innerHTML = '<option value="">Todos</option>' + (items || []).map(item => `<option value="${monitoringEscape(item)}">${monitoringEscape(item)}</option>`).join('');
   if (current && (items || []).includes(current)) select.value = current;
 }
 
@@ -125,7 +129,7 @@ function monitoringPairSummaryMap(monthlyPairs = []) {
 }
 
 function monitoringFocusTable(rows, label) {
-  const instrument = rows[0]?.instrument ? ` · ${rows[0].instrument}` : '';
+  const instrument = rows[0]?.instrument ? ` · ${monitoringEscape(rows[0].instrument)}` : '';
   if (!rows.length) {
     return `
       <div class="monitoring-focus-panel">
@@ -298,10 +302,10 @@ function renderMonitoringTable(rows = [], limits = { hc_pct: 10, total_pct: 7 })
     <tr class="${monitoringLimitClass(row)}">
       <td class="mono">${fmtDate(row.production_date)}</td>
       <td>${tagChip(row.bank)}</td>
-      <td class="mono">${row.tag || ''}</td>
-      <td>${row.meter_type || ''}</td>
-      <td class="mono">${row.instrument || '—'}</td>
-      <td>${row.loop || '—'}</td>
+      <td class="mono">${monitoringEscape(row.tag || '')}</td>
+      <td>${monitoringEscape(row.meter_type || '')}</td>
+      <td class="mono">${monitoringEscape(row.instrument || '—')}</td>
+      <td>${monitoringEscape(row.loop || '—')}</td>
       <td class="mono">${row.hours_available ?? 0}</td>
       <td class="num">${fmt(row.oil_sm3)}</td>
       <td class="num">${monitoringFormatMilSm3(row.gas_sm3)}</td>
@@ -313,22 +317,22 @@ function renderMonitoringTable(rows = [], limits = { hc_pct: 10, total_pct: 7 })
       <td class="num">${fmt(row.total_t)}</td>
       <td class="num">${fmt(row.pressure_barg)}</td>
       <td class="num">${fmt(row.temperature_c)}</td>
-      <td>${row.pair_label || '—'}</td>
+      <td>${monitoringEscape(row.pair_label || '—')}</td>
       <td>${monitoringDeviationCell(row.hc_deviation_pct, limits.hc_pct || 10)}</td>
       <td>${monitoringDeviationCell(row.total_deviation_pct, limits.total_pct || 7)}</td>
-      <td>${row.limit_status ? `${badge(row.limit_status === 'Fora do limite' ? 'error' : row.limit_status === 'Dentro do limite' ? 'ok' : 'attention')} ${row.status_label && row.status_label !== row.limit_status ? `<span class="muted" style="display:block;font-size:11px;margin-top:4px">${row.status_label}</span>` : ''}` : '—'}</td>
+      <td>${row.limit_status ? `${badge(row.limit_status === 'Fora do limite' ? 'error' : row.limit_status === 'Dentro do limite' ? 'ok' : 'attention')} ${row.status_label && row.status_label !== row.limit_status ? `<span class="muted" style="display:block;font-size:11px;margin-top:4px">${monitoringEscape(row.status_label)}</span>` : ''}` : '—'}</td>
       <td>${row.days_outside_limits ? `<span class="badge ${row.protocol_required ? 'err' : row.attention_threshold_reached ? 'warn' : 'info'}">${row.days_outside_limits}</span>` : '—'}</td>
       <td>${row.protocol_required ? '<span class="badge err">Iniciar protocolo SGM-FM</span>' : row.attention_threshold_reached ? '<span class="badge warn">Atenção 8+ dias</span>' : '—'}</td>
-      <td>${row.event_occurred || '—'}</td>
-      <td>${row.event_type || '—'}</td>
-      <td>${row.event_status || '—'}</td>
-      <td>${row.sensor_redundancy_ptdp || '—'}</td>
-      <td>${row.integrity_communication || '—'}</td>
-      <td>${row.new_pvt_result || '—'}</td>
-      <td>${row.new_k_factor_implemented || '—'}</td>
-      <td>${row.operation_mode || '—'}</td>
-      <td>${row.aligned_separator_test || '—'}</td>
-      <td class="monitoring-observations" title="${(row.observations || '').replace(/"/g, '&quot;')}">${row.observations || '—'}</td>
+      <td>${monitoringEscape(row.event_occurred || '—')}</td>
+      <td>${monitoringEscape(row.event_type || '—')}</td>
+      <td>${monitoringEscape(row.event_status || '—')}</td>
+      <td>${monitoringEscape(row.sensor_redundancy_ptdp || '—')}</td>
+      <td>${monitoringEscape(row.integrity_communication || '—')}</td>
+      <td>${monitoringEscape(row.new_pvt_result || '—')}</td>
+      <td>${monitoringEscape(row.new_k_factor_implemented || '—')}</td>
+      <td>${monitoringEscape(row.operation_mode || '—')}</td>
+      <td>${monitoringEscape(row.aligned_separator_test || '—')}</td>
+      <td class="monitoring-observations" title="${monitoringEscape(row.observations || '')}">${monitoringEscape(row.observations || '—')}</td>
       <td>${monitoringSourceBadge(row.source_mode)}</td>
       <td>${monitoringRowActionButtons(row)}</td>
     </tr>

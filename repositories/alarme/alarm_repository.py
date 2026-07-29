@@ -128,10 +128,14 @@ class AlarmRepository:
                 params.extend([like, like, like, like, like])
             where = " WHERE " + " AND ".join(clauses) if clauses else ""
             limit = int(filters.get("limit") or 0)
+            offset = int(filters.get("offset") or 0)
             sql = f"SELECT * FROM alarm_records{where} ORDER BY COALESCE(event_at, detected_at, production_date) DESC, id DESC"
             if limit > 0:
                 sql += " LIMIT ?"
                 params.append(limit)
+            if offset > 0:
+                sql += " OFFSET ?"
+                params.append(offset)
             return self._dicts(conn.execute(sql, params).fetchall())
         finally:
             conn.close()

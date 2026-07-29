@@ -41,7 +41,7 @@ class ChatMessage(BaseModel):
 
 class AskRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=24000)
-    provider: Optional[Literal["gemini"]] = Field(None)
+    provider: Optional[Literal["gemini", "kimi"]] = Field(None)
     model: Optional[str] = Field(None)
     system: Optional[str] = Field(None)
     history: list[ChatMessage] = Field(default_factory=list, description="Histórico de turnos anteriores")
@@ -77,7 +77,7 @@ class AIAttachmentPayload(BaseModel):
 
 class AnalyzeReportRequest(BaseModel):
     report_text: str = Field("", max_length=24000, description="Texto extraído do relatório MPFM")
-    provider: Optional[Literal["gemini"]] = None
+    provider: Optional[Literal["gemini", "kimi"]] = None
     attachments: list[AIAttachmentPayload] = Field(default_factory=list)
     conversation_id: Optional[int] = None
 
@@ -677,6 +677,9 @@ _ENV_KEY_MAP: dict[str, str] = {
     "default_provider":  "AI_DEFAULT_PROVIDER",
     "gemini_key":        "GEMINI_API_KEY",
     "gemini_model":      "GEMINI_MODEL",
+    "kimi_key":          "MOONSHOT_API_KEY",
+    "kimi_model":        "MOONSHOT_MODEL",
+    "kimi_base_url":     "MOONSHOT_BASE_URL",
     "master_prompt":     "AI_MASTER_PROMPT",
 }
 
@@ -760,8 +763,9 @@ def ai_keys_status(request: Request):
         return bool(v and "COLE_" not in v and len(v) > 4)
 
     return {
-        "default_provider": "gemini",
+        "default_provider": env.get("AI_DEFAULT_PROVIDER", "gemini"),
         "gemini":    {"key": _ok("GEMINI_API_KEY"),    "model": env.get("GEMINI_MODEL", "gemini-2.5-flash")},
+        "kimi":      {"key": _ok("MOONSHOT_API_KEY"),  "model": env.get("MOONSHOT_MODEL", "moonshot-v1-8k"), "base_url": env.get("MOONSHOT_BASE_URL", "https://api.moonshot.ai/v1")},
         "master_prompt": env.get("AI_MASTER_PROMPT", "").replace("\\n", "\n"),
     }
 
@@ -770,6 +774,9 @@ class KeysPayload(BaseModel):
     default_provider: Optional[str] = None
     gemini_key:       Optional[str] = None
     gemini_model:     Optional[str] = None
+    kimi_key:         Optional[str] = None
+    kimi_model:       Optional[str] = None
+    kimi_base_url:    Optional[str] = None
     master_prompt:    Optional[str] = None
 
 
@@ -784,8 +791,6 @@ def ai_save_keys(payload: KeysPayload, request: Request):
 
     env = _read_env_file()
     updated: list[str] = []
-    payload.default_provider = "gemini"
-
     for field_name, env_var in _ENV_KEY_MAP.items():
         value = getattr(payload, field_name, None)
         if value is None:

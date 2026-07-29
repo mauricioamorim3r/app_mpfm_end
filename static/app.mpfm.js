@@ -20,10 +20,10 @@ function buildColCheckGrid() {
     const on = state.selectedCols.includes(m);
     const grp = Object.entries(GROUPS).find(([,cols]) => cols.includes(m));
     const dot = grp ? {prod:'#26a0ff',pvt:'#f3b33d',fwa:'#23c16b'}[grp[0]] : '#8ea3ba';
-    return `<label class="chk-item ${on?'on':''}" id="chk_${CSS.escape(m)}" onclick="toggleCol(this,'${m.replace(/'/g,'\\\'')}')" >
+    return `<label class="chk-item ${on?'on':''}" id="chk_${CSS.escape(m)}" onclick="toggleCol(this,'${escapeHtml(m).replace(/'/g,'\\\'')}')" >
       <input type="checkbox" ${on?'checked':''} style="accent-color:${dot}" onclick="event.stopPropagation()">
       <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${dot};flex-shrink:0"></span>
-      ${m}</label>`;
+      ${escapeHtml(m)}</label>`;
   }).join('');
 }
 window.toggleCol = (lbl, metric) => {
@@ -92,7 +92,7 @@ function renderMPFMContext() {
     <div class="mpfm-context-card"><div class="k">Linhas carregadas</div><div class="v">${rows.length}</div><div class="m">métricas no recorte atual</div></div>
     <div class="mpfm-context-card"><div class="k">Registros pivotados</div><div class="v">${uniqueGroups.size}</div><div class="m">data + hora + banco + TAG</div></div>
     <div class="mpfm-context-card"><div class="k">Origem manual</div><div class="v">${manualRows.length}</div><div class="m">métricas inseridas ou ajustadas na aplicação</div></div>
-    <div class="mpfm-context-card"><div class="k">Arquivos de origem</div><div class="v">${sourceFiles.length}</div><div class="m" title="${sourceFiles.join('\n')}">${sourceFiles[0] || 'sem arquivo'}</div></div>
+    <div class="mpfm-context-card"><div class="k">Arquivos de origem</div><div class="v">${sourceFiles.length}</div><div class="m" title="${escapeHtml(sourceFiles.join('\n'))}">${escapeHtml(sourceFiles[0] || 'sem arquivo')}</div></div>
   `;
 }
 
@@ -121,20 +121,20 @@ function renderMPFM() {
   state.mpfmPivotRows = rows;
   document.getElementById('mpfmThead').innerHTML = `<tr>
     <th>Data</th><th>Hora</th><th>Banco</th><th>TAG</th><th>Origem</th>
-    ${sel.map(m => `<th title="${m}">${m.replace(/\s*\([^)]*\)/,'').trim()}</th>`).join('')}
+    ${sel.map(m => `<th title="${escapeHtml(m)}">${escapeHtml(m.replace(/\s*\([^)]*\)/,'').trim())}</th>`).join('')}
     <th style="width:50px"></th>
   </tr>`;
   document.getElementById('mpfmRows').innerHTML = rows.map((r, ri) => `
     <tr id="mrow_${ri}">
-      <td class="mono">${fmtDate(r.day_ref)}</td>
+      <td class="mono">${escapeHtml(fmtDate(r.day_ref))}</td>
       <td class="mono">${r.hour_ref==null?'—':String(r.hour_ref).padStart(2,'0')+':00'}</td>
       <td>${tagChip(r.bank||'')}</td>
-      <td class="mono" style="font-size:12px">${r.tag||''}</td>
-      <td><div class="mpfm-origin-cell"><span class="badge ${r.source_kind==='manual'?'warn':'ok'}">${r.source_kind==='manual'?'Manual':'Arquivo'}</span><div class="mpfm-origin-meta" title="${r.source_file||''}">${r.source_file||'sem arquivo'}</div></div></td>
+      <td class="mono" style="font-size:12px">${escapeHtml(r.tag||'')}</td>
+      <td><div class="mpfm-origin-cell"><span class="badge ${r.source_kind==='manual'?'warn':'ok'}">${r.source_kind==='manual'?'Manual':'Arquivo'}</span><div class="mpfm-origin-meta" title="${escapeHtml(r.source_file||'')}">${escapeHtml(r.source_file||'sem arquivo')}</div></div></td>
       ${sel.map(m => {
         const id = r[`__id_${m}`];
         const v  = r[m];
-        return `<td class="num" id="mc_${id||'_'+ri+'_'+m}" style="cursor:${id?'pointer':'default'}"
+        return `<td class="num" id="mc_${id||'_'+ri+'_'+escapeHtml(m)}" style="cursor:${id?'pointer':'default'}"
           ${id ? `onclick="editMeasurement(${id}, this, '${jsStr(m)}', '${jsStr(r.day_ref)}', ${r.hour_ref??'null'}, '${jsStr(r.bank)}', 'mpfm')" title="Clique para editar"` : ''}>${fmt(v)}</td>`;
       }).join('')}
       <td style="text-align:center">

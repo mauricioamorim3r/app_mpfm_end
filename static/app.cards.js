@@ -97,11 +97,11 @@ function renderDeadlineIndicators(rows) {
   ];
   const cardsHtml = groups.map(([label, value, icon, meta, cls]) => `
     <div class="${cls}">
-      <div class="deadline-indicator__icon">${icon}</div>
+      <div class="deadline-indicator__icon">${escapeHtml(icon)}</div>
       <div>
-        <div class="deadline-indicator__label">${label}</div>
+        <div class="deadline-indicator__label">${escapeHtml(label)}</div>
         <div class="deadline-indicator__value">${value}</div>
-        <div class="muted" style="font-size:11px;margin-top:4px">${meta}</div>
+        <div class="muted" style="font-size:11px;margin-top:4px">${escapeHtml(meta)}</div>
       </div>
     </div>
   `).join('');

@@ -1,5 +1,9 @@
 'use strict';
 
+function reconEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 let _reconCurrentRunId = null;
 let _pvtAll = [];
 let _reconCurrentProposal = null;
@@ -97,19 +101,19 @@ async function loadPVTTable() {
   tbody.innerHTML = _pvtAll.map(p => `
     <tr>
       <td>${p.id}</td>
-      <td><strong>${p.bank}</strong></td>
-      <td>${p.tag}</td>
+      <td><strong>${reconEscape(p.bank)}</strong></td>
+      <td>${reconEscape(p.tag)}</td>
       <td>${fmt(p.fe)}</td>
       <td>${fmt(p.rs)}</td>
       <td>${fmt(p.rho_oleo_std)}</td>
       <td>${fmt(p.rho_gas_std)}</td>
       <td>${fmt(p.rho_agua_std)}</td>
       <td><span class="badge ${p.gsv_confirmed ? 'ok' : 'warn'}">${p.gsv_confirmed ? 'Sim' : 'Não'}</span></td>
-      <td><span class="badge ${p.gor_mode === 'unknown' ? 'warn' : 'ok'}">${GOR_LABELS[p.gor_mode] || p.gor_mode}</span></td>
-      <td>${p.limite_hc_pct}%</td>
-      <td>${p.limite_total_pct}%</td>
-      <td style="font-size:11px">${p.valid_from || '—'} → ${p.valid_to || '—'}</td>
-      <td style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis">${p.source || '—'}</td>
+      <td><span class="badge ${p.gor_mode === 'unknown' ? 'warn' : 'ok'}">${reconEscape(GOR_LABELS[p.gor_mode] || p.gor_mode)}</span></td>
+      <td>${fmt(p.limite_hc_pct)}%</td>
+      <td>${fmt(p.limite_total_pct)}%</td>
+      <td style="font-size:11px">${reconEscape(p.valid_from || '—')} → ${reconEscape(p.valid_to || '—')}</td>
+      <td style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis">${reconEscape(p.source || '—')}</td>
       <td style="display:flex;gap:4px">
         <button class="btn sm" onclick="openPVTModal(${p.id})">✏</button>
         <button class="btn sm secondary" onclick="deletePVT(${p.id})">🗑</button>
@@ -244,7 +248,7 @@ async function loadReconBankOptions() {
   const sel = document.getElementById('recon-bank');
   if (!sel) return;
   sel.innerHTML = '<option value="">Selecione banco...</option>' +
-    banks.map(b => `<option value="${b}">${b}</option>`).join('');
+    banks.map(b => `<option value="${reconEscape(b)}">${reconEscape(b)}</option>`).join('');
 }
 
 async function loadReconPVTOptions() {
@@ -270,13 +274,13 @@ async function loadReconPVTOptions() {
   const pvtTags = pvts.map(p => p.tag).filter(Boolean);
   const tags = [...new Set([...mpfmTags, ...pvtTags])];
   tagSel.innerHTML = tags.length
-    ? tags.map(t => `<option value="${t}">${t}</option>`).join('')
+    ? tags.map(t => `<option value="${reconEscape(t)}">${reconEscape(t)}</option>`).join('')
     : '<option value="">Sem TAG MPFM/PVT para este banco</option>';
   if (tagSel && tags.length) {
     tagSel.value = tags.includes(previousTag) ? previousTag : tags[0];
   }
   pvtSel.innerHTML = pvts.length
-    ? pvts.map(p => `<option value="${p.id}">[${p.id}] ${p.tag} | FE=${p.fe} RS=${p.rs} | ${p.gor_mode} | ${p.valid_from || 'sem vigência'}</option>`).join('')
+    ? pvts.map(p => `<option value="${p.id}">[${p.id}] ${reconEscape(p.tag)} | FE=${p.fe} RS=${p.rs} | ${reconEscape(p.gor_mode)} | ${reconEscape(p.valid_from || 'sem vigência')}</option>`).join('')
     : '<option value="">Cadastre PVT para este banco</option>';
   if (pvtSel && previousPvt && pvts.some(p => String(p.id) === String(previousPvt))) {
     pvtSel.value = previousPvt;
@@ -301,10 +305,10 @@ function renderReconPvtPreview() {
     return;
   }
   host.innerHTML = `
-    <div class="recon-preview-card"><div class="k">Banco / TAG</div><div class="v">${p.bank} · ${p.tag}</div><div class="m">Parâmetro PVT usado na reconciliação.</div></div>
+    <div class="recon-preview-card"><div class="k">Banco / TAG</div><div class="v">${reconEscape(p.bank)} · ${reconEscape(p.tag)}</div><div class="m">Parâmetro PVT usado na reconciliação.</div></div>
     <div class="recon-preview-card"><div class="k">Base PVT</div><div class="v">FE ${fmt(p.fe)} · RS ${fmt(p.rs)}</div><div class="m">ρ óleo ${fmt(p.rho_oleo_std)} · ρ gás ${fmt(p.rho_gas_std)} · ρ água ${fmt(p.rho_agua_std)}</div></div>
-    <div class="recon-preview-card"><div class="k">Critérios QA</div><div class="v">HC ${fmt(p.limite_hc_pct)}% · Total ${fmt(p.limite_total_pct)}%</div><div class="m">GSV ${p.gsv_confirmed ? 'confirmado' : 'não confirmado'} · ${p.gor_mode || 'sem modo'}</div></div>
-    <div class="recon-preview-card"><div class="k">Vigência / Fonte</div><div class="v">${p.valid_from || 'sem início'} → ${p.valid_to || 'aberto'}</div><div class="m" title="${p.source || ''}">${p.source || 'sem fonte declarada'}</div></div>
+    <div class="recon-preview-card"><div class="k">Critérios QA</div><div class="v">HC ${fmt(p.limite_hc_pct)}% · Total ${fmt(p.limite_total_pct)}%</div><div class="m">GSV ${p.gsv_confirmed ? 'confirmado' : 'não confirmado'} · ${reconEscape(p.gor_mode || 'sem modo')}</div></div>
+    <div class="recon-preview-card"><div class="k">Vigência / Fonte</div><div class="v">${reconEscape(p.valid_from || 'sem início')} → ${reconEscape(p.valid_to || 'aberto')}</div><div class="m" title="${reconEscape(p.source || '')}">${reconEscape(p.source || 'sem fonte declarada')}</div></div>
   `;
   updateReconActionState(_reconLatestDataCheck);
   renderReconReadinessRunbook(_reconLatestDataCheck);
@@ -530,11 +534,11 @@ function renderReconAnalyticalSummary(snapshot) {
   if (!host) return;
   const data = snapshot || {};
   const rows = [
-    ['Arranjo', data.flow_mode === 'topside_sep' ? 'TOPSIDE vs SEPARADOR' : (data.flow_mode || '—')],
-    ['Atividade', data.activity_kind || '—'],
-    ['Início', data.test_start_at || '—'],
+    ['Arranjo', data.flow_mode === 'topside_sep' ? 'TOPSIDE vs SEPARADOR' : reconEscape(data.flow_mode || '—')],
+    ['Atividade', reconEscape(data.activity_kind || '—')],
+    ['Início', reconEscape(data.test_start_at || '—')],
     ['Duração', data.duration_hours != null ? `${fmt(data.duration_hours)} h` : '—'],
-    ['Referência', data.reference_system || '—'],
+    ['Referência', reconEscape(data.reference_system || '—')],
     ['P/T MPFM', (data.mpfm_pressure_barg != null || data.mpfm_temperature_c != null) ? `${fmt(data.mpfm_pressure_barg)} barg / ${fmt(data.mpfm_temperature_c)} °C` : '—'],
     ['P/T SEP', (data.sep_pressure_barg != null || data.sep_temperature_c != null) ? `${fmt(data.sep_pressure_barg)} barg / ${fmt(data.sep_temperature_c)} °C` : '—'],
     ['FE / RS', (data.fe != null || data.rs != null) ? `${fmt(data.fe)} / ${fmt(data.rs)}` : '—'],
@@ -542,8 +546,8 @@ function renderReconAnalyticalSummary(snapshot) {
     ['ρ coriolis', data.density_coriolis_kg_m3 != null ? `${fmt(data.density_coriolis_kg_m3)} kg/m³` : '—'],
     ['ρ laboratório', data.density_lab_kg_m3 != null ? `${fmt(data.density_lab_kg_m3)} kg/m³` : '—'],
     ['Outra ρ', data.density_other_kg_m3 != null ? `${fmt(data.density_other_kg_m3)} kg/m³` : '—'],
-    ['Fonte', data.density_source || '—'],
-    ['Ref. analítica', data.analysis_reference || '—'],
+    ['Fonte', reconEscape(data.density_source || '—')],
+    ['Ref. analítica', reconEscape(data.analysis_reference || '—')],
   ];
   host.innerHTML = `
     <div class="recon-analytical-card recon-analytical-card--summary">
@@ -552,7 +556,7 @@ function renderReconAnalyticalSummary(snapshot) {
       <div class="recon-analytical-summary-grid">
         ${rows.map(([label, value]) => `<div class="recon-analytical-kv"><span>${label}</span><strong>${value}</strong></div>`).join('')}
       </div>
-      ${data.analysis_notes ? `<div class="recon-analytical-notes"><span>Notas</span><strong>${data.analysis_notes}</strong></div>` : ''}
+      ${data.analysis_notes ? `<div class="recon-analytical-notes"><span>Notas</span><strong>${reconEscape(data.analysis_notes)}</strong></div>` : ''}
     </div>
   `;
 }
@@ -593,12 +597,12 @@ function renderReconCampaignSummary(campaign, proposal) {
         <div class="recon-analytical-kv"><span>K atual</span><strong>${p.current_k_factor != null ? fmtFactor(p.current_k_factor) : (c.current_k_factor != null ? fmtFactor(c.current_k_factor) : '—')}</strong></div>
         <div class="recon-analytical-kv"><span>K proposto HC</span><strong>${p.proposed_k_factor_hc != null ? fmtFactor(p.proposed_k_factor_hc) : (c.proposed_k_factor_hc != null ? fmtFactor(c.proposed_k_factor_hc) : '—')}</strong></div>
         <div class="recon-analytical-kv"><span>K proposto Total</span><strong>${p.proposed_k_factor_total != null ? fmtFactor(p.proposed_k_factor_total) : (c.proposed_k_factor_total != null ? fmtFactor(c.proposed_k_factor_total) : '—')}</strong></div>
-        <div class="recon-analytical-kv"><span>Base escolhida</span><strong>${p.proposal_mode || c.proposal_mode || 'hc'}</strong></div>
-        <div class="recon-analytical-kv"><span>Grandeza base</span><strong>${basisName}</strong></div>
-        <div class="recon-analytical-kv"><span>Δ base</span><strong>${basisDesvio}</strong></div>
-        <div class="recon-analytical-kv"><span>Limite da base</span><strong>${basisLimit}</strong></div>
-        <div class="recon-analytical-kv"><span>Regra</span><strong>${p.proposal_rule || c.proposal_rule || 'mass_ratio_24h'}</strong></div>
-        <div class="recon-analytical-kv"><span>Status da proposta</span><strong>${formatReconCampaignStatus(proposalStatus)}</strong></div>
+        <div class="recon-analytical-kv"><span>Base escolhida</span><strong>${reconEscape(p.proposal_mode || c.proposal_mode || 'hc')}</strong></div>
+        <div class="recon-analytical-kv"><span>Grandeza base</span><strong>${reconEscape(basisName)}</strong></div>
+        <div class="recon-analytical-kv"><span>Δ base</span><strong>${reconEscape(basisDesvio)}</strong></div>
+        <div class="recon-analytical-kv"><span>Limite da base</span><strong>${reconEscape(basisLimit)}</strong></div>
+        <div class="recon-analytical-kv"><span>Regra</span><strong>${reconEscape(p.proposal_rule || c.proposal_rule || 'mass_ratio_24h')}</strong></div>
+        <div class="recon-analytical-kv"><span>Status da proposta</span><strong>${reconEscape(formatReconCampaignStatus(proposalStatus))}</strong></div>
         <div class="recon-analytical-kv"><span>K selecionado</span><strong>${selected != null ? fmtFactor(selected) : '—'}</strong></div>
         <div class="recon-analytical-kv"><span>K aplicado</span><strong>${c.applied_k_factor != null ? fmtFactor(c.applied_k_factor) : '—'}</strong></div>
         <div class="recon-analytical-kv"><span>Δ HC base</span><strong>${c.baseline_desvio_hc_pct != null ? fmt(c.baseline_desvio_hc_pct) + '%' : '—'}</strong></div>
@@ -607,11 +611,11 @@ function renderReconCampaignSummary(campaign, proposal) {
         <div class="recon-analytical-kv"><span>Δ Total pós</span><strong>${c.post_desvio_total_pct != null ? fmt(c.post_desvio_total_pct) + '%' : '—'}</strong></div>
         <div class="recon-analytical-kv"><span>Ganho HC</span><strong>${c.improvement_hc_pp != null ? fmt(c.improvement_hc_pp) + ' pp' : '—'}</strong></div>
         <div class="recon-analytical-kv"><span>Ganho Total</span><strong>${c.improvement_total_pp != null ? fmt(c.improvement_total_pp) + ' pp' : '—'}</strong></div>
-        <div class="recon-analytical-kv"><span>Status monitoramento</span><strong>${formatReconCampaignStatus(monitoringStatus)}</strong></div>
+        <div class="recon-analytical-kv"><span>Status monitoramento</span><strong>${reconEscape(formatReconCampaignStatus(monitoringStatus))}</strong></div>
       </div>
-      <div class="recon-analytical-notes"><span>Regra de proposta</span><strong>${proposalRule}</strong></div>
-      <div class="recon-analytical-notes"><span>Conduta</span><strong>${proposalRecommendation}</strong></div>
-      <div class="recon-analytical-notes"><span>Regra de aceitação</span><strong>${monitoringRule}</strong></div>
+      <div class="recon-analytical-notes"><span>Regra de proposta</span><strong>${reconEscape(proposalRule)}</strong></div>
+      <div class="recon-analytical-notes"><span>Conduta</span><strong>${reconEscape(proposalRecommendation)}</strong></div>
+      <div class="recon-analytical-notes"><span>Regra de aceitação</span><strong>${reconEscape(monitoringRule)}</strong></div>
     </div>
   `;
   refreshReconReadiness();
@@ -721,21 +725,21 @@ function renderReconMemorial(data) {
           ${reconMemorialKv('rho gás std', pvt.rho_gas_std, 'kg/m3')}
           ${reconMemorialKv('rho água std', pvt.rho_agua_std, 'kg/m3')}
           ${reconMemorialKv('GSV confirmado', pvt.gsv_confirmed ? 'Sim' : 'Não')}
-          ${reconMemorialKv('GOR mode', pvt.gor_mode || '—')}
-          ${reconMemorialKv('Fonte', pvt.source || 'Snapshot do run')}
+          ${reconMemorialKv('GOR mode', reconEscape(pvt.gor_mode || '—'))}
+          ${reconMemorialKv('Fonte', reconEscape(pvt.source || 'Snapshot do run'))}
         </div>
       </div>
 
       <div class="card ops-card recon-memorial-card">
         <h3 class="section-title modal-h3">Snapshot analítico</h3>
         <div class="recon-memorial-kv-list">
-          ${reconMemorialKv('Atividade', analytical.activity_kind || '—')}
-          ${reconMemorialKv('Referência', analytical.reference_system || '—')}
+          ${reconMemorialKv('Atividade', reconEscape(analytical.activity_kind || '—'))}
+          ${reconMemorialKv('Referência', reconEscape(analytical.reference_system || '—'))}
           ${reconMemorialKv('BSW', analytical.bsw_pct, '%')}
           ${reconMemorialKv('rho coriolis', analytical.density_coriolis_kg_m3, 'kg/m3')}
           ${reconMemorialKv('rho laboratório', analytical.density_lab_kg_m3, 'kg/m3')}
-          ${reconMemorialKv('Fonte densidade', analytical.density_source || '—')}
-          ${reconMemorialKv('Ref. analítica', analytical.analysis_reference || '—')}
+          ${reconMemorialKv('Fonte densidade', reconEscape(analytical.density_source || '—'))}
+          ${reconMemorialKv('Ref. analítica', reconEscape(analytical.analysis_reference || '—'))}
         </div>
       </div>
     </div>
@@ -1048,7 +1052,7 @@ function renderReconResumo(r, meta) {
     '<tbody>' + linha.map(([label, ref, mpfm, dev, st]) =>
       `<tr><td>${label}</td><td>${fmt(ref)}</td><td>${fmt(mpfm)}</td>
        <td style="${statusFill(st)}">${fmt(dev)}%</td>
-       <td style="${statusFill(st)};font-weight:600">${st || '—'}</td></tr>`
+       <td style="${statusFill(st)};font-weight:600">${reconEscape(st || '—')}</td></tr>`
     ).join('') + '</tbody>';
 
   const st_rows = [
@@ -1061,13 +1065,13 @@ function renderReconResumo(r, meta) {
     '<tbody>' + st_rows.map(([label, ref, mpfm, dev, st]) =>
       `<tr><td>${label}</td><td>${fmt(ref)}</td><td>${fmt(mpfm)}</td>
        <td style="${statusFill(st)}">${dev != null ? fmt(dev) + '%' : 'Bloqueado'}</td>
-       <td style="${statusFill(st)};font-weight:600">${st || '—'}</td></tr>`
+       <td style="${statusFill(st)};font-weight:600">${reconEscape(st || '—')}</td></tr>`
     ).join('') + '</tbody>';
 
   const sf = r.status_final || 'INDISPONÍVEL';
   document.getElementById('recon-status-badge').innerHTML =
     `<span style="font-size:14px;font-weight:700;${statusFill(sf)}">
-       Status Final: ${sf}
+       Status Final: ${reconEscape(sf)}
      </span>`;
   document.getElementById('recon-cobertura-badge').innerHTML = (() => {
     const janela = r.horas_janela ?? 24;
@@ -1084,7 +1088,7 @@ function renderReconResumo(r, meta) {
     ? r.qa_flags_consolidados.split('|')
     : r.qa_flags_consolidados || []).filter(Boolean);
   document.getElementById('recon-qa-flags').innerHTML = flags.length
-    ? `<div style="font-size:11px;color:var(--amber)">⚠ QA: ${flags.join(' · ')}</div>`
+    ? `<div style="font-size:11px;color:var(--amber)">⚠ QA: ${flags.map(reconEscape).join(' · ')}</div>`
     : '';
 }
 
@@ -1110,10 +1114,10 @@ function renderReconCalcTable(rows) {
       <td>${pct(r.desvio_hc_linha_pct)}</td>
       <td>${pct(r.desvio_total_linha_pct)}</td>
       <td>${pct(r.desvio_agua_linha_pct)}</td>
-      <td style="font-size:11px;color:var(--muted)">${r.agua_fonte || ''}</td>
-      <td style="font-size:10px;color:var(--amber)">${(r.qa_flags || '').replace(/\|/g, ' · ')}</td>
-      <td>${r.status_linha ? `<span class="badge ${r.status_linha === 'OK' ? 'ok' : r.status_linha === 'ATENÇÃO' ? 'warn' : 'err'}">${r.status_linha}</span>` : '—'}</td>
-      <td>${r.status_final ? `<span class="badge ${r.status_final === 'OK' ? 'ok' : r.status_final === 'ATENÇÃO' ? 'warn' : 'err'}">${r.status_final}</span>` : '—'}</td>
+      <td style="font-size:11px;color:var(--muted)">${reconEscape(r.agua_fonte || '')}</td>
+      <td style="font-size:10px;color:var(--amber)">${reconEscape((r.qa_flags || '').replace(/\|/g, ' · '))}</td>
+      <td>${r.status_linha ? `<span class="badge ${r.status_linha === 'OK' ? 'ok' : r.status_linha === 'ATENÇÃO' ? 'warn' : 'err'}">${reconEscape(r.status_linha)}</span>` : '—'}</td>
+      <td>${r.status_final ? `<span class="badge ${r.status_final === 'OK' ? 'ok' : r.status_final === 'ATENÇÃO' ? 'warn' : 'err'}">${reconEscape(r.status_final)}</span>` : '—'}</td>
     </tr>`;
   }).join('');
 }
@@ -1127,15 +1131,15 @@ async function loadReconHistory() {
     : rows.map(r => `<tr>
         <td>${r.id}</td>
         <td>${r.campaign_id || '—'}</td>
-        <td>${r.campaign_phase || 'baseline'}</td>
-        <td style="font-size:11px">${r.run_at}</td>
-        <td><strong>${r.bank}</strong></td>
-        <td>${r.tag}</td>
-        <td>${fmtDate(r.day_ref)}</td>
+        <td>${reconEscape(r.campaign_phase || 'baseline')}</td>
+        <td style="font-size:11px">${reconEscape(r.run_at)}</td>
+        <td><strong>${reconEscape(r.bank)}</strong></td>
+        <td>${reconEscape(r.tag)}</td>
+        <td>${reconEscape(fmtDate(r.day_ref))}</td>
         <td>${r.horas_validas}/24 (${r.cobertura_pct}%)</td>
-        <td>${r.status_linha ? `<span class="badge ${r.status_linha === 'OK' ? 'ok' : r.status_linha === 'ATENÇÃO' ? 'warn' : 'err'}">${r.status_linha}</span>` : '—'}</td>
-        <td>${r.status_final ? `<span class="badge ${r.status_final === 'OK' ? 'ok' : r.status_final === 'ATENÇÃO' ? 'warn' : 'err'}">${r.status_final}</span>` : '—'}</td>
-        <td>${r.author || '—'}</td>
+        <td>${r.status_linha ? `<span class="badge ${r.status_linha === 'OK' ? 'ok' : r.status_linha === 'ATENÇÃO' ? 'warn' : 'err'}">${reconEscape(r.status_linha)}</span>` : '—'}</td>
+        <td>${r.status_final ? `<span class="badge ${r.status_final === 'OK' ? 'ok' : r.status_final === 'ATENÇÃO' ? 'warn' : 'err'}">${reconEscape(r.status_final)}</span>` : '—'}</td>
+        <td>${reconEscape(r.author || '—')}</td>
         <td style="display:flex;gap:4px">
           <button class="btn sm" onclick="loadReconRunDetail(${r.id})">Ver</button>
           <button class="btn sm secondary" onclick="loadReconMemorial(${r.id}, {switchTab:true})">Memorial</button>
@@ -1153,14 +1157,14 @@ async function loadReconCampaigns() {
     ? '<tr><td colspan="10" style="color:var(--muted);text-align:center">Nenhuma campanha 24h cadastrada ainda.</td></tr>'
     : rows.map(r => `<tr>
         <td>${r.id}</td>
-        <td><strong>${r.bank}</strong></td>
-        <td>${r.tag}</td>
-        <td>${fmtDate(r.baseline_day_ref)}</td>
-        <td>${r.post_day_ref ? fmtDate(r.post_day_ref) : '—'}</td>
+        <td><strong>${reconEscape(r.bank)}</strong></td>
+        <td>${reconEscape(r.tag)}</td>
+        <td>${reconEscape(fmtDate(r.baseline_day_ref))}</td>
+        <td>${r.post_day_ref ? reconEscape(fmtDate(r.post_day_ref)) : '—'}</td>
         <td>${r.current_k_factor != null ? fmtFactor(r.current_k_factor) : '—'}</td>
         <td>${r.proposed_k_factor_selected != null ? fmtFactor(r.proposed_k_factor_selected) : '—'}</td>
         <td>${r.applied_k_factor != null ? fmtFactor(r.applied_k_factor) : '—'}</td>
-        <td><span class="badge ${r.monitoring_status === 'accepted' ? 'ok' : r.monitoring_status === 'rejected' ? 'err' : 'warn'}">${formatReconCampaignStatus(r.monitoring_status || r.status)}</span></td>
+        <td><span class="badge ${r.monitoring_status === 'accepted' ? 'ok' : r.monitoring_status === 'rejected' ? 'err' : 'warn'}">${reconEscape(formatReconCampaignStatus(r.monitoring_status || r.status))}</span></td>
         <td><button class="btn sm" onclick="loadReconCampaign(${r.id})">Abrir</button></td>
       </tr>`).join('');
 }

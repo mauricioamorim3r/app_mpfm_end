@@ -1,0 +1,1 @@
+# MPFM Manager test suite

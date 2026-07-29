@@ -8,7 +8,7 @@ MPFM Manager Local v4
 - Classificação de TXT por conteúdo
 """
 
-import os, sys, re, json, shutil, tempfile, glob, pathlib, sqlite3, math, zipfile, hashlib, threading, warnings, time, secrets, base64, asyncio
+import os, sys, re, json, shutil, tempfile, glob, pathlib, sqlite3, math, zipfile, hashlib, threading, warnings, time, secrets, base64, asyncio, logging
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
@@ -53,6 +53,7 @@ from routes.sgmfm_routes import register_sgmfm_routes
 from routes.system_routes import register_system_routes
 from routes.xml042_routes import register_xml042_routes
 from routes.ai_routes import router as ai_router
+from routes.ai_agent_routes import router as ai_agent_router
 from services.cards import build_daily_cards
 from services.importing import SEP_SOURCE_UNIT_CODE, SEP_UNIT_BY_METER, classify_input, inspect_txt_content
 from services.importing import prepare_ingestion_batches
@@ -125,6 +126,7 @@ engine = load_engine()
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.responses import Response, FileResponse, HTMLResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from starlette.types import ASGIApp, Scope, Receive, Send
 import uvicorn
 
@@ -182,9 +184,47 @@ class BasicAuthMiddleware:
         await response(scope, receive, send)
 
 
+def _require_auth_config():
+    """Raise early if authentication is enabled but credentials are missing."""
+    if not AUTH_ENABLED:
+        return
+    if not AUTH_USERNAME or not AUTH_PASSWORD:
+        raise RuntimeError(
+            "Autenticação habilitada (MPFM_AUTH_ENABLED=true) mas MPFM_AUTH_USER "
+            "e/ou MPFM_AUTH_PASS não estão configurados."
+        )
+
+
+# Validate auth configuration at import time so the server fails fast.
+_require_auth_config()
+
+
 app = FastAPI(title=APP_TITLE, version=APP_VERSION)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# CORS: restrict to configured origins instead of allowing every domain.
+_allowed_origins = os.getenv("MPFM_ALLOWED_ORIGINS", "http://localhost:8765,http://127.0.0.1:8765").split(",")
+_allowed_origins = [origin.strip() for origin in _allowed_origins if origin.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_allowed_origins,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"],
+    allow_credentials=True,
+)
+app.add_middleware(GZipMiddleware, minimum_size=1024, compresslevel=6)
 app.add_middleware(BasicAuthMiddleware)
+
+
+@app.middleware("http")
+async def add_security_headers(request, call_next):
+    """Attach essential HTTP security headers to every response."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 warnings.filterwarnings(
     "ignore",
@@ -198,6 +238,11 @@ warnings.filterwarnings(
 BACKUP_DIR = WORK_DIR / "backups"
 
 def db_conn():
+    # Se houver uma conexão compartilhada no escopo da requisição, reutiliza.
+    from services.db_scope import get_scoped_db_conn
+    scoped = get_scoped_db_conn()
+    if scoped is not None:
+        return scoped()
     db_target = str(DB_PATH)
     conn = sqlite3.connect(db_target, uri=db_target.startswith("file:"), timeout=30.0)
     conn.row_factory = sqlite3.Row
@@ -355,6 +400,28 @@ def _load_sep_data_by_day(production_date: str) -> dict:
     return out
 
 
+def _load_sep_data_by_range(date_from: str, date_to: str) -> dict[str, dict]:
+    """Carrega dados SEP para vários dias em uma única query (evita N+1)."""
+    if not date_from or not date_to:
+        return {}
+    conn = db_conn()
+    rows = conn.execute(
+        """
+        SELECT day_ref, hour_ref, metric_name, metric_value
+        FROM measurements_curated
+        WHERE row_kind='sep' AND bank='SEP' AND COALESCE(is_official,1)=1
+          AND day_ref>=? AND day_ref<=
+        ? ORDER BY day_ref, COALESCE(hour_ref,999), metric_name
+        """,
+        (date_from, date_to),
+    ).fetchall()
+    conn.close()
+    out: dict[str, dict] = {}
+    for day_ref, hour_ref, metric_name, metric_value in rows:
+        day_data = out.setdefault(day_ref, {})
+        key = 'DAY' if hour_ref is None else int(hour_ref)
+        day_data.setdefault(key, {})[metric_name] = metric_value
+    return out
 
 
 def _recompute_alignment_resolution(production_date: str, bank: str):
@@ -1793,14 +1860,27 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
                     production_date = _day_tag_to_iso(yr, mo, "_".join(key.split("_")[1:]))
                     if production_date:
                         recon_targets.add((unit_code, production_date))
-                for unit_code, production_date in sorted(recon_targets):
+                # Reconstrução de reconciliação e base única são executadas em background
+                # para não bloquear a resposta do upload.
+                def _background_recon_and_base():
+                    for unit_code, production_date in sorted(recon_targets):
+                        try:
+                            _rebuild_recon_from_curated(unit_code, production_date, run_id, fname)
+                        except Exception as exc:
+                            try:
+                                db_add_issue(run_id, fname, 'recon_rebuild_error', 'warn', f'{unit_code}/{production_date}', production_date, str(exc))
+                            except Exception:
+                                pass
                     try:
-                        _rebuild_recon_from_curated(unit_code, production_date, run_id, fname)
+                        schedule_monthly_base_unica(outxls, yr, mo)
                     except Exception as exc:
-                        db_add_issue(run_id, fname, 'recon_rebuild_error', 'warn', f'{unit_code}/{production_date}', production_date, str(exc))
-                        log.append(f'  ⚠️  Recon {unit_code} {production_date}: {exc}')
-                if schedule_monthly_base_unica(outxls, yr, mo):
-                    log.append('  ℹ️  Workbook mensal em atualização assíncrona')
+                        try:
+                            db_add_issue(run_id, fname, 'base_unica_schedule_error', 'warn', fname, '', str(exc))
+                        except Exception:
+                            pass
+
+                threading.Thread(target=_background_recon_and_base, daemon=True).start()
+                log.append('  ℹ️  Reconciliação/base única em atualização assíncrona')
             except Exception as e:
                 db_add_issue(run_id, fname, 'excel_save_error', 'error', fname, '', str(e))
                 log.append(f'  ❌ Erro ao salvar Excel: {e}')
@@ -1858,6 +1938,7 @@ register_system_routes(
 )
 
 app.include_router(ai_router)
+app.include_router(ai_agent_router)
 
 CADASTRO_PATH = WORK_DIR / 'cadastro.json'
 
@@ -2284,6 +2365,7 @@ register_ops_routes(
         'load_state': load_state,
         'save_state': save_state,
         'load_sep_data_by_day': _load_sep_data_by_day,
+        'load_sep_data_by_range': _load_sep_data_by_range,
         'serialize_sep_row': _ser,
     },
 )

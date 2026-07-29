@@ -32,7 +32,7 @@ function summarySelectOptions(selectEl, items, stateKey, formatLabel) {
     return '';
   }
 
-  selectEl.innerHTML = normalized.map(item => `<option value="${item.value}">${item.label}</option>`).join('');
+  selectEl.innerHTML = normalized.map(item => `<option value="${summaryEscapeHtml(item.value)}">${summaryEscapeHtml(item.label)}</option>`).join('');
   const current = state.summary?.[stateKey] || '';
   const selected = normalized.some(item => item.value === current) ? current : normalized[0].value;
   state.summary[stateKey] = selected;
@@ -45,12 +45,12 @@ function summarySelectOptions(selectEl, items, stateKey, formatLabel) {
 }
 
 function summaryCardMarkup(label, value, subtitle, accentVar, mesLabel, iconMap, extra = {}) {
-  const criterion = extra.criterion ? `<div class="summary-kpi-foot">${extra.criterion}</div>` : '';
-  const titleAttr = extra.tooltip ? ` title="${extra.tooltip.replace(/"/g, '&quot;')}"` : '';
+  const criterion = extra.criterion ? `<div class="summary-kpi-foot">${summaryEscapeHtml(extra.criterion)}</div>` : '';
+  const titleAttr = extra.tooltip ? ` title="${summaryEscapeHtml(extra.tooltip).replace(/"/g, '&quot;')}"` : '';
   return `<div class="card summary-kpi-card" style="padding:14px 16px"${titleAttr}>
-    <div class="summary-kpi-head"><span class="summary-kpi-icon" title="Clique para trocar o ícone" onclick="editSummaryIcon('${jsStr(label)}')">${renderIconMarkup(iconMap[label],'summary','summary-kpi-glyph')}</span><span>${label}, <span style="color:var(${accentVar})">${mesLabel}</span></span></div>
-    <div class="summary-kpi-value" style="color:var(${accentVar})">${value}</div>
-    <div class="summary-kpi-sub">${subtitle}</div>
+    <div class="summary-kpi-head"><span class="summary-kpi-icon" title="Clique para trocar o ícone" onclick="editSummaryIcon('${jsStr(label)}')">${renderIconMarkup(iconMap[label],'summary','summary-kpi-glyph')}</span><span>${summaryEscapeHtml(label)}, <span style="color:var(${accentVar})">${summaryEscapeHtml(mesLabel)}</span></span></div>
+    <div class="summary-kpi-value" style="color:var(${accentVar})">${summaryEscapeHtml(value)}</div>
+    <div class="summary-kpi-sub">${summaryEscapeHtml(subtitle)}</div>
     ${criterion}
   </div>`;
 }
@@ -571,7 +571,7 @@ async function loadSummary(silent = false) {
     const current = sel.value;
     sel.innerHTML = d.months_available.map(m => {
       const [y2, m2] = m.split('-');
-      return `<option value="${m}">${summaryMonthLabel(m)}</option>`;
+      return `<option value="${summaryEscapeHtml(m)}">${summaryEscapeHtml(summaryMonthLabel(m))}</option>`;
     }).join('');
     // Restore previously selected month if still available, else pick latest
     if (current && [...sel.options].some(o => o.value === current)) {
@@ -638,7 +638,7 @@ async function loadSummary(silent = false) {
     (d.by_tag||[]).map(r =>
       `<tr>
         <td>${tagChip(r.bank)}</td>
-        <td class="mono" style="font-size:12px">${r.tag}</td>
+        <td class="mono" style="font-size:12px">${summaryEscapeHtml(r.tag)}</td>
         <td class="mono">${r.days}</td>
         <td class="num" style="color:var(--accent);font-weight:600">${fmt(r.hc_t)}</td>
         <td class="num">${fmt(r.total_t)}</td>
@@ -789,8 +789,8 @@ function renderMonthCalendar(month, daily) {
         const dOk = item.daily;
         const hHrs = item.hours || 0;
         const col = dOk ? '#22c55e' : hHrs > 0 ? '#f59e0b' : '#ef4444';
-        const tagShort = (item.tag || '').replace('Riser_', 'P').replace('PW-', '');
-        return `<span class="cal-mini-chip" style="border-left: 2px solid ${col};" title="${item.tag} (${item.bank}): Diário ${dOk?'OK':'Ausente'} | Horário ${hHrs}h/24h">
+        const tagShort = summaryEscapeHtml((item.tag || '').replace('Riser_', 'P').replace('PW-', ''));
+        return `<span class="cal-mini-chip" style="border-left: 2px solid ${col};" title="${summaryEscapeHtml(item.tag)} (${summaryEscapeHtml(item.bank)}): Diário ${dOk?'OK':'Ausente'} | Horário ${hHrs}h/24h">
           <strong style="color:var(--text);">${tagShort}</strong><span style="color:${col};font-weight:600">${dOk?'D✓':'D✗'}${hHrs?` ${hHrs}h`:''}</span>
         </span>`;
       }).join('');
@@ -873,7 +873,7 @@ window.openCaldayDetails = function(dayRef) {
     <div class="row row--sb-ac mb12" style="background:var(--panel2); padding:12px 16px; border-radius:10px; border:1px solid var(--line); flex-wrap:wrap; gap:16px;">
       <div>
         <div class="muted fs11">Data de Produção</div>
-        <strong class="fs15">${fmtDate(dayRef)}</strong>
+        <strong class="fs15">${summaryEscapeHtml(fmtDate(dayRef))}</strong>
       </div>
       <div>
         <div class="muted fs11">Produção MPFM (HC)</div>
@@ -906,7 +906,7 @@ window.openCaldayDetails = function(dayRef) {
           <tbody>
             <tr>
               <td>🛢️ <strong>Óleo</strong></td>
-              <td class="mono">${sepDet.oleo?.tag || '20FT0247'}</td>
+              <td class="mono">${summaryEscapeHtml(sepDet.oleo?.tag || '20FT0247')}</td>
               <td>
                 ${sepDet.oleo?.present
                   ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
@@ -915,7 +915,7 @@ window.openCaldayDetails = function(dayRef) {
             </tr>
             <tr>
               <td>💨 <strong>Gás</strong></td>
-              <td class="mono">${sepDet.gas?.tag || '20FT0244'}</td>
+              <td class="mono">${summaryEscapeHtml(sepDet.gas?.tag || '20FT0244')}</td>
               <td>
                 ${sepDet.gas?.present
                   ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
@@ -924,7 +924,7 @@ window.openCaldayDetails = function(dayRef) {
             </tr>
             <tr>
               <td>💧 <strong>Água</strong></td>
-              <td class="mono">${sepDet.agua?.tag || '20FT0251'}</td>
+              <td class="mono">${summaryEscapeHtml(sepDet.agua?.tag || '20FT0251')}</td>
               <td>
                 ${sepDet.agua?.present
                   ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
@@ -955,9 +955,9 @@ window.openCaldayDetails = function(dayRef) {
           <tbody>
             ${(mpfmDet.topside || []).map(item => `
               <tr>
-                <td class="mono"><strong>${item.tag}</strong></td>
-                <td>${tagChip(item.bank)}</td>
-                <td class="mono">${item.sensor_tag || '—'}</td>
+                <td class="mono"><strong>${summaryEscapeHtml(item.tag)}</strong></td>
+                <td>${tagChip(summaryEscapeHtml(item.bank))}</td>
+                <td class="mono">${summaryEscapeHtml(item.sensor_tag || '—')}</td>
                 <td>
                   ${item.daily
                     ? '<span class="badge ok">🟢 Presente</span>'
@@ -994,9 +994,9 @@ window.openCaldayDetails = function(dayRef) {
           <tbody>
             ${(mpfmDet.subsea || []).map(item => `
               <tr>
-                <td class="mono"><strong>${item.tag}</strong></td>
-                <td>${tagChip(item.bank)}</td>
-                <td class="mono">${item.sensor_tag || '—'}</td>
+                <td class="mono"><strong>${summaryEscapeHtml(item.tag)}</strong></td>
+                <td>${tagChip(summaryEscapeHtml(item.bank))}</td>
+                <td class="mono">${summaryEscapeHtml(item.sensor_tag || '—')}</td>
                 <td>
                   ${item.daily
                     ? '<span class="badge ok">🟢 Presente</span>'
@@ -1322,7 +1322,7 @@ async function loadDesvioChart(month, summaryData) {
     empty.textContent = message;
     if (stage) stage.style.width = '100%';
     if (_desvioChart) { _desvioChart.destroy(); _desvioChart = null; }
-    if (legendEl) legendEl.innerHTML = legendHtml || `<span style="color:var(--muted)">${message}</span>`;
+    if (legendEl) legendEl.innerHTML = legendHtml || `<span style="color:var(--muted)">${summaryEscapeHtml(message)}</span>`;
     summarySetDesvioReportEnabled(false);
     if (state.summaryChart) state.summaryChart.currentPayload = null;
   };
@@ -2120,7 +2120,7 @@ function renderPocoRiserTable(payload) {
     (payload.pairs || []).forEach(pair => {
       const opt = document.createElement('option');
       opt.value = pair.key;
-      opt.textContent = `${pair.poco} × ${pair.riser}`;
+      opt.textContent = `${summaryEscapeHtml(pair.poco)} × ${summaryEscapeHtml(pair.riser)}`;
       pairSel.appendChild(opt);
     });
   }
@@ -2329,7 +2329,7 @@ function fillSelect(id, items, keepBlank) {
   const s = document.getElementById(id); if (!s) return;
   const cur = s.value;
   s.innerHTML = (keepBlank ? '<option value="">Todos</option>' : '') +
-    (items||[]).map(x => `<option value="${x}">${x}</option>`).join('');
+    (items||[]).map(x => `<option value="${summaryEscapeHtml(x)}">${summaryEscapeHtml(x)}</option>`).join('');
   if ((items||[]).includes(cur)) s.value = cur;
 }
 

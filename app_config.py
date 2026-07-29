@@ -62,6 +62,11 @@ GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 AI_MASTER_PROMPT: str = os.getenv("AI_MASTER_PROMPT", "")
 
+# --- Moonshot / Kimi ---
+MOONSHOT_API_KEY: str = os.getenv("MOONSHOT_API_KEY", "")
+MOONSHOT_BASE_URL: str = os.getenv("MOONSHOT_BASE_URL", "https://api.moonshot.ai/v1")
+MOONSHOT_MODEL: str = os.getenv("MOONSHOT_MODEL", "moonshot-v1-8k")
+
 # Provider padrão: Gemini é o único provider habilitado na interface corporativa.
 AI_DEFAULT_PROVIDER: str = os.getenv("AI_DEFAULT_PROVIDER", "gemini")
 
@@ -70,9 +75,9 @@ COMPANY_NAME: str = os.getenv("MPFM_COMPANY_NAME", "Equinor Brasil Energia Ltda.
 COMPANY_INTERNAL_NOTE: str = "Sistema de medição multifásica — uso interno"
 
 # --- Autenticação HTTP Basic ---
-AUTH_ENABLED: bool = False  # Temporariamente desabilitado para acesso direto
-AUTH_USERNAME: str = os.getenv("MPFM_AUTH_USER", "mpfm")
-AUTH_PASSWORD: str = os.getenv("MPFM_AUTH_PASS", "mpfm2024")
+AUTH_ENABLED: bool = os.getenv("MPFM_AUTH_ENABLED", "true").lower() not in {"0", "false", "no", "off"}
+AUTH_USERNAME: str = os.getenv("MPFM_AUTH_USER", "")
+AUTH_PASSWORD: str = os.getenv("MPFM_AUTH_PASS", "")
 
 
 

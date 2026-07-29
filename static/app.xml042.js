@@ -1,5 +1,9 @@
 'use strict';
 
+function xml042Escape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 function xml042CurrentMonth() {
   return document.getElementById('globalMonth')?.value || '';
 }
@@ -50,21 +54,21 @@ function xml042RenderCandidates(rows = []) {
 
     let xmlStatusBadge = '<span class="badge missing">⚪ Não Elegível</span>';
     if (row.generated) {
-      xmlStatusBadge = `<span class="badge ok" title="${row.generated_filename || ''}">🟢 Gerado</span> <span class="mono fs11" style="color:var(--green)">${row.generated_filename || ''}</span>`;
+      xmlStatusBadge = `<span class="badge ok" title="${escapeHtml(row.generated_filename || '')}">🟢 Gerado</span> <span class="mono fs11" style="color:var(--green)">${escapeHtml(row.generated_filename || '')}</span>`;
     } else if (row.eligible) {
       xmlStatusBadge = '<span class="badge warn">🟡 Pendente</span>';
     }
 
     return `<tr class="${selected ? 'row-selected' : ''}">
-      <td class="mono">${fmtDate(row.production_day)}</td>
+      <td class="mono">${escapeHtml(fmtDate(row.production_day))}</td>
       <td>${tagChip(row.bank)}</td>
-      <td class="mono">${row.well_operator_name || '—'}</td>
-      <td class="mono">${row.subsea_tag || '—'}</td>
+      <td class="mono">${escapeHtml(row.well_operator_name || '—')}</td>
+      <td class="mono">${escapeHtml(row.subsea_tag || '—')}</td>
       <td class="num">${fmt(row.oil_sm3)}</td>
       <td class="num">${fmt(row.gas_sm3)}</td>
       <td class="num">${fmt(row.gas_1000sm3)}</td>
       <td class="num">${fmt(row.water_sm3)}</td>
-      <td>${badge(row.catalog_match_status === 'elegivel' ? 'ok' : row.catalog_match_status === 'valor critico ausente' ? 'warn' : 'missing')} <span class="muted" style="font-size:11px">${row.catalog_match_status}</span></td>
+      <td>${badge(row.catalog_match_status === 'elegivel' ? 'ok' : row.catalog_match_status === 'valor critico ausente' ? 'warn' : 'missing')} <span class="muted" style="font-size:11px">${escapeHtml(row.catalog_match_status)}</span></td>
       <td>${row.approved ? '<span class="badge ok">Aprovado</span>' : '<span class="badge warn">Pendente</span>'}</td>
       <td>${xmlStatusBadge}</td>
       <td>
@@ -72,7 +76,7 @@ function xml042RenderCandidates(rows = []) {
           <button class="btn secondary sm" onclick="selectXml042Candidate(${idx})">Ver</button>
           <button class="btn secondary sm" onclick="approveXml042Candidate(${idx})" ${row.eligible ? '' : 'disabled'}>Aprovar</button>
           <button class="btn primary sm" onclick="generateSingleXml042Candidate(${idx})" ${row.eligible ? '' : 'disabled'}>${row.generated ? 'Regerar' : 'Gerar XML'}</button>
-          ${row.document_id ? `<a class="btn secondary sm" href="${API}/xml042/download/${row.document_id}" target="_blank" rel="noopener">Baixar</a>` : ''}
+          ${row.document_id ? `<a class="btn secondary sm" href="${API}/xml042/download/${escapeHtml(row.document_id)}" target="_blank" rel="noopener">Baixar</a>` : ''}
         </div>
       </td>
     </tr>`;
@@ -97,10 +101,10 @@ function xml042RenderCatalog(rows = []) {
   if (!body) return;
   body.innerHTML = rows.map((row, idx) => `
     <tr>
-      <td class="mono">${row.well_operator_name}</td>
-      <td class="mono">${row.well_anp_name}</td>
-      <td class="mono">${row.cod_cadastro_poco}</td>
-      <td class="mono">${row.subsea_tag}</td>
+      <td class="mono">${xml042Escape(row.well_operator_name)}</td>
+      <td class="mono">${xml042Escape(row.well_anp_name)}</td>
+      <td class="mono">${xml042Escape(row.cod_cadastro_poco)}</td>
+      <td class="mono">${xml042Escape(row.subsea_tag)}</td>
       <td>${row.active && row.enabled_042 ? '<span class="badge ok">Ativo</span>' : '<span class="badge warn">Desabilitado</span>'}</td>
       <td>
         <div class="row" style="gap:6px;flex-wrap:wrap">
@@ -119,10 +123,10 @@ function xml042RenderDocuments(rows = []) {
     <tr>
       <td class="mono">${fmtDate(row.production_day)}</td>
       <td>${tagChip(row.bank)}</td>
-      <td class="mono">${row.well_operator_name}</td>
-      <td class="mono">${row.cod_cadastro_poco}</td>
-      <td class="mono">${row.filename}</td>
-      <td class="mono">${(row.generated_at || '').replace('T',' ').slice(0,16)}</td>
+      <td class="mono">${xml042Escape(row.well_operator_name)}</td>
+      <td class="mono">${xml042Escape(row.cod_cadastro_poco)}</td>
+      <td class="mono">${xml042Escape(row.filename)}</td>
+      <td class="mono">${xml042Escape((row.generated_at || '').replace('T',' ').slice(0,16))}</td>
       <td><a class="btn secondary sm" href="${API}/xml042/download/${row.id}" target="_blank" rel="noopener">Baixar</a></td>
     </tr>
   `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">Nenhum XML gerado.</td></tr>';
@@ -155,17 +159,17 @@ function xml042RenderImportedRows(rows = []) {
   </tr>`;
   body.innerHTML = rows.map(row => `
     <tr>
-      <td class="mono">${row.month_ref || '—'}</td>
+      <td class="mono">${xml042Escape(row.month_ref || '—')}</td>
       <td class="mono">${fmtDate(row.production_day)}</td>
-      <td class="mono">${row.cod_cadastro_poco || '—'}</td>
-      <td class="mono">${row.well_operator_name || '—'}</td>
-      <td class="mono">${row.subsea_tag || '—'}</td>
+      <td class="mono">${xml042Escape(row.cod_cadastro_poco || '—')}</td>
+      <td class="mono">${xml042Escape(row.well_operator_name || '—')}</td>
+      <td class="mono">${xml042Escape(row.subsea_tag || '—')}</td>
       <td>${row.bank ? tagChip(row.bank) : '—'}</td>
       <td class="num">${fmt(row.oil_sm3)}</td>
       <td class="num">${fmt(row.gas_1000sm3)}</td>
       <td class="num">${fmt(row.water_sm3)}</td>
-      <td class="mono">${row.filename || '—'}</td>
-      <td class="mono">${(row.imported_at || '').replace('T',' ').slice(0,16) || '—'}</td>
+      <td class="mono">${xml042Escape(row.filename || '—')}</td>
+      <td class="mono">${xml042Escape((row.imported_at || '').replace('T',' ').slice(0,16) || '—')}</td>
     </tr>
   `).join('') || '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:20px">Nenhum XML importado para os filtros.</td></tr>';
 }

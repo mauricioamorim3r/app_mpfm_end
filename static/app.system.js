@@ -15,16 +15,16 @@ async function loadOutputs() {
     }).filter(Boolean))];
     host.innerHTML = `
       <div class="outputs-context-card"><div class="k">Arquivos</div><div class="v">${files.length}</div><div class="m">planilhas prontas para consulta e download</div></div>
-      <div class="outputs-context-card"><div class="k">Último gerado</div><div class="v">${latest ? latest.modified : '—'}</div><div class="m" title="${latest?.name || ''}">${latest?.name || 'Nenhum arquivo ainda'}</div></div>
+      <div class="outputs-context-card"><div class="k">Último gerado</div><div class="v">${latest ? escapeHtml(latest.modified) : '—'}</div><div class="m" title="${escapeHtml(latest?.name || '')}">${escapeHtml(latest?.name || 'Nenhum arquivo ainda')}</div></div>
       <div class="outputs-context-card"><div class="k">Volume total</div><div class="v">${new Intl.NumberFormat('pt-BR', {maximumFractionDigits:1}).format(totalKb)} KB</div><div class="m">soma aproximada dos arquivos exibidos</div></div>
       <div class="outputs-context-card"><div class="k">Meses cobertos</div><div class="v">${months.length || 0}</div><div class="m">${months.join(', ') || 'Sem identificação mensal no nome'}</div></div>
       ${rebuilding.length ? `<div class="muted" style="grid-column:1 / -1; padding-top:4px" aria-live="polite">⏳ ${rebuilding.length} workbook(s) em atualização assíncrona. Aguarde alguns segundos antes de baixar.</div>` : ''}
     `;
   }
   document.getElementById('outputRows').innerHTML = (d.files||[]).map(f =>
-    `<tr><td>${f.name}</td><td>${f.size_kb} KB</td><td>${f.modified}</td>
+    `<tr><td>${escapeHtml(f.name)}</td><td>${escapeHtml(f.size_kb)} KB</td><td>${escapeHtml(f.modified)}</td>
      <td>${f.is_rebuilding
-       ? `<button class="btn secondary sm" type="button" disabled aria-disabled="true" aria-label="Workbook em atualização assíncrona" title="${f.rebuild_message || 'Workbook em atualização assíncrona'}">⏳ Em atualização</button>`
+       ? `<button class="btn secondary sm" type="button" disabled aria-disabled="true" aria-label="Workbook em atualização assíncrona" title="${escapeHtml(f.rebuild_message || 'Workbook em atualização assíncrona')}">⏳ Em atualização</button>`
        : `<a class="btn secondary sm" style="text-decoration:none" href="${API}/download/${encodeURIComponent(f.name)}">↓ Baixar</a>`}</td></tr>`
   ).join('') || '<tr><td colspan="4" class="muted">Nenhum Excel gerado.</td></tr>';
 }
@@ -387,7 +387,7 @@ function renderUploadAutoMonitorStatus() {
   host.innerHTML = `
     <div class="upload-auto-monitor-card"><div class="k">Status</div><div class="v">${config.enabled ? 'Ativo' : 'Desligado'}</div><div class="m">${config.enabled ? 'Varredura periódica habilitada enquanto o app estiver aberto.' : 'Nenhuma leitura automática em execução.'}</div></div>
     <div class="upload-auto-monitor-card"><div class="k">Pastas ativas</div><div class="v">${activeFolders.length}</div><div class="m">${(config.folders || []).length} pasta(s) cadastrada(s) no total</div></div>
-    <div class="upload-auto-monitor-card"><div class="k">Último ciclo</div><div class="v">${lastCycle}</div><div class="m">${runtime.last_cycle_message || 'Sem execução ainda'}</div></div>
+    <div class="upload-auto-monitor-card"><div class="k">Último ciclo</div><div class="v">${escapeHtml(lastCycle)}</div><div class="m">${escapeHtml(runtime.last_cycle_message || 'Sem execução ainda')}</div></div>
   `;
 }
 

@@ -1,5 +1,9 @@
 'use strict';
 
+function aiEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 // ── Catálogo de modelos por provider ──────────────────────────────────────────
 const AI_MODELS = {
   '': [
@@ -9,6 +13,11 @@ const AI_MODELS = {
     { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash  ·  atual' },
     { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro  ·  avançado' },
     { value: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash Lite  ·  rápido' },
+  ],
+  kimi: [
+    { value: 'moonshot-v1-8k', label: 'Kimi K3  ·  8k' },
+    { value: 'moonshot-v1-32k', label: 'Kimi K3  ·  32k' },
+    { value: 'moonshot-v1-128k', label: 'Kimi K3  ·  128k' },
   ],
 };
 
@@ -56,7 +65,7 @@ function updateModelDropdown(provider) {
   if (!sel) return;
   const models = AI_MODELS[provider] || AI_MODELS[''];
   sel.innerHTML = models.map(m =>
-    `<option value="${m.value}">${m.label}</option>`
+    `<option value="${aiEscape(m.value)}">${aiEscape(m.label)}</option>`
   ).join('');
 }
 
@@ -71,7 +80,7 @@ function _renderStatusBlock(elId, d) {
   const providers = d.providers || {};
   const anyReady = d.any_ready;
   const rows = Object.entries(providers).map(([p, ok]) =>
-    `<div class="ai-status-row"><span class="ai-status-dot ${ok ? 'ok' : 'off'}"></span><span>${p}</span><span class="muted">${ok ? 'configurado' : 'sem chave'}</span></div>`
+    `<div class="ai-status-row"><span class="ai-status-dot ${ok ? 'ok' : 'off'}"></span><span>${aiEscape(p)}</span><span class="muted">${ok ? 'configurado' : 'sem chave'}</span></div>`
   ).join('');
   container.innerHTML = `
     <div class="ai-status-label">${anyReady ? '✓ Pronto para usar' : '⚠ Nenhum provider configurado'}</div>
@@ -320,7 +329,7 @@ function renderAiActions(items) {
     const flowItem = result?.methodology_flow_item || null;
     return `
       <div class="ai-action-item">
-        <div class="ai-action-top"><strong>${_escHtml(item.title || 'Registro IA')}</strong><span class="ai-action-status ai-action-status--${_escHtml(item.status)}">${statusLabel}</span></div>
+        <div class="ai-action-top"><strong>${_escHtml(item.title || 'Registro IA')}</strong><span class="ai-action-status ai-action-status--${_escHtml(item.status)}">${_escHtml(statusLabel)}</span></div>
         <div class="muted fs11">${_escHtml(actionLabel)} · ${_escHtml(item.target_area || 'nota')} · ${_escHtml(item.created_at || '')}</div>
         ${item.summary ? `<div class="ai-action-summary">${_escHtml(item.summary).slice(0, 220)}</div>` : ''}
         ${flowItem?.flow_item_id ? `<div class="ai-action-summary ai-action-summary--trace">Registrado na trilha metrológica: #${_escHtml(flowItem.flow_item_id)} · run #${_escHtml(flowItem.run_id || '-')} · ${_escHtml(flowItem.item_type || 'registro')}</div>` : ''}
@@ -552,7 +561,7 @@ function renderAiMessages() {
               : m.role === 'error' ? 'ai-msg--error'
               : 'ai-msg--assistant';
     const meta = (m.provider && m.model)
-      ? `<div class="ai-msg-meta">${m.provider} · ${m.model}${m.tokens ? ` · ${m.tokens} tokens` : ''}</div>`
+      ? `<div class="ai-msg-meta">${_escHtml(m.provider)} · ${_escHtml(m.model)}${m.tokens ? ` · ${m.tokens} tokens` : ''}</div>`
       : '';
     const html = m.role === 'assistant'
       ? _renderAiMarkdown(m.content, index)
@@ -766,7 +775,7 @@ function _renderSettingsStatus(status, keys) {
   container.innerHTML = Object.entries(providers).map(([p, d]) => {
     const dot = d.ok ? 'ok' : 'off';
     const label = d.ok ? 'chave ativa' : (d.key ? 'chave inválida ou sem acesso' : 'sem chave');
-    return `<div class="ai-status-row"><span class="ai-status-dot ${dot}"></span><span>${p}</span><span class="muted">${label}</span></div>`;
+    return `<div class="ai-status-row"><span class="ai-status-dot ${dot}"></span><span>${aiEscape(p)}</span><span class="muted">${label}</span></div>`;
   }).join('');
 }
 

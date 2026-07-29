@@ -6,6 +6,9 @@ from pathlib import Path
 
 from fastapi import Body, HTTPException
 
+from app_config import DB_PATH
+from services.db_scope import shared_db
+
 
 def register_painel_operador_routes(app, ctx: dict) -> None:
     service = ctx["service"]
@@ -74,6 +77,20 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
     def api_painel_operador_status():
         return service.status()
 
+    @shared_db(DB_PATH)
+    @app.get("/api/painel-operador/overview")
+    def api_painel_operador_overview():
+        try:
+            return {
+                "status": service.status(),
+                "file_summary": service.file_index_summary(db_conn),
+                "anp_summary": service.anp_export_summary(db_conn),
+                "staging_summary": service.staging_summary(db_conn),
+                "checklist_summary": service.daily_checklist_summary(db_conn),
+            }
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+
     @app.get("/api/painel-operador/contract")
     def api_painel_operador_contract():
         try:
@@ -81,12 +98,16 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except FileNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/data")
     def api_painel_operador_data(blocks: str = "", max_list_items: int = 200):
         try:
             return service.data(_blocks_from_query(blocks), max_list_items=max_list_items)
         except FileNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @shared_db(DB_PATH)
 
     @app.get("/api/painel-operador/ihm-reports")
     def api_painel_operador_ihm_reports(
@@ -108,6 +129,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    @shared_db(DB_PATH)
 
     @app.get("/api/painel-operador/gas-balance-ihm")
     def api_painel_operador_gas_balance_ihm(date_from: str = "", date_to: str = ""):
@@ -217,6 +240,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/file-index-summary")
     def api_painel_operador_file_index_summary():
         try:
@@ -224,12 +249,16 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/anp-exports-summary")
     def api_painel_operador_anp_exports_summary():
         try:
             return service.anp_export_summary(db_conn)
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    @shared_db(DB_PATH)
 
     @app.get("/api/painel-operador/daily-checklist-summary")
     def api_painel_operador_daily_checklist_summary():
@@ -259,6 +288,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    @shared_db(DB_PATH)
 
     @app.get("/api/painel-operador/daily-checklist")
     def api_painel_operador_daily_checklist(
@@ -408,6 +439,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/file-index")
     def api_painel_operador_file_index(
         q: str = "",
@@ -451,6 +484,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/anp-exports")
     def api_painel_operador_anp_exports(
         q: str = "",
@@ -488,6 +523,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/xml-validation")
     def api_painel_operador_xml_validation(
         q: str = "",
@@ -515,6 +552,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
             )
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    @shared_db(DB_PATH)
 
     @app.get("/api/painel-operador/anp-comparison")
     def api_painel_operador_anp_comparison(
@@ -568,6 +607,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    @shared_db(DB_PATH)
+
     @app.get("/api/painel-operador/measurement-point-dossiers")
     def api_painel_operador_measurement_point_dossiers(
         date_from: str = "",
@@ -611,6 +652,8 @@ def register_painel_operador_routes(app, ctx: dict) -> None:
             )
         except Exception as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    @shared_db(DB_PATH)
 
     @app.get("/api/painel-operador/technical-monitor")
     def api_painel_operador_technical_monitor(

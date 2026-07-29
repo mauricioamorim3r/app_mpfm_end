@@ -1,5 +1,9 @@
 'use strict';
 
+function cadEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 // ── CADASTRO ─────────────────────────────────────────────────────────────────
 let cadData = { subsea:[], topside:[] };
 const CAD_FIELDS = ['Bank','Loop','Tipo','TAG','Instrumento','Ativo'];
@@ -58,12 +62,12 @@ function renderSepInstruments(d) {
           ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--green);color:#fff;font-weight:600">✔ APROVADO</span>`
           : `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--panel2);color:var(--muted);font-weight:600">—</span>`;
         return `<tr style="${ativo?'':'opacity:0.4'}">
-          <td>${tagChip(r.bank_code||r.bank||'')}</td>
-          <td style="font-size:11px">${nameMap[r.bank_code||r.bank] || r.bank||''}</td>
-          <td style="font-size:11px;color:var(--muted)">${r.loop||loopMap[r.bank_code]||''}</td>
-          <td class="mono" style="color:var(--accent)">${r.sistema||''}</td>
-          <td class="mono" style="color:var(--green)">${r.tag_associado||''}</td>
-          <td style="font-size:11px;color:var(--muted)">${r.tecnologia||r.fluido||''}</td>
+          <td>${tagChip(cadEscape(r.bank_code||r.bank||''))}</td>
+          <td style="font-size:11px">${cadEscape(nameMap[r.bank_code||r.bank] || r.bank||'')}</td>
+          <td style="font-size:11px;color:var(--muted)">${cadEscape(r.loop||loopMap[r.bank_code]||'')}</td>
+          <td class="mono" style="color:var(--accent)">${cadEscape(r.sistema||'')}</td>
+          <td class="mono" style="color:var(--green)">${cadEscape(r.tag_associado||'')}</td>
+          <td style="font-size:11px;color:var(--muted)">${cadEscape(r.tecnologia||r.fluido||'')}</td>
           <td>${statusBadge}</td>
           <td>${anpBadge}</td>
         </tr>`;
@@ -80,7 +84,7 @@ function renderCad(type) {
   const fields = type === 'subsea' ? CAD_SUBSEA_FIELDS : CAD_TOPSIDE_FIELDS;
   document.getElementById(`c${prefix}Table`).innerHTML = rows.length ? `
     <table class="table" style="min-width:600px">
-      <thead><tr>${fields.map(f=>`<th>${CAD_FIELD_MAP[f]||f}</th>`).join('')}<th>Status</th><th>ANP</th><th></th></tr></thead>
+      <thead><tr>${fields.map(f=>`<th>${cadEscape(CAD_FIELD_MAP[f]||f)}</th>`).join('')}<th>Status</th><th>ANP</th><th></th></tr></thead>
       <tbody>${rows.map((r,i) => {
         const ativo = r.ativo !== false;
         const anp   = r.aprovado_anp === true;
@@ -96,7 +100,7 @@ function renderCad(type) {
           : `<button disabled style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:not-allowed">Aprovar ANP</button>`;
         const rowStyle = ativo ? '' : 'opacity:0.45;';
         return `<tr style="${rowStyle}">
-          ${fields.map(f => `<td style="font-size:12px;min-width:70px">${r[f]||'—'}</td>`).join('')}
+          ${fields.map(f => `<td style="font-size:12px;min-width:70px">${cadEscape(r[f]||'—')}</td>`).join('')}
           <td>${statusBadge}</td>
           <td>${anpBadge}</td>
           <td style="white-space:nowrap">${btnAtivo}&nbsp;${btnAnp}</td>
@@ -167,12 +171,14 @@ window.checkCadastroVsData = async () => {
     const missing  = [...inCad].filter(t => t && !inDb.has(t));
     const ok = unknown.length === 0 && missing.length === 0;
     totalIssues += unknown.length + missing.length;
-    html += `<strong style="color:var(--accent)">${bank}</strong>
+    const unknownEsc = unknown.map(t => cadEscape(t)).join(', ');
+    const missingEsc  = missing.map(t => cadEscape(t)).join(', ');
+    html += `<strong style="color:var(--accent)">${cadEscape(bank)}</strong>
       <div>
         <span style="color:${ok?'var(--green)':'var(--amber)'}">
           ${ok ? '✅ Todos os TAGs cadastrados foram encontrados' : ''}
-          ${unknown.length ? `⚠️ <strong>No PDF mas não no cadastro:</strong> ${unknown.join(', ')}` : ''}
-          ${missing.length  ? `  ℹ️ <strong>No cadastro mas não encontrado ainda:</strong> ${missing.join(', ')}` : ''}
+          ${unknown.length ? `⚠️ <strong>No PDF mas não no cadastro:</strong> ${unknownEsc}` : ''}
+          ${missing.length  ? `  ℹ️ <strong>No cadastro mas não encontrado ainda:</strong> ${missingEsc}` : ''}
         </span>
       </div>`;
   }

@@ -9,6 +9,7 @@ Providers suportados
 - "openai"    → OpenAI direto       (openai)
 - "anthropic" → Anthropic Claude    (anthropic)
 - "gemini"    → Google Gemini       (google-generativeai)
+- "kimi"      → Moonshot Kimi       (openai-compatible)
 
 Uso
 ---
@@ -30,7 +31,7 @@ from typing import Literal, Optional
 
 logger = logging.getLogger(__name__)
 
-Provider = Literal["azure", "openai", "anthropic", "gemini"]
+Provider = Literal["azure", "openai", "anthropic", "gemini", "kimi"]
 
 SYSTEM_MPFM = (
     "Você é um especialista em sistemas MPFM (medidores multifásicos) para produção "
@@ -113,6 +114,41 @@ def _call_openai(user: str, system: str, model: str, max_tokens: int, temperatur
     return AIResponse(
         content=resp.choices[0].message.content or "",
         provider="openai", model=resp.model or target,
+        input_tokens=usage.prompt_tokens if usage else 0,
+        output_tokens=usage.completion_tokens if usage else 0,
+    )
+
+
+def _call_kimi(user: str, system: str, model: str, max_tokens: int, temperature: float,
+               history: list[dict] | None = None, attachments: list[dict] | None = None) -> AIResponse:
+    from openai import OpenAI
+    from app_config import MOONSHOT_API_KEY, MOONSHOT_BASE_URL, MOONSHOT_MODEL
+
+    key = MOONSHOT_API_KEY
+    if not key:
+        raise RuntimeError("Kimi: preencha MOONSHOT_API_KEY no .env")
+
+    client = OpenAI(api_key=key, base_url=MOONSHOT_BASE_URL)
+    target = model or MOONSHOT_MODEL
+    messages = [{"role": "system", "content": system}] if system else []
+    for h in (history or []):
+        messages.append({"role": h["role"], "content": h["content"]})
+
+    user_content = user
+    for item in (attachments or []):
+        text = item.get("text")
+        if text:
+            label = item.get("name") or "anexo"
+            user_content += f"\n\n=== Conteúdo extraído de {label} ===\n{text}"
+    messages.append({"role": "user", "content": user_content})
+
+    resp = client.chat.completions.create(
+        model=target, messages=messages, max_tokens=max_tokens, temperature=temperature,
+    )
+    usage = resp.usage
+    return AIResponse(
+        content=resp.choices[0].message.content or "",
+        provider="kimi", model=resp.model or target,
         input_tokens=usage.prompt_tokens if usage else 0,
         output_tokens=usage.completion_tokens if usage else 0,
     )
@@ -217,6 +253,7 @@ _DISPATCH = {
     "openai": _call_openai,
     "anthropic": _call_anthropic,
     "gemini": _call_gemini,
+    "kimi": _call_kimi,
 }
 
 
@@ -240,7 +277,7 @@ async def ask_ai(
     ----------
     user      : Pergunta ou texto do usuário.
     system    : Instrução de papel (system prompt).
-    provider  : "azure" | "openai" | "anthropic" | "gemini".
+    provider  : "azure" | "openai" | "anthropic" | "gemini" | "kimi".
     model     : Override do modelo.
     max_tokens: Limite de tokens na resposta.
     temperature: 0 = determinístico, 1 = criativo.
@@ -284,13 +321,14 @@ def ask_ai_sync(
 
 def providers_status() -> dict[str, bool]:
     """Retorna quais providers estão configurados (chave presente)."""
-    from app_config import GEMINI_API_KEY
+    from app_config import GEMINI_API_KEY, MOONSHOT_API_KEY
 
     def _key_ok(v: str) -> bool:
         return bool(v and "COLE_" not in v)
 
     return {
         "gemini": _key_ok(GEMINI_API_KEY),
+        "kimi": _key_ok(MOONSHOT_API_KEY),
     }
 
 

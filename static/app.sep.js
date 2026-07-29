@@ -56,10 +56,10 @@ async function loadSep(silent = false) {
     const qs = new URLSearchParams({date_from:dateFrom, date_to:dateTo});
     const d = await j(`${API}/ops/sep-data?${qs}`);
     document.getElementById('sepDays').innerHTML = (d.days||[]).map(r =>
-      `<tr><td class="mono">${fmtDate(r.content_date)}</td><td>${r.oleo?'✅':'—'}</td><td>${r.agua?'✅':'—'}</td><td>${r.gas?'✅':'—'}</td><td>${r.aligned_banks?tagChip(r.aligned_banks):(r.recovered_from_excel?'<span class="muted">Reconstituído</span>':'<span class="muted">Extraído</span>')}</td><td>${badge(r.status)} ${r.recovered_from_excel?'<span class="badge info">Recuperado do Excel</span>':''} <span class="muted" style="font-size:11px">${r.status_label||''}</span></td></tr>`
+      `<tr><td class="mono">${escapeHtml(fmtDate(r.content_date))}</td><td>${r.oleo?'✅':'—'}</td><td>${r.agua?'✅':'—'}</td><td>${r.gas?'✅':'—'}</td><td>${r.aligned_banks?tagChip(r.aligned_banks):(r.recovered_from_excel?'<span class="muted">Reconstituído</span>':'<span class="muted">Extraído</span>')}</td><td>${badge(r.status)} ${r.recovered_from_excel?'<span class="badge info">Recuperado do Excel</span>':''} <span class="muted" style="font-size:11px">${escapeHtml(r.status_label||'')}</span></td></tr>`
     ).join('') || '<tr><td colspan="6" class="muted">Sem dados do separador.</td></tr>';
     document.getElementById('sepRows').innerHTML = (d.rows||[]).map(r =>
-      `<tr><td>${r.content_date||''}</td><td>${r.recovered_from_excel?'<span class="badge info">Recuperado do Excel</span>':(r.file_type||'')}</td><td>${r.meter_id||''}</td><td title="${r.message||''}">${r.location||''}</td><td>${r.aligned_banks?tagChip(r.aligned_banks):(r.recovered_from_excel?'<span class="muted">Reconstituído</span>':'<span class="muted">Extraído</span>')}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${r.filename||''}">${r.filename||''}</td></tr>`
+      `<tr><td>${escapeHtml(r.content_date||'')}</td><td>${r.recovered_from_excel?'<span class="badge info">Recuperado do Excel</span>':escapeHtml(r.file_type||'')}</td><td>${escapeHtml(r.meter_id||'')}</td><td title="${escapeHtml(r.message||'')}">${escapeHtml(r.location||'')}</td><td>${r.aligned_banks?tagChip(r.aligned_banks):(r.recovered_from_excel?'<span class="muted">Reconstituído</span>':'<span class="muted">Extraído</span>')}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${escapeHtml(r.filename||'')}">${escapeHtml(r.filename||'')}</td></tr>`
     ).join('') || '<tr><td colspan="6" class="muted">Sem arquivos do separador.</td></tr>';
     await Promise.all([
       loadSepData(dateFrom, dateTo),
@@ -133,12 +133,12 @@ function renderSepFluidSummary(){
     return `<div class="fluid-card">
       <div class="top"><div class="name">${sepFluidLabel(f)}</div><span class="badge ${m.rows?'info':'muted-badge'}">${m.rows||0} linhas</span></div>
       <div class="meta">
-        <div>TAG do medidor<strong>${m.tag || '—'}</strong></div>
-        <div>Meter ID<strong>${m.instrument || '—'}</strong></div>
-        <div>Período<strong>${(m.date_from&&m.date_to)?`${fmtDate(m.date_from)} → ${fmtDate(m.date_to)}`:'—'}</strong></div>
+        <div>TAG do medidor<strong>${escapeHtml(m.tag || '—')}</strong></div>
+        <div>Meter ID<strong>${escapeHtml(m.instrument || '—')}</strong></div>
+        <div>Período<strong>${(m.date_from&&m.date_to)?`${escapeHtml(fmtDate(m.date_from))} → ${escapeHtml(fmtDate(m.date_to))}`:'—'}</strong></div>
         <div>Colunas<strong>${m.headers_count || 0}</strong></div>
-        <div>Origem<strong>${sourceKind}</strong></div>
-        <div>Fonte<strong title="${m.source_file || ''}">${m.source_file || '—'}</strong></div>${m.fallback_used?`<div>Período<strong>Último dia disponível</strong></div>`:''}
+        <div>Origem<strong>${escapeHtml(sourceKind)}</strong></div>
+        <div>Fonte<strong title="${escapeHtml(m.source_file || '')}">${escapeHtml(m.source_file || '—')}</strong></div>${m.fallback_used?`<div>Período<strong>Último dia disponível</strong></div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -175,17 +175,17 @@ async function loadSepFluidTable(fluid, headId, bodyId, dateFrom, dateTo) {
     ctx.className = 'sep-context';
     const sourceLabel = first.source_kind === 'manual' ? 'Manual' : first.source_file ? 'TXT oficial' : '—';
     ctx.innerHTML = `
-      <div class="ctx"><div class="k">Data</div><div class="v">${allDates.length===1?fmtDate(allDates[0]):allDates.length?`${fmtDate(allDates[0])} …`:'—'}</div></div>
-      <div class="ctx"><div class="k">TAG do medidor</div><div class="v">${first.tag || '—'}</div></div>
-      <div class="ctx"><div class="k">Meter ID</div><div class="v">${first.instrument || '—'}</div></div>
+      <div class="ctx"><div class="k">Data</div><div class="v">${allDates.length===1?escapeHtml(fmtDate(allDates[0])):allDates.length?`${escapeHtml(fmtDate(allDates[0]))} …`:'—'}</div></div>
+      <div class="ctx"><div class="k">TAG do medidor</div><div class="v">${escapeHtml(first.tag || '—')}</div></div>
+      <div class="ctx"><div class="k">Meter ID</div><div class="v">${escapeHtml(first.instrument || '—')}</div></div>
       <div class="ctx"><div class="k">Linhas</div><div class="v">${rows.length}</div></div>
-      <div class="ctx"><div class="k">Origem</div><div class="v">${sourceLabel}</div></div>
-      <div class="ctx"><div class="k">Fonte</div><div class="v" title="${first.source_file || ''}">${first.source_file || '—'}</div></div>`;
+      <div class="ctx"><div class="k">Origem</div><div class="v">${escapeHtml(sourceLabel)}</div></div>
+      <div class="ctx"><div class="k">Fonte</div><div class="v" title="${escapeHtml(first.source_file || '')}">${escapeHtml(first.source_file || '—')}</div></div>`;
     host.insertBefore(ctx, host.querySelector('.tablewrap'));
   }
-  document.getElementById(headId).innerHTML = `<tr>${headers.map(h=>`<th class="${classifySepHeader(h)}">${SEP_FLUID_HEADER_LABELS[h] || h}</th>`).join('')}<th>Ações</th></tr>`;
+  document.getElementById(headId).innerHTML = `<tr>${headers.map(h=>`<th class="${classifySepHeader(h)}">${escapeHtml(SEP_FLUID_HEADER_LABELS[h] || h)}</th>`).join('')}<th>Ações</th></tr>`;
   document.getElementById(bodyId).innerHTML = rows.map((r, idx) => `<tr>
-    ${headers.map(h=>`<td class="${h==='Hour'?'mono':''}">${r[h]!=null?(h==='Hour'?(r[h]==='DAY'?'<span style="color:var(--muted)">DAY</span>':r[h]):(typeof r[h]==='number'?fmt(r[h]):r[h])):'—'}</td>`).join('')}
+    ${headers.map(h=>`<td class="${h==='Hour'?'mono':''}">${r[h]!=null?(h==='Hour'?(r[h]==='DAY'?'<span style="color:var(--muted)">DAY</span>':escapeHtml(r[h])):(typeof r[h]==='number'?fmt(r[h]):escapeHtml(r[h]))):'—'}</td>`).join('')}
     <td style="white-space:nowrap"><button class="btn secondary sm" onclick="editSepFluidRow('${fluid}', ${idx})">Editar</button> <button class="btn danger sm" onclick="deleteSepFluidRow('${fluid}', ${idx})">Excluir</button></td>
   </tr>`).join('') || `<tr><td colspan="${headers.length+1}" class="muted" style="padding:16px;text-align:center">Sem dados para o período selecionado.</td></tr>`;
 }
@@ -253,18 +253,18 @@ function renderSepData() {
     <th>Data</th><th>Hora</th><th>Origem</th><th>TAG SEP</th><th>Uso</th>
     ${sel.map(m => {
       const def = SEP_ALL_METRICS.find(x => x.key===m);
-      return `<th style="color:${def?.color||'#8ea3ba'}" title="${def?.group||''}">${def?.label||SEP_METRIC_LABELS[m]||m}</th>`;
+      return `<th style="color:${def?.color||'#8ea3ba'}" title="${escapeHtml(def?.group||'')}">${escapeHtml(def?.label||SEP_METRIC_LABELS[m]||m)}</th>`;
     }).join('')}
     <th style="width:60px"></th>
   </tr>`;
 
   document.getElementById('sepDataRows').innerHTML = visible.map((r, ri) => `
     <tr id="seprow_${ri}">
-      <td class="mono">${fmtDate(r.day_ref)}</td>
-      <td class="mono" style="font-size:11px">${r.hour_ref==null?'<span style="color:var(--muted)">DAY</span>':String(r.hour_ref).padStart(2,'0')+':00'}</td>
-      <td><div class="sep-origin-cell"><span class="badge ${r.source_kind==='manual'?'warn':'ok'}">${r.source_label || (r.source_kind==='manual'?'Manual':'TXT oficial')}</span><div class="sep-origin-meta" title="${r.source || ''}">${r.source || 'sem arquivo'}</div></div></td>
-      <td>${r.tag?tagChip(r.tag):'<span class="muted">—</span>'}</td>
-      <td><div class="sep-usage-cell">${r.aligned_banks?tagChip(r.aligned_banks):'<span class="muted">Extraído</span>'}<div class="sep-origin-meta">${r.sep_status==='aplicado'?'em uso na aplicação':'aguardando alinhamento'}</div></div></td>
+      <td class="mono">${escapeHtml(fmtDate(r.day_ref))}</td>
+      <td class="mono" style="font-size:11px">${r.hour_ref==null?'<span style="color:var(--muted)">DAY</span>':escapeHtml(String(r.hour_ref).padStart(2,'0')+':00')}</td>
+      <td><div class="sep-origin-cell"><span class="badge ${r.source_kind==='manual'?'warn':'ok'}">${escapeHtml(r.source_label || (r.source_kind==='manual'?'Manual':'TXT oficial'))}</span><div class="sep-origin-meta" title="${escapeHtml(r.source || '')}">${escapeHtml(r.source || 'sem arquivo')}</div></div></td>
+      <td>${r.tag?tagChip(escapeHtml(r.tag)):'<span class="muted">—</span>'}</td>
+      <td><div class="sep-usage-cell">${r.aligned_banks?tagChip(escapeHtml(r.aligned_banks)):'<span class="muted">Extraído</span>'}<div class="sep-origin-meta">${r.sep_status==='aplicado'?'em uso na aplicação':'aguardando alinhamento'}</div></div></td>
       ${sel.map(m => {
         const id   = r['__id_'+m];
         const v    = r[m];
@@ -273,7 +273,7 @@ function renderSepData() {
         return `<td class="num" id="sc_${id||'_'+ri+'_'+m}"
           style="cursor:pointer;color:${v!=null?col:'var(--line)'}"
           onclick="editMeasurement(${id||'null'},this,'${jsStr(m)}','${jsStr(r.day_ref)}',${r.hour_ref??'null'},'${jsStr(r.bank)}','sep')"
-          title="${v!=null?(def?.label||m)+': '+v:'Sem dado — clique para inserir'}"
+          title="${v!=null?escapeHtml((def?.label||m)+': '+v):'Sem dado — clique para inserir'}"
         >${v!=null?fmt(v):'—'}</td>`;
       }).join('')}
       <td style="text-align:center">
@@ -308,11 +308,11 @@ window.addSepRow = () => {
   const S = 'background:var(--bg);border:1px solid var(--accent);color:var(--text);padding:3px 6px;border-radius:4px;font-size:11px';
     const tr = document.createElement('tr');
     tr.innerHTML = `
-    <td><input type="date" id="newSepDate" value="${day}" style="${S}"></td>
+    <td><input type="date" id="newSepDate" value="${escapeHtml(day)}" style="${S}"></td>
       <td><input type="number" id="newSepHour" placeholder="h 0-23" min="0" max="23" style="width:58px;${S}"></td>
     <td><input id="newSepUnit" value="SEP" aria-label="Origem do separador" readonly style="width:88px;${S}"></td>
       ${sel.map(m => { const def=SEP_ALL_METRICS.find(x=>x.key===m);
-        return `<td><input type="number" step="any" id="newSep_${m}" placeholder="${def?.label||m}" title="${def?.label||m}" style="width:78px;${S}"></td>`;
+        return `<td><input type="number" step="any" id="newSep_${m}" placeholder="${escapeHtml(def?.label||m)}" title="${escapeHtml(def?.label||m)}" style="width:78px;${S}"></td>`;
       }).join('')}
     <td style="text-align:center;white-space:nowrap">
       <button class="btn sm" style="padding:4px 8px" onclick="saveSepNewRow(this)">✓ Ok</button>
@@ -351,13 +351,13 @@ async function loadSepDuplicates(dateFrom, dateTo) {
   const tbody = document.getElementById('sepDupRows');
   tbody.innerHTML = (d.rows||[]).map(g => {
     const official = (g.items||[]).find(x => x.is_official);
-    const opts = (g.items||[]).map(x => `<option value="${x.id}" ${x.is_official?'selected':''}>${x.source_file} [${x.report_kind}]</option>`).join('');
+    const opts = (g.items||[]).map(x => `<option value="${x.id}" ${x.is_official?'selected':''}>${escapeHtml(x.source_file)} [${escapeHtml(x.report_kind)}]</option>`).join('');
     return `<tr>
-      <td class="mono">${fmtDate(g.production_date)}</td>
-      <td>${tagChip(g.fluid_kind.replace('sep_',''))}</td>
-      <td>${g.meter_id||'—'}</td>
+      <td class="mono">${escapeHtml(fmtDate(g.production_date))}</td>
+      <td>${tagChip(escapeHtml(g.fluid_kind.replace('sep_','')))}</td>
+      <td>${escapeHtml(g.meter_id||'—')}</td>
       <td>${g.candidates}</td>
-      <td>${official ? official.source_file : '<span class="muted">pendente</span>'}</td>
+      <td>${official ? escapeHtml(official.source_file) : '<span class="muted">pendente</span>'}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
           <select id="dupSel_${g.production_date}_${g.fluid_kind}_${g.meter_id}" style="max-width:240px;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:8px">${opts}</select>
@@ -384,12 +384,12 @@ async function loadSepAlignments(dateFrom, dateTo, bank) {
   const d = await j(`${API}/sep-alignments?${qs}`).catch(() => ({rows:[]}));
   document.getElementById('sepAlignRows').innerHTML = (d.rows||[]).map(r => `
     <tr>
-      <td class="mono">${fmtDate(r.production_date)}</td>
-      <td>${tagChip(r.bank)}</td>
-      <td>${r.mpfm_tag||'<span class="muted">—</span>'}</td>
-      <td>${r.sep_meter_id||'<span class="muted">—</span>'}</td>
-      <td>${r.sep_tag||'<span class="muted">—</span>'}</td>
-      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis">${r.notes||''}</td>
+      <td class="mono">${escapeHtml(fmtDate(r.production_date))}</td>
+      <td>${tagChip(escapeHtml(r.bank))}</td>
+      <td>${escapeHtml(r.mpfm_tag)||'<span class="muted">—</span>'}</td>
+      <td>${escapeHtml(r.sep_meter_id)||'<span class="muted">—</span>'}</td>
+      <td>${escapeHtml(r.sep_tag)||'<span class="muted">—</span>'}</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis">${escapeHtml(r.notes||'')}</td>
       <td style="text-align:center"><button class="btn danger sm" onclick="deleteSepAlignment(${r.id})">✕</button></td>
     </tr>
   `).join('') || '<tr><td colspan="7" class="muted" style="padding:16px;text-align:center">Sem alinhamentos ativos no período.</td></tr>';

@@ -1302,6 +1302,7 @@
           <div class="field field--wide"><label for="alarmSearch">Busca</label><input id="alarmSearch" placeholder="alarme, registrador, código, medidor..."></div>
           <div class="alarm-filter-actions">
             <button class="btn" id="btnLoadAlarmRows" type="button">Atualizar lista</button>
+            <button class="btn secondary" id="btnAnalyzeAlarmsWithAI" type="button">Analisar com IA</button>
             <button class="btn secondary" id="btnResetAlarmFilters" type="button">Limpar filtros</button>
           </div>
         </div>
@@ -1429,6 +1430,7 @@
           <button class="btn secondary sm po-action-btn" id="poSyncContractBtn" type="button"><span class="po-action-btn__icon">⇄</span><span>Sincronizar contrato</span></button>
           <button class="btn sm po-action-btn po-action-btn--primary" id="poImportAnpBtn" type="button"><span class="po-action-btn__icon">⇩</span><span>Importar exports ANP</span></button>
           <button class="btn secondary sm po-action-btn" id="poProcessTechnicalBtn" type="button"><span class="po-action-btn__icon">⚙</span><span>Processar Limites/CV</span></button>
+          <button class="btn secondary sm po-action-btn" id="poAnalyzeClosingWithAI" type="button"><span class="po-action-btn__icon">✦</span><span>Análise de fechamento IA</span></button>
         </div>
         <div class="po-actionbar__status" id="poActionStatus" role="status" aria-live="polite">Aguardando leitura.</div>
       </div>
@@ -2738,14 +2740,19 @@
       <div class="ai-chat-layout">
         <div class="ai-sidebar-panel card">
           <div class="ai-sidebar-title">Configuração</div>
-          <input id="aiProviderSel" type="hidden" value="gemini">
-          <input id="aiModelSel" type="hidden" value="gemini-2.5-flash">
+          <div class="field mt10">
+            <label for="aiProviderSel">Provider</label>
+            <select id="aiProviderSel" class="input">
+              <option value="gemini">Google Gemini</option>
+              <option value="kimi">Moonshot Kimi</option>
+            </select>
+          </div>
+          <div class="field mt10">
+            <label for="aiModelSel">Modelo</label>
+            <select id="aiModelSel" class="input"></select>
+          </div>
           <input id="aiMaxTokens" type="hidden" value="8192">
           <input id="aiTemp" type="hidden" value="0.2">
-          <div class="ai-fixed-model mt10">
-            <span>Modelo ativo</span>
-            <strong>Gemini 2.5 Flash</strong>
-          </div>
           <div class="ai-status-block mt14" id="aiProviderStatus"></div>
           <hr class="ai-divider">
           <div class="ai-sidebar-title">Análise de Relatório</div>
@@ -3193,25 +3200,7 @@
 <script src="/static/app.shared.js?v=20260702a11y1"></script>
 <script src="/static/app.summary.js?v=20260721summaryfix1"></script>
 <script src="/static/app.system.js?v=20260702recovery1"></script>
-<script src="/static/app.upload.js?v=20260520uploadhardening3"></script>
-<script src="/static/app.mpfm.js"></script>
-<script src="/static/app.monitoring.js?v=20260327monitoringpairs2"></script>
-<script src="/static/app.xml042.js?v=20260407xml0422"></script>
-<script src="/static/app.monthly_reports.js?v=20260408reports1"></script>
-<script src="/static/app.cadastro.js"></script>
-<script src="/static/app.charts.js?v=20260702motion1"></script>
-<script src="/static/app.cards.js?v=20260706trace1"></script>
-<script src="/static/app.sep.js"></script>
-<script src="/static/app.recon.js?v=20260702polish1"></script>
-<script src="/static/app.methodology_flow.js?v=20260706flow4"></script>
-<script src="/static/app.sgmfm.js?v=20260329sgmfm1"></script>
-<script src="/static/app.twin.js?v=20260705twin4"></script>
-<script src="/static/app.dynamic_diagrams.js?v=20260706diag1"></script>
-<script src="/static/app.painel_operador.js?v=20260706trace1"></script>
 <script src="/static/app.main.js?v=20260720pocoriser2"></script>
-<script src="/static/app.alarme.js?v=20260520closeout1"></script>
-<script src="/static/app.ai.js?v=20260706trace1"></script>
-
 <!-- ── Painel Operador: Ajuda Contextual ────────────────────── -->
 <!-- Overlay escuro -->
 <div id="poHelpOverlay" class="po-help-overlay" role="presentation" aria-hidden="true"></div>
@@ -3251,7 +3240,17 @@
 
 <!-- Botão flutuante "?" -->
 <button id="poHelpFab" class="po-help-fab" type="button" aria-label="Abrir ajuda do Painel Operador" title="Ajuda do Painel Operador">?</button>
+<!-- ══ MODAL: ANÁLISE DE IA ═══════════════════════════════════════════════ -->
+<div class="modal" id="aiAnalysisModal" role="dialog" aria-modal="true" aria-labelledby="aiAnalysisTitle" aria-hidden="true">
+  <div class="modalbox" style="max-width: 900px; max-height: 85vh; display: flex; flex-direction: column;">
+    <div class="row modal-hdr" style="margin-bottom:12px;">
+      <h3 class="section-title modal-h3" id="aiAnalysisTitle">Análise da IA</h3>
+      <button class="btn secondary sm" onclick="closeModal('aiAnalysisModal')">✕ Fechar</button>
+    </div>
+    <div id="aiAnalysisBody" class="stack mt12" style="overflow-y: auto; flex: 1;"></div>
+    <div id="aiAnalysisMeta" class="muted fs11 mt12"></div>
+  </div>
+</div>
 
-<script src="/static/app.painel_operador_help.js?v=20260707help1"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  const workspace = state.alarmWorkspace || (state.alarmWorkspace = { rows: [], selectedId: null, detail: null, summary: null, preview: null, catalog: {}, currentSourceRef: '' });
+  const workspace = state.alarmWorkspace || (state.alarmWorkspace = { rows: [], selectedId: null, detail: null, summary: null, preview: null, catalog: {}, currentSourceRef: '', alarmOffset: 0, alarmLimit: 50, alarmHasMore: true });
 
   function severityLabel(code) {
     const mapping = {
@@ -407,18 +407,32 @@
       source_sheet: qsValue('alarmSourceSheet'),
       date_from: qsValue('alarmDateFrom'),
       date_to: qsValue('alarmDateTo'),
-      limit: '300',
+      limit: String(workspace.alarmLimit || 50),
+      offset: String(workspace.alarmOffset || 0),
     };
     Object.entries(values).forEach(([key, value]) => {
-      if (value) params.set(key, value);
+      if (value || value === '0') params.set(key, value);
     });
     return params.toString();
   }
 
   async function loadAlarmRows(options = {}) {
     const keepSelection = !!options.keepSelection;
+    const reset = !!options.reset;
+    if (reset) {
+      workspace.alarmOffset = 0;
+      workspace.alarmHasMore = true;
+    }
     const data = await j(`${API}/alarmes?${buildAlarmQuery()}`).catch(() => ({ items: [] }));
-    renderAlarmRows(data.items || []);
+    const items = data.items || [];
+    workspace.alarmHasMore = items.length >= workspace.alarmLimit;
+    if (reset || workspace.alarmOffset === 0) {
+      workspace.rows = items;
+    } else {
+      workspace.rows = workspace.rows.concat(items);
+    }
+    workspace.alarmOffset = workspace.rows.length;
+    renderAlarmRows(workspace.rows);
     if (!workspace.rows.length) {
       return;
     }
@@ -427,6 +441,11 @@
       ? preferredId
       : workspace.rows[0].id;
     await selectAlarm(candidate);
+  }
+
+  function loadMoreAlarmRows() {
+    if (!workspace.alarmHasMore) return;
+    loadAlarmRows({ keepSelection: true, reset: true });
   }
 
   async function selectAlarm(id) {
@@ -455,7 +474,7 @@
         }),
       });
       setAlarmStatusLine(`Ocorrência atualizada para ${statusLabel(statusCode)}.`, 'success');
-      await Promise.all([loadAlarmSummary(), loadAlarmRows({ keepSelection: true })]);
+      await Promise.all([loadAlarmSummary(), loadAlarmRows({ keepSelection: true, reset: true })]);
       document.getElementById('alarmStatusNotes').value = '';
     } catch (err) {
       setAlarmStatusLine(`Falha ao atualizar ocorrência: ${err.message || err}`, 'error');
@@ -537,7 +556,7 @@
       document.getElementById('alarmWorkbookMeta').textContent = `${describeSelectedPdfs(files)} · salvo em ${firstFile?.saved_path || '—'}`;
       setAlarmStatusLine(`PDFs processados. ${payload.import_result?.imported || 0} novo(s), ${payload.import_result?.updated || 0} atualizado(s).`, 'success');
       await loadAlarmCatalog();
-      await loadAlarmRows();
+      await loadAlarmRows({ reset: true });
     } catch (err) {
       setAlarmStatusLine(`Falha ao analisar PDFs: ${err.message || err}`, 'error');
     } finally {
@@ -567,7 +586,7 @@
     if (workspace.preview) {
       renderAlarmPreview(workspace.preview);
     }
-    await loadAlarmRows({ keepSelection: true });
+    await loadAlarmRows({ keepSelection: true, reset: true });
   }
 
   function resetAlarmFilters() {
@@ -575,7 +594,36 @@
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
-    loadAlarmRows();
+    loadAlarmRows({ reset: true });
+  }
+
+  async function analyzeAlarmsWithAI() {
+    const btn = document.getElementById('btnAnalyzeAlarmsWithAI');
+    if (btn) { btn.disabled = true; btn.textContent = 'Analisando...'; }
+    try {
+      const body = {
+        date_from: document.getElementById('alarmDateFrom')?.value || '',
+        date_to: document.getElementById('alarmDateTo')?.value || '',
+        bank: document.getElementById('alarmMeasurementPoint')?.value || '',
+        status: document.getElementById('alarmStatus')?.value || '',
+        severity: document.getElementById('alarmSeverity')?.value || '',
+        priority: '',
+        limit: 150,
+      };
+      const resp = await j(`${API}/ai/agent/alarms`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      openModal('aiAnalysisModal');
+      document.getElementById('aiAnalysisTitle').textContent = 'Análise de Alarmes FCS320';
+      document.getElementById('aiAnalysisBody').innerHTML = _renderAiMarkdown(resp.content, 0);
+      document.getElementById('aiAnalysisMeta').textContent = `${resp.provider} · ${resp.model} · ${resp.input_tokens + resp.output_tokens} tokens`;
+    } catch (err) {
+      _toast(`Erro na análise: ${err?.detail || err?.message || err}`, 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Analisar com IA'; }
+    }
   }
 
   function bindAlarmWorkspace() {
@@ -585,10 +633,11 @@
       document.getElementById('alarmWorkbookMeta').textContent = describeSelectedPdfs(files);
     });
     document.getElementById('btnUploadAlarmPdfs')?.addEventListener('click', uploadAlarmPdfs);
-    document.getElementById('btnLoadAlarmRows')?.addEventListener('click', () => loadAlarmRows());
+    document.getElementById('btnLoadAlarmRows')?.addEventListener('click', () => loadAlarmRows({ reset: true }));
+    document.getElementById('btnAnalyzeAlarmsWithAI')?.addEventListener('click', analyzeAlarmsWithAI);
     document.getElementById('btnResetAlarmFilters')?.addEventListener('click', resetAlarmFilters);
     document.getElementById('alarmSearch')?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') loadAlarmRows();
+      if (event.key === 'Enter') loadAlarmRows({ reset: true });
     });
     document.getElementById('btnAlarmMarkInProgress')?.addEventListener('click', () => updateAlarmStatus('in_progress'));
     document.getElementById('btnAlarmMarkMonitoring')?.addEventListener('click', () => updateAlarmStatus('monitoring'));

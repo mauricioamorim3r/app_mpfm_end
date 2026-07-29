@@ -71,7 +71,8 @@ def register_alarme_routes(app, ctx: dict) -> None:
         date_from: str = "",
         date_to: str = "",
         active_only: int = 1,
-        limit: int = 0,
+        limit: int = 50,
+        offset: int = 0,
     ):
         date_from, date_to = normalize_date_range(date_from, date_to)
         items = repo.list_alarms(
@@ -92,8 +93,9 @@ def register_alarme_routes(app, ctx: dict) -> None:
             date_to=date_to,
             active_only=bool(active_only),
             limit=limit,
+            offset=offset,
         )
-        return {"items": items}
+        return {"items": items, "limit": limit, "offset": offset}
 
     @app.get("/api/alarmes/workbook-inspect")
     def api_alarmes_workbook_inspect(path: str):

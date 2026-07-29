@@ -13,6 +13,7 @@ import zipfile
 from fastapi import File, HTTPException, Request, UploadFile
 from routes.date_utils import normalize_date_input, normalize_date_range, normalize_validation_issue_day_ref
 from services.ops import build_dashboard_months
+from cache_manager import cached, _cache
 from services.ops.monitoring_service import (
     HC_LIMIT_PCT,
     MONITORING_BOOL_FIELDS,
@@ -58,6 +59,7 @@ def register_ops_routes(app, ctx: dict) -> None:
     load_state = ctx["load_state"]
     save_state = ctx["save_state"]
     load_sep_data_by_day = ctx["load_sep_data_by_day"]
+    load_sep_data_by_range = ctx.get("load_sep_data_by_range", load_sep_data_by_day)
     serialize_sep_row = ctx["serialize_sep_row"]
 
     def _as_float(value, default):
@@ -80,6 +82,11 @@ def register_ops_routes(app, ctx: dict) -> None:
             "gas_boe_mode": str(raw.get("gas_boe_mode") or "Padrão corporativo"),
             "show_boe_criterion": bool(show_criterion),
         }
+
+    def _invalidate_cache(pattern: str | None = None) -> dict:
+        """Invalida entradas do cache. Sem padrão, limpa tudo."""
+        removed = _cache.invalidate(pattern)
+        return {"ok": True, "removed": removed}
 
     def _parse_target_month(month: str):
         raw = str(month or "").strip()
@@ -789,12 +796,15 @@ def register_ops_routes(app, ctx: dict) -> None:
         synced_days = []
         missing_payload_days = []
 
+        # Carrega todos os payloads SEP do mês de uma vez para evitar N+1
+        sep_payloads_by_day = load_sep_data_by_range(date_from, date_to) if official_days else {}
+
         for production_date in official_days:
             if rebuild_summary:
                 rebuild_result = rebuild_sep_summary_for_day(production_date)
                 if rebuild_result.get("rebuilt"):
                     rebuilt_days.append(production_date)
-            sep_payload = load_sep_data_by_day(production_date)
+            sep_payload = sep_payloads_by_day.get(production_date, load_sep_data_by_day(production_date))
             if sep_payload:
                 state.setdefault("sep_by_day", {})[production_date] = serialize_sep_row(sep_payload)
                 synced_days.append(production_date)
@@ -820,10 +830,12 @@ def register_ops_routes(app, ctx: dict) -> None:
         }
 
     @app.get("/api/dashboard")
+    @cached(ttl=300, key_prefix="dashboard")
     def api_dashboard():
         return {"months": build_dashboard_months(work_dir, output_dir, month_pt, excel_name)}
 
     @app.get("/api/ops/summary")
+    @cached(ttl=120, key_prefix="ops_summary")
     def api_ops_summary(date: str = ""):
         date = normalize_date_input(date)
         conn = db_conn()
@@ -937,6 +949,7 @@ def register_ops_routes(app, ctx: dict) -> None:
     _MONTH_SUMMARY_TTL = 20.0
 
     @app.get("/api/ops/month-summary")
+    @cached(ttl=180, key_prefix="ops_month_summary")
     def api_ops_month_summary(month: str = ""):
         cache_key = month or "__latest__"
         cached = _month_summary_cache.get(cache_key)
@@ -1027,6 +1040,20 @@ def register_ops_routes(app, ctx: dict) -> None:
             (month_start, month_end),
         ).fetchone()[0]
 
+        # Pré-carrega totais horários por banco para evitar N+1 no loop by_bank
+        hourly_bank_totals: dict[str, dict[str, float]] = {}
+        for bank, metric, value in cur.execute(
+            """
+            SELECT bank, metric_name, COALESCE(SUM(metric_value),0)
+            FROM measurements_active
+            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND row_kind='hourly'
+              AND metric_name IN ('MPFM corr HC (t)', 'MPFM corr Óleo (t)', 'MPFM corr Gás (t)', 'MPFM corr Água (t)')
+            GROUP BY bank, metric_name
+            """,
+            (month_start, month_end),
+        ).fetchall():
+            hourly_bank_totals.setdefault(bank, {})[metric] = float(value or 0)
+
         by_bank = []
         for row in cur.execute(
             """
@@ -1049,24 +1076,11 @@ def register_ops_routes(app, ctx: dict) -> None:
         ):
             bank, days, hours, oil, gas, hc, water, total, oil_m3, gas_sm3, water_m3 = row
             if hc == 0 and hours > 0:
-                for metric, col_key in [
-                    ("MPFM corr HC (t)", "hc"),
-                    ("MPFM corr Óleo (t)", "oil"),
-                    ("MPFM corr Gás (t)", "gas"),
-                    ("MPFM corr Água (t)", "water"),
-                ]:
-                    value = cur.execute(
-                        "SELECT COALESCE(SUM(metric_value),0) FROM measurements_active WHERE day_ref>=? AND day_ref<? AND bank=? AND row_kind='hourly' AND metric_name=?",
-                        (month_start, month_end, bank, metric),
-                    ).fetchone()[0]
-                    if col_key == "hc":
-                        hc = value
-                    elif col_key == "oil":
-                        oil = value
-                    elif col_key == "gas":
-                        gas = value
-                    elif col_key == "water":
-                        water = value
+                htotals = hourly_bank_totals.get(bank, {})
+                hc = htotals.get("MPFM corr HC (t)", hc)
+                oil = htotals.get("MPFM corr Óleo (t)", oil)
+                gas = htotals.get("MPFM corr Gás (t)", gas)
+                water = htotals.get("MPFM corr Água (t)", water)
             by_bank.append(
                 {
                     "bank": bank,
@@ -2042,11 +2056,15 @@ def register_ops_routes(app, ctx: dict) -> None:
             item_id = upsert_monitoring_annotation(db_conn, payload)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc))
+        _invalidate_cache("ops_mpfm_monitoring")
+        _invalidate_cache("monitoring_summary")
         return {"ok": True, "id": item_id}
 
     @app.delete("/api/ops/mpfm-monitoring/{item_id}")
     def api_ops_mpfm_monitoring_delete(item_id: int):
         delete_monitoring_annotation(db_conn, item_id)
+        _invalidate_cache("ops_mpfm_monitoring")
+        _invalidate_cache("monitoring_summary")
         return {"ok": True, "id": item_id}
 
     @app.get("/api/ops/mpfm-data")
@@ -2163,7 +2181,13 @@ def register_ops_routes(app, ctx: dict) -> None:
         }
 
     @app.get("/api/ops/sep-data")
-    def api_ops_sep_data(date_from: str = "", date_to: str = "", limit: int = 200):
+    @cached(ttl=120, key_prefix="ops_sep_data")
+    def api_ops_sep_data(
+        date_from: str = "",
+        date_to: str = "",
+        limit: int = 200,
+        offset: int = 0,
+    ):
         date_from, date_to = normalize_date_range(date_from, date_to)
         conn = db_conn()
         cur = conn.cursor()
@@ -2187,14 +2211,20 @@ def register_ops_routes(app, ctx: dict) -> None:
         ).fetchall():
             align_map[a["production_date"]] = a["banks"] or ""
 
+        # Paginação: conta total de arquivos txt no período
+        total_rows = cur.execute(
+            "SELECT COUNT(*) FROM files_imported WHERE ext='txt' AND content_date BETWEEN ? AND ?",
+            (date_from, date_to),
+        ).fetchone()[0]
+
         rows = []
         for r in cur.execute(
             """
             SELECT content_date, filename, file_type, unit_code, meter_id, location, message
             FROM files_imported WHERE ext='txt' AND content_date BETWEEN ? AND ?
-            ORDER BY content_date DESC, file_type, filename LIMIT ?
+            ORDER BY content_date DESC, file_type, filename LIMIT ? OFFSET ?
             """,
-            (date_from, date_to, limit),
+            (date_from, date_to, limit, offset),
         ).fetchall():
             d = dict(r)
             d["aligned_banks"] = align_map.get(d["content_date"], "")
@@ -2209,9 +2239,9 @@ def register_ops_routes(app, ctx: dict) -> None:
                    SUM(CASE WHEN file_type='sep_agua' THEN 1 ELSE 0 END) agua,
                    SUM(CASE WHEN file_type='sep_gas' THEN 1 ELSE 0 END) gas
             FROM files_imported WHERE ext='txt' AND content_date BETWEEN ? AND ?
-            GROUP BY content_date ORDER BY content_date DESC
+            GROUP BY content_date ORDER BY content_date DESC LIMIT ? OFFSET ?
             """,
-            (date_from, date_to),
+            (date_from, date_to, limit, offset),
         ).fetchall():
             d = dict(r)
             d["aligned_banks"] = align_map.get(d["content_date"], "")
@@ -2230,9 +2260,9 @@ def register_ops_routes(app, ctx: dict) -> None:
                     FROM measurements_active
                     WHERE row_kind='sep' AND bank='SEP' AND COALESCE(is_official,1)=1
                       AND day_ref BETWEEN ? AND ?
-                    ORDER BY day_ref DESC, metric_name
+                    ORDER BY day_ref DESC, metric_name LIMIT ? OFFSET ?
                     """,
-                    (date_from, date_to),
+                    (date_from, date_to, limit, offset),
                 ).fetchall()
             ]
             sep_by_day = {}
@@ -2276,6 +2306,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                     }
                 )
             rows = rows[:limit]
+            total_rows = len(rows)
         conn.close()
         return {
             "rows": rows,
@@ -2283,10 +2314,18 @@ def register_ops_routes(app, ctx: dict) -> None:
             "date_from": date_from,
             "date_to": date_to,
             "fallback_used": bool(days and any(d.get("recovered_from_excel") for d in days)),
+            "pagination": {"limit": limit, "offset": offset, "total": total_rows},
         }
 
     @app.get("/api/ops/alerts")
-    def api_ops_alerts(date_from: str = "", date_to: str = "", severity: str = "", limit: int = 200):
+    @cached(ttl=90, key_prefix="ops_alerts")
+    def api_ops_alerts(
+        date_from: str = "",
+        date_to: str = "",
+        severity: str = "",
+        limit: int = 200,
+        offset: int = 0,
+    ):
         date_from, date_to = normalize_date_range(date_from, date_to)
         conn = db_conn()
         cur = conn.cursor()
@@ -2299,6 +2338,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         if not date_from:
             date_from = date_to
 
+        # Paginação: aplicada depois de juntar issues e devs (simplificado por filtro dinâmico)
         vi_rows = []
         for r in cur.execute(
             """
@@ -2355,14 +2395,22 @@ def register_ops_routes(app, ctx: dict) -> None:
         if severity:
             all_rows = [r for r in all_rows if r["severity"] == severity]
         all_rows.sort(key=lambda row: (row.get("day_ref") or row.get("created_at") or "", row.get("created_at") or ""), reverse=True)
-        all_rows = all_rows[:limit]
+        total_rows = len(all_rows)
+        all_rows = all_rows[offset : offset + limit]
         conn.close()
         crit = sum(1 for r in all_rows if r["severity"] == "error")
         warn = sum(1 for r in all_rows if r["severity"] == "warn")
         info = sum(1 for r in all_rows if r["severity"] == "info")
-        return {"rows": all_rows, "date_from": date_from, "date_to": date_to, "counts": {"error": crit, "warn": warn, "info": info}}
+        return {
+            "rows": all_rows,
+            "date_from": date_from,
+            "date_to": date_to,
+            "counts": {"error": crit, "warn": warn, "info": info},
+            "pagination": {"limit": limit, "offset": offset, "total": total_rows},
+        }
 
     @app.get("/api/ops/chart-meta")
+    @cached(ttl=120, key_prefix="ops_chart_meta")
     def api_ops_chart_meta(date_from: str = "", date_to: str = "", row_kind: str = "daily", bank: str = "", tag: str = ""):
         date_from, date_to = normalize_date_range(date_from, date_to)
         conn = db_conn()
@@ -2966,40 +3014,64 @@ def register_ops_routes(app, ctx: dict) -> None:
         return {"labels": labels, "values": values, "date_from": date_from, "date_to": date_to}
 
     @app.get("/api/monitoring-summary")
-    def api_monitoring_summary(limit: int = 50):
+    @cached(ttl=90, key_prefix="monitoring_summary")
+    def api_monitoring_summary(
+        limit: int = 50,
+        offset: int = 0,
+        runs_limit: int = 20,
+        runs_offset: int = 0,
+    ):
         conn = db_conn()
         cur = conn.cursor()
+        total_issues = cur.execute("SELECT COUNT(*) FROM validation_issues").fetchone()[0]
         issues = []
         for row in cur.execute(
-            "SELECT created_at, excel_file, issue_type, severity, ref_key, day_ref, details FROM validation_issues ORDER BY id DESC LIMIT ?",
-            (limit,),
+            "SELECT created_at, excel_file, issue_type, severity, ref_key, day_ref, details FROM validation_issues ORDER BY id DESC LIMIT ? OFFSET ?",
+            (limit, offset),
         ).fetchall():
             item = dict(row)
             item["day_ref"] = normalize_validation_issue_day_ref(item.get("day_ref", ""), item.get("created_at", ""))
             issues.append(item)
-        runs = [dict(r) for r in cur.execute("SELECT id, started_at, finished_at, source_type, source_ref, files_count, status FROM processing_runs ORDER BY id DESC LIMIT 20").fetchall()]
+        total_runs = cur.execute("SELECT COUNT(*) FROM processing_runs").fetchone()[0]
+        runs = [dict(r) for r in cur.execute(
+            "SELECT id, started_at, finished_at, source_type, source_ref, files_count, status FROM processing_runs ORDER BY id DESC LIMIT ? OFFSET ?",
+            (runs_limit, runs_offset),
+        ).fetchall()]
         count = cur.execute("SELECT COUNT(*) FROM measurements_active").fetchone()[0]
         conn.close()
-        return {"runs": runs, "issues": issues, "measurements_count": count}
+        return {
+            "runs": runs,
+            "issues": issues,
+            "measurements_count": count,
+            "pagination": {
+                "issues": {"limit": limit, "offset": offset, "total": total_issues},
+                "runs": {"limit": runs_limit, "offset": runs_offset, "total": total_runs},
+            },
+        }
 
     @app.post("/api/admin/clear-data")
     def api_admin_clear_data(body: dict = None):
         keep_backup_zip = True
         if body and isinstance(body, dict):
             keep_backup_zip = bool(body.get("keep_backup_zip", True))
-        return clear_local_data(keep_backup_zip=keep_backup_zip)
+        result = clear_local_data(keep_backup_zip=keep_backup_zip)
+        _invalidate_cache()
+        return result
 
     @app.post("/api/admin/restart-db")
     def api_admin_restart_db(body: dict = None):
         keep_backup_zip = True
         if body and isinstance(body, dict):
             keep_backup_zip = bool(body.get("keep_backup_zip", True))
-        return restart_local_data(keep_backup_zip=keep_backup_zip)
+        result = restart_local_data(keep_backup_zip=keep_backup_zip)
+        _invalidate_cache()
+        return result
 
     @app.post("/api/admin/backup-and-clear")
     def api_admin_backup_and_clear():
         zpath = build_backup_zip()
         result = clear_local_data(keep_backup_zip=True)
+        _invalidate_cache()
         return {
             **result,
             "backup_file": zpath.name,
@@ -3014,6 +3086,15 @@ def register_ops_routes(app, ctx: dict) -> None:
             "message": "Backup gerado sem alterar a base local.",
             "db_path": str(db_path),
         }
+
+    @app.get("/api/admin/cache/stats")
+    def api_admin_cache_stats():
+        return _cache.get_stats()
+
+    @app.post("/api/admin/cache/invalidate")
+    def api_admin_cache_invalidate(body: dict | None = None):
+        pattern = (body or {}).get("pattern")
+        return _invalidate_cache(pattern)
 
     @app.get("/api/admin/recovery/diagnostics")
     def api_admin_recovery_diagnostics(month: str = ""):
@@ -3147,6 +3228,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         yr, mo, _, _ = _parse_target_month(target_month)
         workbook_path = output_dir / excel_name(yr, mo)
         queued = schedule_monthly_base_unica(workbook_path, yr, mo)
+        _invalidate_cache()
         return {
             "ok": True,
             "month": target_month,
@@ -3223,6 +3305,7 @@ def register_ops_routes(app, ctx: dict) -> None:
 
         workbook_path = output_dir / excel_name(yr, mo)
         queued = schedule_monthly_base_unica(workbook_path, yr, mo)
+        _invalidate_cache()
         return {
             "ok": True,
             "month": target_month,
@@ -3244,6 +3327,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         target_month = str((body or {}).get("month") or datetime.now().strftime("%Y-%m"))
         _parse_target_month(target_month)
         result = _sync_sep_month_state(target_month, rebuild_summary=True)
+        _invalidate_cache()
         return {
             "ok": True,
             "month": target_month,
@@ -3255,6 +3339,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         target_month = str((body or {}).get("month") or datetime.now().strftime("%Y-%m"))
         _, _, _, _ = _parse_target_month(target_month)
         result = sanitize_files_imported_history(target_month)
+        _invalidate_cache()
         return result
 
     @app.post("/api/admin/recovery/delete-day")
@@ -3265,6 +3350,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         result = delete_all_data_for_day(target_date)
         if not result.get("ok"):
             raise HTTPException(status_code=400, detail=result.get("error") or "Falha ao apagar o dia selecionado.")
+        _invalidate_cache()
         return result
 
     @app.post("/api/admin/recovery/base-unica-import/preview")
@@ -3301,6 +3387,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                 excel_name_fn=excel_name,
                 serialize_sep_row_fn=serialize_sep_row,
             )
+            _invalidate_cache()
             return result
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc))
@@ -3316,7 +3403,9 @@ def register_ops_routes(app, ctx: dict) -> None:
             raise HTTPException(status_code=400, detail="Envie um arquivo .zip válido.")
         temp_path = _persist_uploaded_file(file, "mpfm_backup.zip")
         try:
-            return _restore_backup_zip(Path(temp_path))
+            result = _restore_backup_zip(Path(temp_path))
+            _invalidate_cache()
+            return result
         finally:
             try:
                 os.unlink(temp_path)

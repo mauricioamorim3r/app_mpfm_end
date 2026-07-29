@@ -71,13 +71,35 @@ async function persistThemePreference(mode) {
   return normalized;
 }
 
+const _apiCache = new Map();
+const _apiCacheTtlMs = 10000; // 10 segundos
+
+function _apiCacheKey(url, opts) {
+  const method = (opts && opts.method) || 'GET';
+  if (method.toUpperCase() !== 'GET') return null;
+  return url;
+}
+
+function invalidateApiCache() {
+  _apiCache.clear();
+}
+
 async function j(url, opts) {
+  const key = _apiCacheKey(url, opts);
+  if (key) {
+    const cached = _apiCache.get(key);
+    if (cached && Date.now() - cached.at < _apiCacheTtlMs) {
+      return cached.data;
+    }
+  }
   const response = await fetch(url, opts);
   if (!response.ok) {
     const text = await response.text();
     throw new Error(text || `HTTP ${response.status}`);
   }
-  return response.json();
+  const data = await response.json();
+  if (key) _apiCache.set(key, { data, at: Date.now() });
+  return data;
 }
 
 const fmt = v => v == null ? '—' : new Intl.NumberFormat('pt-BR', {maximumFractionDigits:3}).format(v);
@@ -146,7 +168,7 @@ function enhanceBrazilianDateInputs(root = document) {
 }
 
 function tagChip(s) {
-  return `<span class="tag-chip">${s}</span>`;
+  return `<span class="tag-chip">${escapeHtml(s)}</span>`;
 }
 
 function badge(s) {
@@ -161,7 +183,7 @@ function badge(s) {
     empty:['Sem dado','warn'],
   };
   const [text, css] = mapping[s] || [s, 'warn'];
-  return `<span class="badge ${css}">${text}</span>`;
+  return `<span class="badge ${css}">${escapeHtml(text)}</span>`;
 }
 
 function hc(p) {

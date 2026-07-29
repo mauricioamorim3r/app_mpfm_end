@@ -4,6 +4,10 @@
    Drawer lateral contextual que muda conforme a aba ativa.
    ============================================================ */
 
+function poHelpEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 // ---------------------------------------------------------------------------
 // Conteúdo de ajuda por aba
 // ---------------------------------------------------------------------------
@@ -300,7 +304,7 @@ function _renderHelpContent(tabKey) {
   // Descrição principal
   html += `<div class="po-help-section">`;
   html += `<div class="po-help-section__badge">📖 Sobre esta tela</div>`;
-  html += `<p class="po-help-section__desc">${data.desc || ''}</p>`;
+  html += `<p class="po-help-section__desc">${poHelpEscape(data.desc || '')}</p>`;
   html += `</div>`;
 
   // Seções/elementos
@@ -310,10 +314,10 @@ function _renderHelpContent(tabKey) {
     html += `<ul class="po-help-list">`;
     for (const s of data.sections) {
       html += `<li class="po-help-list__item">
-        <span class="po-help-list__icon">${s.icon || '•'}</span>
+        <span class="po-help-list__icon">${poHelpEscape(s.icon || '•')}</span>
         <div class="po-help-list__content">
-          <div class="po-help-list__label">${s.label}</div>
-          <div class="po-help-list__text">${s.text}</div>
+          <div class="po-help-list__label">${poHelpEscape(s.label)}</div>
+          <div class="po-help-list__text">${poHelpEscape(s.text)}</div>
         </div>
       </li>`;
     }
@@ -327,10 +331,10 @@ function _renderHelpContent(tabKey) {
     html += `<ul class="po-help-list">`;
     for (const b of data.buttons) {
       html += `<li class="po-help-list__item">
-        <span class="po-help-list__icon">${b.icon || '🔘'}</span>
+        <span class="po-help-list__icon">${poHelpEscape(b.icon || '🔘')}</span>
         <div class="po-help-list__content">
-          <div class="po-help-list__label">${b.label}</div>
-          <div class="po-help-list__text">${b.text}</div>
+          <div class="po-help-list__label">${poHelpEscape(b.label)}</div>
+          <div class="po-help-list__text">${poHelpEscape(b.text)}</div>
         </div>
       </li>`;
     }
@@ -344,10 +348,10 @@ function _renderHelpContent(tabKey) {
     html += `<ul class="po-help-list">`;
     for (const c of data.controls) {
       html += `<li class="po-help-list__item">
-        <span class="po-help-list__icon">${c.icon || '🔘'}</span>
+        <span class="po-help-list__icon">${poHelpEscape(c.icon || '🔘')}</span>
         <div class="po-help-list__content">
-          <div class="po-help-list__label">${c.label}</div>
-          <div class="po-help-list__text">${c.text}</div>
+          <div class="po-help-list__label">${poHelpEscape(c.label)}</div>
+          <div class="po-help-list__text">${poHelpEscape(c.text)}</div>
         </div>
       </li>`;
     }
@@ -360,16 +364,16 @@ function _renderHelpContent(tabKey) {
     html += `<div class="po-help-section__badge">📋 Como usar</div>`;
     html += `<ol class="po-help-steps">`;
     for (const step of data.steps) {
-      html += `<li class="po-help-steps__item"><span>${step}</span></li>`;
+      html += `<li class="po-help-steps__item"><span>${poHelpEscape(step)}</span></li>`;
     }
     html += `</ol></div>`;
   }
 
   // Dica
   if (data.tip) {
-    html += `<div class="po-help-tip po-help-tip--${data.tip.kind || 'info'}">
-      <span class="po-help-tip__icon">${data.tip.icon || 'ℹ️'}</span>
-      <span>${data.tip.text}</span>
+    html += `<div class="po-help-tip po-help-tip--${poHelpEscape(data.tip.kind || 'info')}">
+      <span class="po-help-tip__icon">${poHelpEscape(data.tip.icon || 'ℹ️')}</span>
+      <span>${poHelpEscape(data.tip.text)}</span>
     </div>`;
   }
 

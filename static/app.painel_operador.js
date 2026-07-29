@@ -126,22 +126,24 @@ function poSetChecklistSection(section) {
 async function loadPainelOperador(silent = false) {
   if (!silent) setLoading('page-painel-operador', true);
   try {
-    // Carrega apenas endpoints leves no init. production-days, xml-validation e
-    // technical-monitor são pesados (N+1 queries / JSON grande) e carregam sob demanda.
-    const [status, fileSummary, anpSummary, stagingSummary, flowTrace, checklistSummary] = await Promise.all([
-      j(`${API}/painel-operador/status`).catch((err) => ({ok: false, error: err.message || String(err)})),
-      j(`${API}/painel-operador/file-index-summary`).catch((err) => ({error: err.message || String(err)})),
-      j(`${API}/painel-operador/anp-exports-summary`).catch((err) => ({error: err.message || String(err)})),
-      j(`${API}/painel-operador/staging-summary`).catch((err) => ({error: err.message || String(err)})),
+    // Endpoint agregado reduz chamadas de rede. production-days, xml-validation e
+    // technical-monitor continuam pesados e carregam sob demanda.
+    const [overview, flowTrace] = await Promise.all([
+      j(`${API}/painel-operador/overview`).catch((err) => ({
+        status: {ok: false, error: err.message || String(err)},
+        file_summary: {error: err.message || String(err)},
+        anp_summary: {error: err.message || String(err)},
+        staging_summary: {error: err.message || String(err)},
+        checklist_summary: {error: err.message || String(err), totals: {}, sheets: []},
+      })),
       j(`${API}/methodology-flow/items?limit=120`).catch(() => ({items: []})),
-      j(`${API}/painel-operador/daily-checklist-summary`).catch((err) => ({error: err.message || String(err), totals: {}, sheets: []})),
     ]);
-    painelOperadorState.status = status;
-    painelOperadorState.fileSummary = fileSummary;
-    painelOperadorState.anpSummary = anpSummary;
-    painelOperadorState.stagingSummary = stagingSummary;
+    painelOperadorState.status = overview.status || {};
+    painelOperadorState.fileSummary = overview.file_summary || {};
+    painelOperadorState.anpSummary = overview.anp_summary || {};
+    painelOperadorState.stagingSummary = overview.staging_summary || {};
     painelOperadorState.flowTraceItems = flowTrace.items || [];
-    painelOperadorState.checklistSummary = checklistSummary;
+    painelOperadorState.checklistSummary = overview.checklist_summary || {};
     // Mantém valores anteriores se já carregados (e.g. silent refresh), senão usa defaults
     if (!painelOperadorState.productionSummary) painelOperadorState.productionSummary = {totals: {}, items: []};
     if (!painelOperadorState.xmlValidationSummary) painelOperadorState.xmlValidationSummary = {summary: {}, items: []};
@@ -220,7 +222,7 @@ async function renderPainelOperadorOverview() {
   const alertasHtml = alertas.length > 0 ? `
     <div class="po-alerts-banner">
       ${alertas.map(a => `
-        <div class="po-alert po-alert--${a.tipo}">
+        <div class="po-alert po-alert--${escapeHtml(a.tipo)}">
           <strong>${escapeHtml(a.titulo)}</strong>
           <span>${escapeHtml(a.mensagem)}</span>
         </div>
@@ -1358,10 +1360,10 @@ function poDossierHealthKind(status) {
 
 function poDossierCadastroText(row) {
   const parts = [
-    row.family_name || row.family || '',
-    row.fluid || '',
-    row.meter_type || '',
-    row.computador_vazao ? `CV ${row.computador_vazao}` : '',
+    escapeHtml(row.family_name || row.family || ''),
+    escapeHtml(row.fluid || ''),
+    escapeHtml(row.meter_type || ''),
+    row.computador_vazao ? `CV ${escapeHtml(row.computador_vazao)}` : '',
   ].filter(Boolean);
   return parts.length ? parts.join(' · ') : 'Cadastro parcial';
 }
@@ -1370,12 +1372,12 @@ function poDossierLimitsText(limits = {}) {
   const items = limits.items || [];
   if (!Number(limits.count || 0)) return 'sem limite cadastrado';
   const head = `${poNum(limits.count)} limite(s), ${poNum(limits.critical)} crítico(s), ${poNum(limits.warning)} atenção`;
-  const sample = items.slice(0, 3).map((row) => `${row.metric_name}: ${poDossierRange(row)}`).join(' · ');
+  const sample = items.slice(0, 3).map((row) => `${escapeHtml(row.metric_name)}: ${poDossierRange(row)}`).join(' · ');
   return sample ? `${head} · ${sample}` : head;
 }
 
 function poDossierRange(row) {
-  const unit = row.value_unit ? ` ${row.value_unit}` : '';
+  const unit = row.value_unit ? ` ${escapeHtml(row.value_unit)}` : '';
   if (row.pam_min !== null && row.pam_min !== undefined || row.pam_max !== null && row.pam_max !== undefined) {
     return `PAM ${fmt(row.pam_min)}-${fmt(row.pam_max)}${unit}`;
   }
@@ -3117,6 +3119,29 @@ function poStagingSchema(type) {
   ];
 }
 
+async function analyzeClosingWithAI() {
+  const btn = poEl('poAnalyzeClosingWithAI');
+  if (btn) { btn.disabled = true; btn.querySelector('span:last-child').textContent = 'Analisando...'; }
+  try {
+    // Tenta pegar a data ativa do calendário ou checklist; senão usa ontem (padrão do backend)
+    const activeDay = poEl('poCalendarDayInput')?.value || poEl('poChecklistDate')?.value || '';
+    const body = activeDay ? { date: activeDay } : {};
+    const resp = await j(`${API}/ai/agent/fechamento`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    openModal('aiAnalysisModal');
+    poEl('aiAnalysisTitle').textContent = `Análise de Fechamento — ${resp.meta?.date || activeDay || 'D-1'}`;
+    poEl('aiAnalysisBody').innerHTML = _renderAiMarkdown(resp.content, 0);
+    poEl('aiAnalysisMeta').textContent = `${resp.provider} · ${resp.model} · ${resp.input_tokens + resp.output_tokens} tokens`;
+  } catch (err) {
+    poSetStatus(`Erro na análise: ${err?.detail || err?.message || err}`, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.querySelector('span:last-child').textContent = 'Análise de fechamento IA'; }
+  }
+}
+
 function bindPainelOperadorEvents() {
   document.querySelectorAll('[data-po-tab]').forEach((button) => {
     button.addEventListener('click', () => poSetActiveTab(button.dataset.poTab));
@@ -3132,6 +3157,7 @@ function bindPainelOperadorEvents() {
     await poRunAction('Processamento Limites/CV', () => j(`${API}/painel-operador/technical-monitor/process`, {method: 'POST'}));
     if (painelOperadorState.activeTab === 'technical') await loadPainelOperadorTechnical();
   });
+  poEl('poAnalyzeClosingWithAI')?.addEventListener('click', analyzeClosingWithAI);
   poEl('poValidateSourcesBtn')?.addEventListener('click', () => loadPainelOperadorIngestion(true));
   poEl('poReloadSourcesBtn')?.addEventListener('click', () => loadPainelOperadorIngestion(false));
   poEl('poPanelIngestion')?.addEventListener('click', (event) => {

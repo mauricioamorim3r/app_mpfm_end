@@ -56,3 +56,17 @@ output/
 test-results/
 *.xlsx
 *.xls
+
+# Temporary / debug scripts
+tmp_*.py
+scripts/tmp_*.py
+scripts/_debug_*
+scripts/_inspect_*
+scripts/_check_*
+scripts/temp/*.py
+.pytest_cache/
+htmlcov/
+*.db-journal
+Untitled-*.md
+*.tmp
+.tmp_*.txt

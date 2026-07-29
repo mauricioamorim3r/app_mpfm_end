@@ -1,4 +1,9 @@
 'use strict';
+
+function mainEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 const state = {
   queue: [],
   mpfmRows: [],
@@ -60,8 +65,51 @@ const PAGE_SUBTITLES = {
   twin:'Sinóptico operacional com assets do Twin MPFM e dados reais do run de reconciliação',
   assistente:'Chat técnico com IA especialista em sistemas de medição multifásica',
 };
+
+// ── Lazy loading de páginas ─────────────────────────────────────────────────
+const PAGE_SCRIPT_MAP = {
+  upload:           { scripts: ['/static/app.upload.js'], check: () => typeof loadProcessHistory === 'function' },
+  mpfm:             { scripts: ['/static/app.mpfm.js'], check: () => typeof loadMPFM === 'function' },
+  monitoramento:    { scripts: ['/static/app.monitoring.js'], check: () => typeof loadMonitoring === 'function' },
+  cards:            { scripts: ['/static/app.cards.js'], check: () => typeof loadCards === 'function' },
+  graficos:         { scripts: ['/static/app.charts.js'], check: () => typeof loadChartsPage === 'function' },
+  xml042:           { scripts: ['/static/app.xml042.js'], check: () => typeof loadXml042Page === 'function' },
+  relatorios:       { scripts: ['/static/app.monthly_reports.js'], check: () => typeof loadMonthlyReportsPage === 'function' },
+  separador:        { scripts: ['/static/app.sep.js'], check: () => typeof loadSep === 'function' },
+  alertas:          { scripts: ['/static/app.alarme.js'], check: () => typeof loadAlarmWorkspace === 'function' },
+  'painel-operador':{ scripts: ['/static/app.painel_operador.js', '/static/app.painel_operador_help.js'], check: () => typeof loadPainelOperador === 'function' },
+  cadastro:         { scripts: ['/static/app.cadastro.js'], check: () => typeof loadCadastro === 'function' },
+  sgmfm:            { scripts: ['/static/app.sgmfm.js'], check: () => typeof loadSGMFM === 'function' },
+  recon:            { scripts: ['/static/app.recon.js'], check: () => typeof loadRecon === 'function' },
+  fluxo:            { scripts: ['/static/app.methodology_flow.js'], check: () => typeof loadMethodologyFlow === 'function' },
+  twin:             { scripts: ['/static/app.twin.js', '/static/app.dynamic_diagrams.js'], check: () => typeof loadTwinMPFM === 'function' },
+  assistente:       { scripts: ['/static/app.ai.js'], check: () => typeof loadAiPage === 'function' },
+};
+
+function loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src^="${src}"]`)) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+    document.head.appendChild(s);
+  });
+}
+
+async function ensurePageScripts(name) {
+  const cfg = PAGE_SCRIPT_MAP[name];
+  if (!cfg) return true;
+  if (cfg.check()) return true;
+  await Promise.all(cfg.scripts.map(loadScriptOnce));
+  // Aguarda próximo tick para garantir que o script foi avaliado
+  await new Promise(r => setTimeout(r, 0));
+  return cfg.check();
+}
+
 let _currentPage = null;
-function setPage(name) {
+async function setPage(name) {
   if (name === _currentPage) return;
   _currentPage = name;
   if (window.location.hash !== `#${name}`) {
@@ -79,6 +127,19 @@ function setPage(name) {
   });
   document.getElementById('pageTitle').textContent = PAGE_TITLES[name] || name;
   document.getElementById('subtitle').textContent = PAGE_SUBTITLES[name] || '';
+
+  // Carrega scripts da página sob demanda
+  try {
+    const ok = await ensurePageScripts(name);
+    if (!ok) {
+      document.getElementById('subtitle').textContent = 'Erro ao carregar módulo da página. Recarregue a tela.';
+      return;
+    }
+  } catch (err) {
+    document.getElementById('subtitle').textContent = `Erro ao carregar módulo: ${err.message}`;
+    return;
+  }
+
   if (name === 'exportar')  loadOutputs();
   if (name === 'alertas' && typeof loadAlarmWorkspace === 'function') loadAlarmWorkspace();
   if (name === 'mpfm')       { syncGlobal(); loadMPFM(); }
@@ -128,7 +189,7 @@ async function initDates() {
     const monthOptions = months.length ? months : [fallbackMonth];
     sel.innerHTML = monthOptions.map(m => {
       const [yr, mo] = m.split('-');
-      return `<option value="${m}">${MESES[parseInt(mo)]}/${yr}</option>`;
+      return `<option value="${mainEscape(m)}">${mainEscape(MESES[parseInt(mo)])}/${mainEscape(yr)}</option>`;
     }).join('');
     sel.value = monthOptions[0]; // latest month or current month on fresh DB
   }
@@ -198,6 +259,7 @@ function markDataChanged(pages) {
 }
 
 window.notifyDataChanged = async (pages) => {
+  if (typeof invalidateApiCache === 'function') invalidateApiCache();
   markDataChanged(pages);
   await refreshActivePage();
 };
@@ -232,6 +294,9 @@ function startAutoRefresh() {
   state.refreshTimer = setInterval(async () => {
     if (!state.autoRefresh || document.visibilityState !== 'visible') return;
     if (_inFlight) return;
+    // Não atualiza se houver input focado ou modal aberto
+    if (document.querySelector('input:focus, textarea:focus, select:focus')) return;
+    if (document.querySelector('.modal.show')) return;
     _inFlight = true;
     try {
       const activePage = document.querySelector('.page.active')?.id || '';
@@ -246,7 +311,7 @@ function startAutoRefresh() {
     } finally {
       _inFlight = false;
     }
-  }, 15000);
+  }, 60000);
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && state.autoRefresh) {

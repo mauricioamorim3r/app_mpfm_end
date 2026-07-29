@@ -1,5 +1,9 @@
 'use strict';
 
+function chartEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 const CH_PAL = ['#26a0ff', '#23c16b', '#f3b33d', '#a855f7', '#06b6d4', '#ec4899', '#84cc16', '#fb923c', '#6366f1', '#22d3ee'];
 const CH_GROUP_COLORS = {
   prod: '#26a0ff',
@@ -97,7 +101,7 @@ function chartSetEmpty(message) {
     empty.style.display = 'flex';
     empty.innerHTML = `
       <span style="font-size:40px;opacity:.3">📈</span>
-      <span style="color:var(--muted);font-size:13px;text-align:center">${message || 'Sem dados para o recorte selecionado.'}</span>
+      <span style="color:var(--muted);font-size:13px;text-align:center">${chartEscape(message) || 'Sem dados para o recorte selecionado.'}</span>
     `;
   }
   if (wrap) wrap.style.display = 'none';
@@ -200,9 +204,9 @@ async function buildMetricGrid(metrics) {
     const hint = metric.has_data ? '' : '<span class="chart-metric-chip__hint">· sem dados</span>';
     const noDataClass = metric.has_data ? '' : ' sem-dados';
     return `<label class="chart-metric-chip${noDataClass}">
-      <input type="checkbox" class="cm-var" data-group="${metric.group || 'other'}" data-metric="${metric.value}" style="width:12px;height:12px;accent-color:${dot}" onchange="styleMetricChk(this)">
+      <input type="checkbox" class="cm-var" data-group="${chartEscape(metric.group || 'other')}" data-metric="${chartEscape(metric.value)}" style="width:12px;height:12px;accent-color:${dot}" onchange="styleMetricChk(this)">
       <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${dot};flex-shrink:0"></span>
-      <span>${metric.label}</span>
+      <span>${chartEscape(metric.label)}</span>
       ${hint}
     </label>`;
   }).join('');

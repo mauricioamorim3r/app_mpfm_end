@@ -1,5 +1,9 @@
 'use strict';
 
+function mrEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 function monthlyReportMonth() {
   return document.getElementById('globalMonth')?.value || '';
 }
@@ -58,7 +62,7 @@ function monthlyReportRenderGroups(groups = []) {
   if (!host) return;
   host.innerHTML = groups.map(group => `
     <div class="upload-context-card">
-      <div class="k">${group.title}</div>
+      <div class="k">${mrEscape(group.title)}</div>
       <div class="v">${group.stats?.days_with_mpfm ?? 0}</div>
       <div class="m">MPFM ${group.stats?.days_with_mpfm ?? 0} · SEP ${group.stats?.days_with_sep ?? 0} · XML ${group.stats?.days_with_xml ?? 0}</div>
     </div>
@@ -82,13 +86,13 @@ async function loadMonthlyReportsContext() {
   if (!select) return;
   const current = select.value;
   select.innerHTML = '<option value="">Escolher grupo</option>' + (d.groups || []).map(group => `
-    <option value="${group.key}"
-      data-title="${group.title}"
-      data-subsea-bank="${group.subsea_bank}"
-      data-subsea-tag="${group.subsea_tag}"
-      data-topside-bank="${group.topside_bank}"
-      data-topside-tag="${group.topside_tag}"
-    >${group.title}</option>
+    <option value="${mrEscape(group.key)}"
+      data-title="${mrEscape(group.title)}"
+      data-subsea-bank="${mrEscape(group.subsea_bank)}"
+      data-subsea-tag="${mrEscape(group.subsea_tag)}"
+      data-topside-bank="${mrEscape(group.topside_bank)}"
+      data-topside-tag="${mrEscape(group.topside_tag)}"
+    >${mrEscape(group.title)}</option>
   `).join('');
   if (current) select.value = current;
 }

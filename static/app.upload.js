@@ -1,5 +1,9 @@
 'use strict';
 
+function uploadEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 // ── UPLOAD ────────────────────────────────────────────────────────────────────
 const drop = document.getElementById('dropZone'), inp = document.getElementById('fileInput');
 let uploadQueueSeq = 0;
@@ -45,7 +49,7 @@ function addFiles(files) {
 }
 function renderQueue() {
   document.getElementById('queue').innerHTML = state.queue.map((f,i) =>
-    `<div class="file-item"><div><div>${f.name}</div><div class="muted" style="font-size:11px">${Math.max(1, Math.round((f.size || 0)/1024))} KB</div></div><button class="btn secondary sm" onclick="removeQ(${i})">✕</button></div>`
+    `<div class="file-item"><div><div>${uploadEscape(f.name)}</div><div class="muted" style="font-size:11px">${Math.max(1, Math.round((f.size || 0)/1024))} KB</div></div><button class="btn secondary sm" onclick="removeQ(${i})">✕</button></div>`
   ).join('') || '<div class="muted" style="font-size:12px;margin-top:8px">Fila vazia.</div>';
   setMainProcessingBusy(false);
 }
@@ -60,8 +64,8 @@ function renderUploadContext(historyRuns) {
   const lastMonths = (last?.months_updated || []).join(', ') || '—';
   host.innerHTML = `
     <div class="upload-context-card"><div class="k">Fila pronta</div><div class="v">${queue.length}</div><div class="m">${queuePdf} PDF · ${queueTxt} TXT aguardando processamento</div></div>
-    <div class="upload-context-card"><div class="k">Último processamento</div><div class="v">${last ? (last.started_at || '').replace('T',' ').slice(0,16) : '—'}</div><div class="m">${last ? `${last.files_count || 0} arquivo(s) · ${last.status || 'sem status'}` : 'Nenhum processamento ainda'}</div></div>
-    <div class="upload-context-card"><div class="k">Meses afetados</div><div class="v">${lastMonths}</div><div class="m">Última execução registrada no histórico</div></div>
+    <div class="upload-context-card"><div class="k">Último processamento</div><div class="v">${last ? uploadEscape((last.started_at || '').replace('T',' ').slice(0,16)) : '—'}</div><div class="m">${last ? `${last.files_count || 0} arquivo(s) · ${uploadEscape(last.status || 'sem status')}` : 'Nenhum processamento ainda'}</div></div>
+    <div class="upload-context-card"><div class="k">Meses afetados</div><div class="v">${uploadEscape(lastMonths)}</div><div class="m">Última execução registrada no histórico</div></div>
   `;
 }
 
@@ -157,18 +161,18 @@ async function loadProcessHistory() {
       el.innerHTML = '<div class="muted" style="font-size:12px;padding:8px 0">Nenhum processamento registrado ainda.</div>';
     } else {
       el.innerHTML = runs.map(r => {
-        const dt = r.started_at ? r.started_at.replace('T',' ').slice(0,16) : '—';
-        const months = (r.months_updated||[]).join(', ') || '—';
+        const dt = r.started_at ? uploadEscape(r.started_at.replace('T',' ').slice(0,16)) : '—';
+        const months = uploadEscape((r.months_updated||[]).join(', ') || '—');
         const srcIcon = r.source_type === 'upload' ? '↑' : '📁';
         const ok = r.files?.filter(f => f.processed_ok).length || 0;
         const nok = (r.files?.length||0) - ok;
         const fileTypes = {};
         (r.files||[]).forEach(f => { fileTypes[f.file_type] = (fileTypes[f.file_type]||0)+1; });
-        const typeSummary = Object.entries(fileTypes).map(([k,n]) => `${n}×${k}`).join(', ');
+        const typeSummary = uploadEscape(Object.entries(fileTypes).map(([k,n]) => `${n}×${k}`).join(', '));
         return `<div style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px">
           <div class="row" style="justify-content:space-between;margin-bottom:4px">
             <div style="font-size:12px;font-weight:600">${srcIcon} ${dt}
-              <span class="muted" style="font-weight:400;margin-left:8px">${r.source_ref||''}</span>
+              <span class="muted" style="font-weight:400;margin-left:8px">${uploadEscape(r.source_ref||'')}</span>
             </div>
             <div>${badge(r.status||'ok')}</div>
           </div>
