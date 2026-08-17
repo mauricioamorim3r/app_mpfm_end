@@ -1,0 +1,1873 @@
+- generic [ref=f8e1]:
+  - banner [ref=f8e2]:
+    - generic [ref=f8e3]:
+      - generic "Logo do sistema multifásico" [ref=f8e4]:
+        - img "Logo do sistema multifásico" [ref=f8e5]
+      - generic [ref=f8e6]:
+        - generic [ref=f8e7]: Metering Management | Bacalhau
+        - heading "Relatório de Monitoramento Multifásico" [level=1] [ref=f8e8]
+        - generic [ref=f8e9]: "Gerado em 13/08/2026 12:16:17 | Janela: 06/08/2026, 07/08/2026, 08/08/2026, 09/08/2026, 10/08/2026, 11/08/2026 | Dias processados: 06/08/2026, 07/08/2026, 08/08/2026, 09/08/2026, 10/08/2026, 11/08/2026 | SEP: fonte independente"
+    - generic [ref=f8e10]: Base Única carregada
+  - main [ref=f8e11]:
+    - tablist "Seções do dashboard" [ref=f8e12]:
+      - text: MONITORAMENTO
+      - tab "Visão integrada" [selected] [ref=f8e13] [cursor=pointer]
+      - tab "Comparações" [ref=f8e14] [cursor=pointer]
+      - tab "Separador" [ref=f8e15] [cursor=pointer]
+      - tab "Cobertura" [ref=f8e16] [cursor=pointer]
+      - tab "PI Vision" [ref=f8e17] [cursor=pointer]
+      - tab "Alarmes/eventos" [ref=f8e18] [cursor=pointer]
+      - tab "Detalhes" [ref=f8e19] [cursor=pointer]
+      - tab "Cadeia do dado" [ref=f8e20] [cursor=pointer]
+      - tab "Fontes de dados" [ref=f8e21] [cursor=pointer]
+      - tab "Validação final" [ref=f8e22] [cursor=pointer]
+      - tab "XML 042 (ANP)" [ref=f8e23] [cursor=pointer]
+    - tabpanel [ref=f8e24]:
+      - heading "Visão Integrada do MPFM" [level=2] [ref=f8e25]
+      - generic [ref=f8e26]:
+        - generic [ref=f8e27]: Visão para decisão
+        - generic [ref=f8e28]: Um dia usa dados horários; janelas maiores usam a consolidação diária. Campos ausentes aparecem como “Sem dado”.
+      - generic [ref=f8e29]:
+        - generic [ref=f8e30]:
+          - text: Data inicial
+          - combobox "Data inicial" [ref=f8e31]:
+            - option "06/08/2026" [selected]
+            - option "07/08/2026"
+            - option "08/08/2026"
+            - option "09/08/2026"
+            - option "10/08/2026"
+            - option "11/08/2026"
+        - generic [ref=f8e32]:
+          - text: Data final
+          - combobox "Data final" [ref=f8e33]:
+            - option "06/08/2026"
+            - option "07/08/2026"
+            - option "08/08/2026"
+            - option "09/08/2026"
+            - option "10/08/2026"
+            - option "11/08/2026" [selected]
+        - generic [ref=f8e34]:
+          - text: Tipo
+          - combobox "Tipo" [ref=f8e35]:
+            - option "Todos" [selected]
+            - option "Subsea"
+            - option "Topside"
+        - generic [ref=f8e36]:
+          - text: Ponto de medição
+          - combobox "Ponto de medição" [ref=f8e37]:
+            - option "Todos" [selected]
+            - option "Poço PE-02 (PE_2 · B10)"
+            - option "Poço PE-04 (18FT1506 · B05)"
+            - option "Poço PE-EO105 (18FT1706 · B05)"
+            - option "Poço PW-104 (PW-104DA · B15)"
+            - option "Riser P2 (Riser_P2 · B08)"
+            - option "Riser P3 (Riser_P3 · B13)"
+            - option "Riser P4 (Riser_P4 · B13)"
+            - option "Riser P5 (Riser_P5 · B03)"
+        - generic [ref=f8e38]:
+          - text: Par físico
+          - combobox "Par físico" [ref=f8e39]:
+            - option "Todos os pares" [selected]
+            - option "PE-02 × Riser P2"
+            - option "PE-04 × Riser P5"
+            - option "PW-104 × Riser P4"
+        - generic [ref=f8e40]:
+          - text: Variável 1
+          - combobox "Variável 1" [ref=f8e41]:
+            - option "Massa total corrigida (t)"
+            - option "HC corrigida (t)"
+            - option "Óleo corrigido (t)" [selected]
+            - option "Gás corrigido (t)"
+            - option "Água corrigida (t)"
+            - option "Volume óleo padrão (m³)"
+            - option "Volume gás padrão (Sm³)"
+            - option "Volume água padrão (m³)"
+        - generic [ref=f8e42]:
+          - text: Variável 2
+          - combobox "Variável 2" [ref=f8e43]:
+            - option "— nenhuma —"
+            - option "Massa total corrigida (t)"
+            - option "HC corrigida (t)"
+            - option "Óleo corrigido (t)"
+            - option "Gás corrigido (t)"
+            - option "Água corrigida (t)"
+            - option "Volume óleo padrão (m³)" [selected]
+            - option "Volume gás padrão (Sm³)"
+            - option "Volume água padrão (m³)"
+        - generic [ref=f8e44]:
+          - text: Busca na tabela
+          - searchbox "Busca na tabela" [ref=f8e45]
+      - generic [ref=f8e46]:
+        - generic [ref=f8e47]:
+          - generic [ref=f8e48]:
+            - generic [ref=f8e49]:
+              - text: Resumo estatístico da janela
+              - heading "MPFM Topside" [level=3] [ref=f8e50]
+            - generic [ref=f8e51]: 4 medidor(es) com produção · 20 registros · 20 com status PI informado
+          - generic [ref=f8e52]:
+            - article [ref=f8e53]:
+              - generic [ref=f8e54]: Pressão média
+              - generic [ref=f8e55]: 75,3 barg
+              - emphasis [ref=f8e56]: processo
+            - article [ref=f8e57]:
+              - generic [ref=f8e58]: Temperatura média
+              - generic [ref=f8e59]: 51,8 °C
+              - emphasis [ref=f8e60]: processo
+            - article [ref=f8e61]:
+              - generic [ref=f8e62]: GVF médio
+              - generic [ref=f8e63]: 82,0 %
+              - emphasis [ref=f8e64]: PI/Comparativo
+            - article [ref=f8e65]:
+              - generic [ref=f8e66]: WLR médio
+              - generic [ref=f8e67]: 31,29 %
+              - emphasis [ref=f8e68]: PI/Comparativo
+            - article [ref=f8e69]:
+              - generic [ref=f8e70]: GOR médio
+              - generic [ref=f8e71]: 337,365 Sm³/m³
+              - emphasis [ref=f8e72]: "calculado: gás padrão ÷ óleo padrão"
+            - article [ref=f8e73]:
+              - generic [ref=f8e74]: Reconciliação
+              - generic [ref=f8e75]: 20/20
+              - emphasis [ref=f8e76]: pontos com cobertura OK
+          - generic [ref=f8e77]:
+            - generic [ref=f8e78]: "Fase contínua: Sem dado"
+            - generic [ref=f8e79]: "Modo de cálculo: Auto Switch=0.0"
+        - generic [ref=f8e80]:
+          - generic [ref=f8e81]:
+            - generic [ref=f8e82]:
+              - text: Resumo estatístico da janela
+              - heading "MPFM Subsea" [level=3] [ref=f8e83]
+            - generic [ref=f8e84]: 4 medidor(es) com produção · 18 registros · 18 com status PI informado
+          - generic [ref=f8e85]:
+            - article [ref=f8e86]:
+              - generic [ref=f8e87]: Pressão média
+              - generic [ref=f8e88]: 498,0 barg
+              - emphasis [ref=f8e89]: ATENÇÃO · acima de 490 barg / ponto de bolha
+            - article [ref=f8e90]:
+              - generic [ref=f8e91]: Temperatura média
+              - generic [ref=f8e92]: 72,7 °C
+              - emphasis [ref=f8e93]: processo
+            - article [ref=f8e94]:
+              - generic [ref=f8e95]: GVF médio
+              - generic [ref=f8e96]: 1,7 %
+              - emphasis [ref=f8e97]: PI/Comparativo
+            - article [ref=f8e98]:
+              - generic [ref=f8e99]: WLR médio
+              - generic [ref=f8e100]: 3,07 %
+              - emphasis [ref=f8e101]: PI/Comparativo
+            - article [ref=f8e102]:
+              - generic [ref=f8e103]: GOR médio
+              - generic [ref=f8e104]: 330,719 Sm³/m³
+              - emphasis [ref=f8e105]: "calculado: gás padrão ÷ óleo padrão"
+            - article [ref=f8e106]:
+              - generic [ref=f8e107]: Reconciliação
+              - generic [ref=f8e108]: 18/18
+              - emphasis [ref=f8e109]: pontos com cobertura OK
+          - generic [ref=f8e110]:
+            - generic [ref=f8e111]: "Fase contínua: Oil=0.0; Water=0.0 · Oil=1.0; Water=0.0"
+            - generic [ref=f8e112]: "Modo de cálculo: Multiphase=0.0; Wet Gas=0.0; Auto Switch=0.0 · Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0"
+        - generic [ref=f8e113]: "Separador de Testes: fonte independente. Não entra na contagem, médias, reconciliação ou KPIs acima."
+      - generic [ref=f8e114]:
+        - generic [ref=f8e115]:
+          - generic [ref=f8e116]:
+            - text: Comparações físicas
+            - heading "Subsea × Topside" [level=3] [ref=f8e117]
+          - generic [ref=f8e118]: desvio = (Subsea corrigido − Topside) / Topside × 100
+        - generic [ref=f8e119]:
+          - button "PE-04 × Riser P5 HC Suprimido REFERÊNCIA PRÓXIMA DE ZERO (transiente) Total Suprimido REFERÊNCIA PRÓXIMA DE ZERO (transiente) 10/08/2026 NÃO CLASSIFICÁVEL" [ref=f8e120] [cursor=pointer]:
+            - generic [ref=f8e121]: PE-04 × Riser P5
+            - generic [ref=f8e122]:
+              - generic [ref=f8e123]: HC Suprimido
+              - generic [ref=f8e124]: REFERÊNCIA PRÓXIMA DE ZERO (transiente)
+            - generic [ref=f8e125]:
+              - generic [ref=f8e126]: Total Suprimido
+              - generic [ref=f8e127]: REFERÊNCIA PRÓXIMA DE ZERO (transiente)
+            - emphasis [ref=f8e128]: 10/08/2026
+            - text: NÃO CLASSIFICÁVEL
+          - button "PE-02 × Riser P2 HC -2,33% limite ±10% Total -2,39% limite ±7% 11/08/2026" [ref=f8e129] [cursor=pointer]:
+            - generic [ref=f8e130]: PE-02 × Riser P2
+            - generic [ref=f8e131]:
+              - generic [ref=f8e132]: HC -2,33%
+              - generic [ref=f8e133]: limite ±10%
+            - generic [ref=f8e134]:
+              - generic [ref=f8e135]: Total -2,39%
+              - generic [ref=f8e136]: limite ±7%
+            - emphasis [ref=f8e137]: 11/08/2026
+          - button "PW-104 × Riser P4 HC 79,56% limite ±10% Total 79,47% limite ±7% 11/08/2026 NÃO CONFORME" [ref=f8e138] [cursor=pointer]:
+            - generic [ref=f8e139]: PW-104 × Riser P4
+            - generic [ref=f8e140]:
+              - generic [ref=f8e141]: HC 79,56%
+              - generic [ref=f8e142]: limite ±10%
+            - generic [ref=f8e143]:
+              - generic [ref=f8e144]: Total 79,47%
+              - generic [ref=f8e145]: limite ±7%
+            - emphasis [ref=f8e146]: 11/08/2026
+            - text: NÃO CONFORME
+      - generic [ref=f8e147]:
+        - generic [ref=f8e148]:
+          - generic [ref=f8e149]: Topside e Subsea são apresentados separadamente.
+          - text: O total não soma grupos físicos distintos. O Separador de Testes é referência independente e nunca entra na soma dos MPFMs.
+        - generic [ref=f8e150]:
+          - heading "MPFM Topside" [level=3] [ref=f8e151]
+          - paragraph [ref=f8e152]: 4 ponto(s) medido(s) no filtro atual
+          - generic [ref=f8e153]:
+            - generic [ref=f8e154]:
+              - generic [ref=f8e155]: Corrigidos
+              - generic [ref=f8e156]:
+                - generic [ref=f8e157]:
+                  - generic [ref=f8e158]: HC corrigido
+                  - generic [ref=f8e159]: 78.107,8 t
+                - generic [ref=f8e160]:
+                  - generic [ref=f8e161]: Total corrigido
+                  - generic [ref=f8e162]: 78.130,4 t
+              - generic [ref=f8e163]: HC = óleo + gás · Total = óleo + gás + água
+            - generic [ref=f8e164]:
+              - generic [ref=f8e165]: Massas por fase
+              - generic [ref=f8e166]:
+                - generic [ref=f8e167]:
+                  - generic [ref=f8e168]: Óleo
+                  - generic [ref=f8e169]: 63.313,7 t
+                - generic [ref=f8e170]:
+                  - generic [ref=f8e171]: Gás
+                  - generic [ref=f8e172]: 14.807,4 t
+                - generic [ref=f8e173]:
+                  - generic [ref=f8e174]: Água
+                  - generic [ref=f8e175]: 9,27 t
+              - generic [ref=f8e176]: massas corrigidas
+            - generic [ref=f8e177]:
+              - generic [ref=f8e178]: Volumes por fase
+              - generic [ref=f8e179]:
+                - generic [ref=f8e180]:
+                  - generic [ref=f8e181]: Óleo
+                  - generic [ref=f8e182]: 68.594,2 m³
+                - generic [ref=f8e183]:
+                  - generic [ref=f8e184]: Gás
+                  - generic [ref=f8e185]: 23.141.273 Sm³
+                - generic [ref=f8e186]:
+                  - generic [ref=f8e187]: Água
+                  - generic [ref=f8e188]: 7,48 m³
+              - generic [ref=f8e189]: 20 °C | 1 atm
+          - group [ref=f8e190]:
+            - generic "Validar registros usados nestes consolidados" [ref=f8e191] [cursor=pointer]
+            - text: ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕
+        - generic [ref=f8e192]:
+          - heading "MPFM Subsea" [level=3] [ref=f8e193]
+          - paragraph [ref=f8e194]: 4 ponto(s) medido(s) no filtro atual
+          - generic [ref=f8e195]:
+            - generic [ref=f8e196]:
+              - generic [ref=f8e197]: Corrigidos
+              - generic [ref=f8e198]:
+                - generic [ref=f8e199]:
+                  - generic [ref=f8e200]: HC corrigido
+                  - generic [ref=f8e201]: 93.239,5 t
+                - generic [ref=f8e202]:
+                  - generic [ref=f8e203]: Total corrigido
+                  - generic [ref=f8e204]: 94.116,0 t
+              - generic [ref=f8e205]: HC = óleo + gás · Total = óleo + gás + água
+            - generic [ref=f8e206]:
+              - generic [ref=f8e207]: Massas por fase
+              - generic [ref=f8e208]:
+                - generic [ref=f8e209]:
+                  - generic [ref=f8e210]: Óleo
+                  - generic [ref=f8e211]: 90.193,7 t
+                - generic [ref=f8e212]:
+                  - generic [ref=f8e213]: Gás
+                  - generic [ref=f8e214]: 3.018,7 t
+                - generic [ref=f8e215]:
+                  - generic [ref=f8e216]: Água
+                  - generic [ref=f8e217]: 903,71 t
+              - generic [ref=f8e218]: massas corrigidas
+            - generic [ref=f8e219]:
+              - generic [ref=f8e220]: Volumes por fase
+              - generic [ref=f8e221]:
+                - generic [ref=f8e222]:
+                  - generic [ref=f8e223]: Óleo
+                  - generic [ref=f8e224]: 81.196,6 m³
+                - generic [ref=f8e225]:
+                  - generic [ref=f8e226]: Gás
+                  - generic [ref=f8e227]: 26.853.267 Sm³
+                - generic [ref=f8e228]:
+                  - generic [ref=f8e229]: Água
+                  - generic [ref=f8e230]: 779,44 m³
+              - generic [ref=f8e231]: 20 °C | 1 atm
+          - group [ref=f8e232]:
+            - generic "Validar registros usados nestes consolidados" [ref=f8e233] [cursor=pointer]
+            - text: ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕
+        - generic [ref=f8e234]:
+          - heading "Separador de Testes" [level=3] [ref=f8e235]
+          - paragraph [ref=f8e236]: 1 medidor(es) no período — não somado aos MPFMs
+          - generic [ref=f8e237]:
+            - generic [ref=f8e238]:
+              - generic [ref=f8e239]: Corrigidos
+              - generic [ref=f8e240]:
+                - generic [ref=f8e241]:
+                  - generic [ref=f8e242]: HC corrigido
+                  - generic [ref=f8e243]: 38.976,1 t
+                - generic [ref=f8e244]:
+                  - generic [ref=f8e245]: Total corrigido
+                  - generic [ref=f8e246]: 39.232,4 t
+              - generic [ref=f8e247]: HC = óleo + gás · Total = óleo + gás + água
+            - generic [ref=f8e248]:
+              - generic [ref=f8e249]: Massas por fase
+              - generic [ref=f8e250]:
+                - generic [ref=f8e251]:
+                  - generic [ref=f8e252]: Óleo
+                  - generic [ref=f8e253]: 32.530,7 t
+                - generic [ref=f8e254]:
+                  - generic [ref=f8e255]: Gás
+                  - generic [ref=f8e256]: 6.445,4 t
+                - generic [ref=f8e257]:
+                  - generic [ref=f8e258]: Água
+                  - generic [ref=f8e259]: 256,27 t
+              - generic [ref=f8e260]: massas corrigidas
+            - generic [ref=f8e261]:
+              - generic [ref=f8e262]: Volumes por fase
+              - generic [ref=f8e263]:
+                - generic [ref=f8e264]:
+                  - generic [ref=f8e265]: Óleo
+                  - generic [ref=f8e266]: 37.464,8 m³
+                - generic [ref=f8e267]:
+                  - generic [ref=f8e268]: Gás
+                  - generic [ref=f8e269]: 7.942.212 Sm³
+                - generic [ref=f8e270]:
+                  - generic [ref=f8e271]: Água
+                  - generic [ref=f8e272]: 256,72 m³
+              - generic [ref=f8e273]: 20 °C | 1 atm
+          - group [ref=f8e274]:
+            - generic "Validar registros usados nestes consolidados" [ref=f8e275] [cursor=pointer]
+            - text: ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕
+      - generic [ref=f8e276]:
+        - generic [ref=f8e277]:
+          - heading "Evolução diária por ponto de medição" [level=3] [ref=f8e278]
+          - generic [ref=f8e279]:
+            - button "Riser P5" [pressed] [ref=f8e280] [cursor=pointer]
+            - button "Poço PE-04" [pressed] [ref=f8e282] [cursor=pointer]
+            - button "Poço PE-EO105" [pressed] [ref=f8e284] [cursor=pointer]
+            - button "Riser P2" [pressed] [ref=f8e286] [cursor=pointer]
+            - button "Poço PE-02" [pressed] [ref=f8e288] [cursor=pointer]
+            - button "Riser P3" [pressed] [ref=f8e290] [cursor=pointer]
+            - button "Riser P4" [pressed] [ref=f8e292] [cursor=pointer]
+            - button "Poço PW-104" [pressed] [ref=f8e294] [cursor=pointer]
+            - generic [ref=f8e296]: "traço contínuo: Óleo corrigido (t) (eixo esq.) · tracejado: Volume óleo padrão (m³) (eixo dir.)"
+          - generic [ref=f8e298]:
+            - button "−" [ref=f8e299] [cursor=pointer]
+            - spinbutton "Percentual de zoom" [ref=f8e300]: "100"
+            - button "+" [ref=f8e301] [cursor=pointer]
+          - generic [ref=f8e302]:
+            - img "Evolução por ponto de medição" [ref=f8e303]:
+              - generic [ref=f8e304]: 0,0
+              - generic [ref=f8e305]: 0,0
+              - generic [ref=f8e306]: 2.268,7
+              - generic [ref=f8e307]: 2.406,4
+              - generic [ref=f8e308]: 4.537,3
+              - generic [ref=f8e309]: 4.812,9
+              - generic [ref=f8e310]: 6.806,0
+              - generic [ref=f8e311]: 7.219,3
+              - generic [ref=f8e312]: 9.074,7
+              - generic [ref=f8e313]: 9.625,7
+              - generic [ref=f8e314]: Óleo corrigido (t) × Volume óleo padrão (m³)
+              - 'generic "Riser P5 | 06/08/2026 | Óleo corrigido (t): 6.557,08" [ref=f8e316]'
+              - 'generic "Riser P5 | 07/08/2026 | Óleo corrigido (t): 6.444,03" [ref=f8e317]'
+              - 'generic "Riser P5 | 08/08/2026 | Óleo corrigido (t): 4.165,38" [ref=f8e318]'
+              - 'generic "Riser P5 | 09/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e319]'
+              - 'generic "Riser P5 | 10/08/2026 | Óleo corrigido (t): 0,12" [ref=f8e320]'
+              - 'generic "Riser P5 | 11/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e321]'
+              - 'generic "Poço PE-04 | 06/08/2026 | Óleo corrigido (t): 8.689,92" [ref=f8e323]'
+              - 'generic "Poço PE-04 | 07/08/2026 | Óleo corrigido (t): 8.532,09" [ref=f8e324]'
+              - 'generic "Poço PE-04 | 08/08/2026 | Óleo corrigido (t): 5.497,93" [ref=f8e325]'
+              - 'generic "Poço PE-04 | 09/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e326]'
+              - 'generic "Poço PE-04 | 10/08/2026 | Óleo corrigido (t): 2.694,14" [ref=f8e327]'
+              - 'generic "Poço PE-04 | 11/08/2026 | Óleo corrigido (t): 2.154,99" [ref=f8e328]'
+              - 'generic "Poço PE-EO105 | 06/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e330]'
+              - 'generic "Poço PE-EO105 | 07/08/2026 | Óleo corrigido (t): 460,53" [ref=f8e331]'
+              - 'generic "Poço PE-EO105 | 08/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e332]'
+              - 'generic "Poço PE-EO105 | 09/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e333]'
+              - 'generic "Poço PE-EO105 | 10/08/2026 | Óleo corrigido (t): 66,35" [ref=f8e334]'
+              - 'generic "Poço PE-EO105 | 11/08/2026 | Óleo corrigido (t): 4.368,08" [ref=f8e335]'
+              - 'generic "Riser P2 | 06/08/2026 | Óleo corrigido (t): 7.223,18" [ref=f8e337]'
+              - 'generic "Riser P2 | 07/08/2026 | Óleo corrigido (t): 7.177,66" [ref=f8e338]'
+              - 'generic "Riser P2 | 08/08/2026 | Óleo corrigido (t): 4.665,82" [ref=f8e339]'
+              - 'generic "Riser P2 | 09/08/2026 | Óleo corrigido (t): 1.518,63" [ref=f8e340]'
+              - 'generic "Riser P2 | 10/08/2026 | Óleo corrigido (t): 8.152,80" [ref=f8e341]'
+              - 'generic "Riser P2 | 11/08/2026 | Óleo corrigido (t): 5.585,82" [ref=f8e342]'
+              - 'generic "Poço PE-02 | 06/08/2026 | Óleo corrigido (t): 8.427,35" [ref=f8e344]'
+              - 'generic "Poço PE-02 | 07/08/2026 | Óleo corrigido (t): 8.356,01" [ref=f8e345]'
+              - 'generic "Poço PE-02 | 08/08/2026 | Óleo corrigido (t): 5.439,38" [ref=f8e346]'
+              - 'generic "Poço PE-02 | 09/08/2026 | Óleo corrigido (t): 331,90" [ref=f8e347]'
+              - 'generic "Poço PE-02 | 10/08/2026 | Óleo corrigido (t): 8.940,50" [ref=f8e348]'
+              - 'generic "Poço PE-02 | 11/08/2026 | Óleo corrigido (t): 6.483,53" [ref=f8e349]'
+              - 'generic "Riser P3 | 06/08/2026 | Óleo corrigido (t): 0,75" [ref=f8e350]'
+              - 'generic "Riser P3 | 07/08/2026 | Óleo corrigido (t): 1,09" [ref=f8e351]'
+              - 'generic "Riser P3 | 08/08/2026 | Óleo corrigido (t): 1,20" [ref=f8e352]'
+              - 'generic "Riser P3 | 09/08/2026 | Óleo corrigido (t): 0,84" [ref=f8e353]'
+              - 'generic "Riser P3 | 10/08/2026 | Óleo corrigido (t): 0,62" [ref=f8e354]'
+              - 'generic "Riser P3 | 11/08/2026 | Óleo corrigido (t): 0,65" [ref=f8e355]'
+              - 'generic "Riser P4 | 06/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e357]'
+              - 'generic "Riser P4 | 07/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e358]'
+              - 'generic "Riser P4 | 08/08/2026 | Óleo corrigido (t): 946,02" [ref=f8e359]'
+              - 'generic "Riser P4 | 09/08/2026 | Óleo corrigido (t): 1.313,49" [ref=f8e360]'
+              - 'generic "Riser P4 | 10/08/2026 | Óleo corrigido (t): 6.501,37" [ref=f8e361]'
+              - 'generic "Riser P4 | 11/08/2026 | Óleo corrigido (t): 3.057,19" [ref=f8e362]'
+              - 'generic "Poço PW-104 | 06/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e364]'
+              - 'generic "Poço PW-104 | 07/08/2026 | Óleo corrigido (t): 0,00" [ref=f8e365]'
+              - 'generic "Poço PW-104 | 08/08/2026 | Óleo corrigido (t): 1.482,13" [ref=f8e366]'
+              - 'generic "Poço PW-104 | 09/08/2026 | Óleo corrigido (t): 2.809,85" [ref=f8e367]'
+              - 'generic "Poço PW-104 | 10/08/2026 | Óleo corrigido (t): 9.074,68" [ref=f8e368]'
+              - 'generic "Poço PW-104 | 11/08/2026 | Óleo corrigido (t): 6.384,30" [ref=f8e369]'
+              - 'generic "Riser P5 | 06/08/2026 | Volume óleo padrão (m³): 7.056,23" [ref=f8e371]'
+              - 'generic "Riser P5 | 07/08/2026 | Volume óleo padrão (m³): 6.936,91" [ref=f8e372]'
+              - 'generic "Riser P5 | 08/08/2026 | Volume óleo padrão (m³): 4.485,19" [ref=f8e373]'
+              - 'generic "Riser P5 | 09/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e374]'
+              - 'generic "Riser P5 | 10/08/2026 | Volume óleo padrão (m³): 0,04" [ref=f8e375]'
+              - 'generic "Riser P5 | 11/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e376]'
+              - 'generic "Poço PE-04 | 06/08/2026 | Volume óleo padrão (m³): 7.570,80" [ref=f8e378]'
+              - 'generic "Poço PE-04 | 07/08/2026 | Volume óleo padrão (m³): 7.432,05" [ref=f8e379]'
+              - 'generic "Poço PE-04 | 08/08/2026 | Volume óleo padrão (m³): 4.789,08" [ref=f8e380]'
+              - 'generic "Poço PE-04 | 09/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e381]'
+              - 'generic "Poço PE-04 | 10/08/2026 | Volume óleo padrão (m³): 2.346,82" [ref=f8e382]'
+              - 'generic "Poço PE-04 | 11/08/2026 | Volume óleo padrão (m³): 1.877,15" [ref=f8e383]'
+              - 'generic "Poço PE-EO105 | 06/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e385]'
+              - 'generic "Poço PE-EO105 | 07/08/2026 | Volume óleo padrão (m³): 443,48" [ref=f8e386]'
+              - 'generic "Poço PE-EO105 | 08/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e387]'
+              - 'generic "Poço PE-EO105 | 09/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e388]'
+              - 'generic "Poço PE-EO105 | 10/08/2026 | Volume óleo padrão (m³): 58,64" [ref=f8e389]'
+              - 'generic "Poço PE-EO105 | 11/08/2026 | Volume óleo padrão (m³): 3.995,04" [ref=f8e390]'
+              - 'generic "Riser P2 | 06/08/2026 | Volume óleo padrão (m³): 7.686,52" [ref=f8e392]'
+              - 'generic "Riser P2 | 07/08/2026 | Volume óleo padrão (m³): 7.628,78" [ref=f8e393]'
+              - 'generic "Riser P2 | 08/08/2026 | Volume óleo padrão (m³): 4.962,08" [ref=f8e394]'
+              - 'generic "Riser P2 | 09/08/2026 | Volume óleo padrão (m³): 1.587,57" [ref=f8e395]'
+              - 'generic "Riser P2 | 10/08/2026 | Volume óleo padrão (m³): 9.625,72" [ref=f8e396]'
+              - 'generic "Riser P2 | 11/08/2026 | Volume óleo padrão (m³): 5.969,28" [ref=f8e397]'
+              - 'generic "Poço PE-02 | 06/08/2026 | Volume óleo padrão (m³): 7.589,19" [ref=f8e399]'
+              - 'generic "Poço PE-02 | 07/08/2026 | Volume óleo padrão (m³): 7.526,36" [ref=f8e400]'
+              - 'generic "Poço PE-02 | 08/08/2026 | Volume óleo padrão (m³): 4.940,27" [ref=f8e401]'
+              - 'generic "Poço PE-02 | 09/08/2026 | Volume óleo padrão (m³): 498,08" [ref=f8e402]'
+              - 'generic "Poço PE-02 | 10/08/2026 | Volume óleo padrão (m³): 8.113,77" [ref=f8e403]'
+              - 'generic "Poço PE-02 | 11/08/2026 | Volume óleo padrão (m³): 5.839,13" [ref=f8e404]'
+              - 'generic "Riser P3 | 06/08/2026 | Volume óleo padrão (m³): 2,47" [ref=f8e405]'
+              - 'generic "Riser P3 | 07/08/2026 | Volume óleo padrão (m³): 3,58" [ref=f8e406]'
+              - 'generic "Riser P3 | 08/08/2026 | Volume óleo padrão (m³): 4,20" [ref=f8e407]'
+              - 'generic "Riser P3 | 09/08/2026 | Volume óleo padrão (m³): 2,67" [ref=f8e408]'
+              - 'generic "Riser P3 | 10/08/2026 | Volume óleo padrão (m³): 1,94" [ref=f8e409]'
+              - 'generic "Riser P3 | 11/08/2026 | Volume óleo padrão (m³): 1,93" [ref=f8e410]'
+              - 'generic "Riser P4 | 06/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e412]'
+              - 'generic "Riser P4 | 07/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e413]'
+              - 'generic "Riser P4 | 08/08/2026 | Volume óleo padrão (m³): 990,72" [ref=f8e414]'
+              - 'generic "Riser P4 | 09/08/2026 | Volume óleo padrão (m³): 1.392,55" [ref=f8e415]'
+              - 'generic "Riser P4 | 10/08/2026 | Volume óleo padrão (m³): 6.981,61" [ref=f8e416]'
+              - 'generic "Riser P4 | 11/08/2026 | Volume óleo padrão (m³): 3.274,23" [ref=f8e417]'
+              - 'generic "Poço PW-104 | 06/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e419]'
+              - 'generic "Poço PW-104 | 07/08/2026 | Volume óleo padrão (m³): 0,00" [ref=f8e420]'
+              - 'generic "Poço PW-104 | 08/08/2026 | Volume óleo padrão (m³): 1.343,97" [ref=f8e421]'
+              - 'generic "Poço PW-104 | 09/08/2026 | Volume óleo padrão (m³): 2.586,42" [ref=f8e422]'
+              - 'generic "Poço PW-104 | 10/08/2026 | Volume óleo padrão (m³): 8.436,05" [ref=f8e423]'
+              - 'generic "Poço PW-104 | 11/08/2026 | Volume óleo padrão (m³): 5.810,35" [ref=f8e424]'
+              - generic [ref=f8e425]: 06/08/2026
+              - generic [ref=f8e426]: 07/08/2026
+              - generic [ref=f8e427]: 08/08/2026
+              - generic [ref=f8e428]: 09/08/2026
+              - generic [ref=f8e429]: 10/08/2026
+              - generic [ref=f8e430]: 11/08/2026
+            - text: Deslize para explorar →
+        - generic [ref=f8e431]:
+          - heading "Ranking de pontos no último dia filtrado" [level=3] [ref=f8e432]
+          - generic "Variável do ranking" [ref=f8e433]:
+            - button "Massa total corrigida (t)" [ref=f8e434] [cursor=pointer]
+            - button "HC corrigida (t)" [ref=f8e435] [cursor=pointer]
+            - button "Óleo corrigido (t)" [ref=f8e436] [cursor=pointer]
+            - button "Gás corrigido (t)" [ref=f8e437] [cursor=pointer]
+            - button "Água corrigida (t)" [ref=f8e438] [cursor=pointer]
+          - generic [ref=f8e439]:
+            - button "−" [ref=f8e440] [cursor=pointer]
+            - spinbutton "Percentual de zoom" [ref=f8e441]: "100"
+            - button "+" [ref=f8e442] [cursor=pointer]
+          - generic [ref=f8e443]:
+            - img "Ranking dos pontos" [ref=f8e444]:
+              - generic [ref=f8e445]: Óleo corrigido (t) — 11/08/2026
+              - generic [ref=f8e446]: Poço PE-02
+              - generic [ref=f8e448]: 6.483,5
+              - generic [ref=f8e449]: Poço PW-104
+              - generic [ref=f8e451]: 6.384,3
+              - generic [ref=f8e452]: Riser P2
+              - generic [ref=f8e454]: 5.585,8
+              - generic [ref=f8e455]: Poço PE-EO105
+              - generic [ref=f8e457]: 4.368,1
+              - generic [ref=f8e458]: Riser P4
+              - generic [ref=f8e460]: 3.057,2
+              - generic [ref=f8e461]: Poço PE-04
+              - generic [ref=f8e463]: 2.155,0
+              - generic [ref=f8e464]: Riser P3
+              - generic [ref=f8e466]: 0,6
+              - generic [ref=f8e467]: Riser P5
+              - generic [ref=f8e469]: 0,0
+            - text: Deslize para explorar →
+      - heading "Medições por ponto" [level=3] [ref=f8e470]
+      - generic [ref=f8e471]:
+        - generic [ref=f8e472]:
+          - searchbox "Pesquisar nesta tabela" [ref=f8e473]
+          - generic [ref=f8e474]: 48 de 48 registros
+        - table [ref=f8e475]:
+          - rowgroup [ref=f8e476]:
+            - row [ref=f8e477]:
+              - columnheader "Data ↕" [ref=f8e478] [cursor=pointer]
+              - columnheader "Hora ↕" [ref=f8e479] [cursor=pointer]
+              - columnheader "Ponto ↕" [ref=f8e480] [cursor=pointer]
+              - columnheader "Tipo ↕" [ref=f8e481] [cursor=pointer]
+              - columnheader "TAG ↕" [ref=f8e482] [cursor=pointer]
+              - columnheader "Banco ↕" [ref=f8e483] [cursor=pointer]
+              - columnheader "Pressão (barg) ↕" [ref=f8e484] [cursor=pointer]
+              - columnheader "Temperatura (°C) ↕" [ref=f8e485] [cursor=pointer]
+              - columnheader "Óleo corr. (t) ↕" [ref=f8e486] [cursor=pointer]
+              - columnheader "Gás corr. (t) ↕" [ref=f8e487] [cursor=pointer]
+              - columnheader "Água corr. (t) ↕" [ref=f8e488] [cursor=pointer]
+              - columnheader "HC corr. (t) ↕" [ref=f8e489] [cursor=pointer]
+              - columnheader "Total corr. (t) ↕" [ref=f8e490] [cursor=pointer]
+              - columnheader "Óleo padrão (m³) ↕" [ref=f8e491] [cursor=pointer]
+              - columnheader "Gás padrão (Sm³) ↕" [ref=f8e492] [cursor=pointer]
+              - columnheader "Água padrão (m³) ↕" [ref=f8e493] [cursor=pointer]
+              - columnheader "GVF (%) ↕" [ref=f8e494] [cursor=pointer]
+              - columnheader "WLR (%) ↕" [ref=f8e495] [cursor=pointer]
+              - columnheader "GOR ↕" [ref=f8e496] [cursor=pointer]
+              - columnheader "Fase contínua ↕" [ref=f8e497] [cursor=pointer]
+              - columnheader "Modo de cálculo ↕" [ref=f8e498] [cursor=pointer]
+              - columnheader "Recon cobertura ↕" [ref=f8e499] [cursor=pointer]
+          - rowgroup [ref=f8e500]:
+            - row [ref=f8e501]:
+              - cell "06/08/2026" [ref=f8e502]
+              - cell "—" [ref=f8e503]
+              - cell "Riser P5" [ref=f8e504]
+              - cell "Topside" [ref=f8e505]
+              - cell "Riser_P5" [ref=f8e506]
+              - cell "B03" [ref=f8e507]
+              - cell "111,77" [ref=f8e508]
+              - cell "75,43" [ref=f8e509]
+              - cell "6.557,079" [ref=f8e510]
+              - cell "1.570,176" [ref=f8e511]
+              - cell "0,445" [ref=f8e512]
+              - cell "8.124,053" [ref=f8e513]
+              - cell "8.127,700" [ref=f8e514]
+              - cell "7.056,23" [ref=f8e515]
+              - cell "2.370.305" [ref=f8e516]
+              - cell "0,36" [ref=f8e517]
+              - cell "66,7" [ref=f8e518]
+              - cell "0,00" [ref=f8e519]
+              - cell "1,999" [ref=f8e520]
+              - cell "Sem dado" [ref=f8e521]
+              - cell "Auto Switch=0.0" [ref=f8e522]
+              - cell "OK (24/24h)" [ref=f8e523]
+            - row [ref=f8e524]:
+              - cell "06/08/2026" [ref=f8e525]
+              - cell "—" [ref=f8e526]
+              - cell "Poço PE-04" [ref=f8e527]
+              - cell "Subsea" [ref=f8e528]
+              - cell "18FT1506" [ref=f8e529]
+              - cell "B05" [ref=f8e530]
+              - cell "469,45" [ref=f8e531]
+              - cell "91,61" [ref=f8e532]
+              - cell "8.689,923" [ref=f8e533]
+              - cell "0,000" [ref=f8e534]
+              - cell "7,946" [ref=f8e535]
+              - cell "8.689,923" [ref=f8e536]
+              - cell "8.697,869" [ref=f8e537]
+              - cell "7.570,80" [ref=f8e538]
+              - cell "2.504.235" [ref=f8e539]
+              - cell "4,52" [ref=f8e540]
+              - cell "0,0" [ref=f8e541]
+              - cell "45,89" [ref=f8e542]
+              - cell "0,000" [ref=f8e543]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e544]
+              - cell "Multiphase=0.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e545]
+              - cell "OK (24/24h)" [ref=f8e546]
+            - row [ref=f8e547]:
+              - cell "06/08/2026" [ref=f8e548]
+              - cell "—" [ref=f8e549]
+              - cell "Poço PE-EO105" [ref=f8e550]
+              - cell "Subsea" [ref=f8e551]
+              - cell "18FT1706" [ref=f8e552]
+              - cell "B05" [ref=f8e553]
+              - cell "Sem dado" [ref=f8e554]
+              - cell "Sem dado" [ref=f8e555]
+              - cell "0,000" [ref=f8e556]
+              - cell "0,000" [ref=f8e557]
+              - cell "0,000" [ref=f8e558]
+              - cell "0,000" [ref=f8e559]
+              - cell "0,000" [ref=f8e560]
+              - cell "0,00" [ref=f8e561]
+              - cell "0" [ref=f8e562]
+              - cell "0,00" [ref=f8e563]
+              - cell "0,0" [ref=f8e564]
+              - cell "45,89" [ref=f8e565]
+              - cell "0,000" [ref=f8e566]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e567]
+              - cell "Multiphase=0.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e568]
+              - cell "OK (24/24h)" [ref=f8e569]
+            - row [ref=f8e570]:
+              - cell "06/08/2026" [ref=f8e571]
+              - cell "—" [ref=f8e572]
+              - cell "Riser P2" [ref=f8e573]
+              - cell "Topside" [ref=f8e574]
+              - cell "Riser_P2" [ref=f8e575]
+              - cell "B08" [ref=f8e576]
+              - cell "120,58" [ref=f8e577]
+              - cell "71,02" [ref=f8e578]
+              - cell "7.223,180" [ref=f8e579]
+              - cell "1.630,457" [ref=f8e580]
+              - cell "0,299" [ref=f8e581]
+              - cell "8.853,377" [ref=f8e582]
+              - cell "8.853,936" [ref=f8e583]
+              - cell "7.686,52" [ref=f8e584]
+              - cell "2.560.547" [ref=f8e585]
+              - cell "0,24" [ref=f8e586]
+              - cell "62,6" [ref=f8e587]
+              - cell "0,00" [ref=f8e588]
+              - cell "1,677" [ref=f8e589]
+              - cell "Sem dado" [ref=f8e590]
+              - cell "Sem dado" [ref=f8e591]
+              - cell "OK (24/24h)" [ref=f8e592]
+            - row [ref=f8e593]:
+              - cell "06/08/2026" [ref=f8e594]
+              - cell "—" [ref=f8e595]
+              - cell "Poço PE-02" [ref=f8e596]
+              - cell "Subsea" [ref=f8e597]
+              - cell "PE_2" [ref=f8e598]
+              - cell "B10" [ref=f8e599]
+              - cell "521,55" [ref=f8e600]
+              - cell "81,91" [ref=f8e601]
+              - cell "8.427,352" [ref=f8e602]
+              - cell "285,165" [ref=f8e603]
+              - cell "0,000" [ref=f8e604]
+              - cell "8.715,397" [ref=f8e605]
+              - cell "8.712,517" [ref=f8e606]
+              - cell "7.589,19" [ref=f8e607]
+              - cell "2.510.317" [ref=f8e608]
+              - cell "0,01" [ref=f8e609]
+              - cell "5,3" [ref=f8e610]
+              - cell "0,00" [ref=f8e611]
+              - cell "0,055" [ref=f8e612]
+              - cell "Oil=1.0; Water=0.0" [ref=f8e613]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e614]
+              - cell "OK (24/24h)" [ref=f8e615]
+            - row [ref=f8e616]:
+              - cell "06/08/2026" [ref=f8e617]
+              - cell "—" [ref=f8e618]
+              - cell "Riser P3" [ref=f8e619]
+              - cell "Topside" [ref=f8e620]
+              - cell "Riser_P3" [ref=f8e621]
+              - cell "B13" [ref=f8e622]
+              - cell "1,28" [ref=f8e623]
+              - cell "24,44" [ref=f8e624]
+              - cell "0,751" [ref=f8e625]
+              - cell "148,403" [ref=f8e626]
+              - cell "0,011" [ref=f8e627]
+              - cell "149,154" [ref=f8e628]
+              - cell "149,165" [ref=f8e629]
+              - cell "2,47" [ref=f8e630]
+              - cell "164.834" [ref=f8e631]
+              - cell "0,01" [ref=f8e632]
+              - cell "99,3" [ref=f8e633]
+              - cell "62,58" [ref=f8e634]
+              - cell "0,000" [ref=f8e635]
+              - cell "Sem dado" [ref=f8e636]
+              - cell "Sem dado" [ref=f8e637]
+              - cell "OK (24/24h)" [ref=f8e638]
+            - row [ref=f8e639]:
+              - cell "06/08/2026" [ref=f8e640]
+              - cell "—" [ref=f8e641]
+              - cell "Riser P4" [ref=f8e642]
+              - cell "Topside" [ref=f8e643]
+              - cell "Riser_P4" [ref=f8e644]
+              - cell "B13" [ref=f8e645]
+              - cell "Sem dado" [ref=f8e646]
+              - cell "Sem dado" [ref=f8e647]
+              - cell "0,000" [ref=f8e648]
+              - cell "0,000" [ref=f8e649]
+              - cell "0,000" [ref=f8e650]
+              - cell "0,000" [ref=f8e651]
+              - cell "0,000" [ref=f8e652]
+              - cell "0,00" [ref=f8e653]
+              - cell "0" [ref=f8e654]
+              - cell "0,00" [ref=f8e655]
+              - cell "99,3" [ref=f8e656]
+              - cell "62,58" [ref=f8e657]
+              - cell "0,000" [ref=f8e658]
+              - cell "Sem dado" [ref=f8e659]
+              - cell "Sem dado" [ref=f8e660]
+              - cell "OK (24/24h)" [ref=f8e661]
+            - row [ref=f8e662]:
+              - cell "06/08/2026" [ref=f8e663]
+              - cell "—" [ref=f8e664]
+              - cell "Poço PW-104" [ref=f8e665]
+              - cell "Subsea" [ref=f8e666]
+              - cell "PW-104DA" [ref=f8e667]
+              - cell "B15" [ref=f8e668]
+              - cell "Sem dado" [ref=f8e669]
+              - cell "Sem dado" [ref=f8e670]
+              - cell "0,000" [ref=f8e671]
+              - cell "0,000" [ref=f8e672]
+              - cell "0,000" [ref=f8e673]
+              - cell "0,000" [ref=f8e674]
+              - cell "0,000" [ref=f8e675]
+              - cell "0,00" [ref=f8e676]
+              - cell "0" [ref=f8e677]
+              - cell "0,00" [ref=f8e678]
+              - cell "0,0" [ref=f8e679]
+              - cell "0,00" [ref=f8e680]
+              - cell "0,000" [ref=f8e681]
+              - cell "Oil=1.0; Water=0.0" [ref=f8e682]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e683]
+              - cell "OK (24/24h)" [ref=f8e684]
+            - row [ref=f8e685]:
+              - cell "07/08/2026" [ref=f8e686]
+              - cell "—" [ref=f8e687]
+              - cell "Riser P5" [ref=f8e688]
+              - cell "Topside" [ref=f8e689]
+              - cell "Riser_P5" [ref=f8e690]
+              - cell "B03" [ref=f8e691]
+              - cell "110,93" [ref=f8e692]
+              - cell "75,33" [ref=f8e693]
+              - cell "6.444,029" [ref=f8e694]
+              - cell "1.545,387" [ref=f8e695]
+              - cell "0,973" [ref=f8e696]
+              - cell "7.986,234" [ref=f8e697]
+              - cell "7.990,389" [ref=f8e698]
+              - cell "6.936,91" [ref=f8e699]
+              - cell "2.329.700" [ref=f8e700]
+              - cell "0,78" [ref=f8e701]
+              - cell "67,2" [ref=f8e702]
+              - cell "0,02" [ref=f8e703]
+              - cell "2,047" [ref=f8e704]
+              - cell "Sem dado" [ref=f8e705]
+              - cell "Auto Switch=0.0" [ref=f8e706]
+              - cell "OK (24/24h)" [ref=f8e707]
+            - row [ref=f8e708]:
+              - cell "07/08/2026" [ref=f8e709]
+              - cell "—" [ref=f8e710]
+              - cell "Poço PE-04" [ref=f8e711]
+              - cell "Subsea" [ref=f8e712]
+              - cell "18FT1506" [ref=f8e713]
+              - cell "B05" [ref=f8e714]
+              - cell "473,73" [ref=f8e715]
+              - cell "91,60" [ref=f8e716]
+              - cell "8.532,093" [ref=f8e717]
+              - cell "0,000" [ref=f8e718]
+              - cell "7,791" [ref=f8e719]
+              - cell "8.532,093" [ref=f8e720]
+              - cell "8.539,885" [ref=f8e721]
+              - cell "7.432,05" [ref=f8e722]
+              - cell "2.458.338" [ref=f8e723]
+              - cell "4,52" [ref=f8e724]
+              - cell "0,0" [ref=f8e725]
+              - cell "1,08" [ref=f8e726]
+              - cell "0,000" [ref=f8e727]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e728]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e729]
+              - cell "OK (24/24h)" [ref=f8e730]
+            - row [ref=f8e731]:
+              - cell "07/08/2026" [ref=f8e732]
+              - cell "—" [ref=f8e733]
+              - cell "Poço PE-EO105" [ref=f8e734]
+              - cell "Subsea" [ref=f8e735]
+              - cell "18FT1706" [ref=f8e736]
+              - cell "B05" [ref=f8e737]
+              - cell "206,22" [ref=f8e738]
+              - cell "3,47" [ref=f8e739]
+              - cell "460,525" [ref=f8e740]
+              - cell "44,949" [ref=f8e741]
+              - cell "554,542" [ref=f8e742]
+              - cell "505,474" [ref=f8e743]
+              - cell "1.060,015" [ref=f8e744]
+              - cell "443,48" [ref=f8e745]
+              - cell "142.108" [ref=f8e746]
+              - cell "504,13" [ref=f8e747]
+              - cell "0,0" [ref=f8e748]
+              - cell "1,08" [ref=f8e749]
+              - cell "0,000" [ref=f8e750]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e751]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e752]
+              - cell "OK (24/24h)" [ref=f8e753]
+            - row [ref=f8e754]:
+              - cell "07/08/2026" [ref=f8e755]
+              - cell "—" [ref=f8e756]
+              - cell "Riser P2" [ref=f8e757]
+              - cell "Topside" [ref=f8e758]
+              - cell "Riser_P2" [ref=f8e759]
+              - cell "B08" [ref=f8e760]
+              - cell "123,17" [ref=f8e761]
+              - cell "71,11" [ref=f8e762]
+              - cell "7.177,657" [ref=f8e763]
+              - cell "1.608,324" [ref=f8e764]
+              - cell "0,252" [ref=f8e765]
+              - cell "8.785,650" [ref=f8e766]
+              - cell "8.786,233" [ref=f8e767]
+              - cell "7.628,78" [ref=f8e768]
+              - cell "2.539.754" [ref=f8e769]
+              - cell "0,21" [ref=f8e770]
+              - cell "63,4" [ref=f8e771]
+              - cell "0,00" [ref=f8e772]
+              - cell "1,730" [ref=f8e773]
+              - cell "Sem dado" [ref=f8e774]
+              - cell "Sem dado" [ref=f8e775]
+              - cell "OK (24/24h)" [ref=f8e776]
+            - row [ref=f8e777]:
+              - cell "07/08/2026" [ref=f8e778]
+              - cell "—" [ref=f8e779]
+              - cell "Poço PE-02" [ref=f8e780]
+              - cell "Subsea" [ref=f8e781]
+              - cell "PE_2" [ref=f8e782]
+              - cell "B10" [ref=f8e783]
+              - cell "522,44" [ref=f8e784]
+              - cell "81,89" [ref=f8e785]
+              - cell "8.356,005" [ref=f8e786]
+              - cell "284,392" [ref=f8e787]
+              - cell "0,000" [ref=f8e788]
+              - cell "8.643,270" [ref=f8e789]
+              - cell "8.640,397" [ref=f8e790]
+              - cell "7.526,36" [ref=f8e791]
+              - cell "2.489.537" [ref=f8e792]
+              - cell "0,01" [ref=f8e793]
+              - cell "4,7" [ref=f8e794]
+              - cell "0,00" [ref=f8e795]
+              - cell "0,049" [ref=f8e796]
+              - cell "Oil=0.0; Water=1.0" [ref=f8e797]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e798]
+              - cell "OK (24/24h)" [ref=f8e799]
+            - row [ref=f8e800]:
+              - cell "07/08/2026" [ref=f8e801]
+              - cell "—" [ref=f8e802]
+              - cell "Riser P3" [ref=f8e803]
+              - cell "Topside" [ref=f8e804]
+              - cell "Riser_P3" [ref=f8e805]
+              - cell "B13" [ref=f8e806]
+              - cell "1,08" [ref=f8e807]
+              - cell "23,96" [ref=f8e808]
+              - cell "1,092" [ref=f8e809]
+              - cell "141,898" [ref=f8e810]
+              - cell "0,020" [ref=f8e811]
+              - cell "142,990" [ref=f8e812]
+              - cell "143,010" [ref=f8e813]
+              - cell "3,58" [ref=f8e814]
+              - cell "163.682" [ref=f8e815]
+              - cell "0,02" [ref=f8e816]
+              - cell "99,3" [ref=f8e817]
+              - cell "62,58" [ref=f8e818]
+              - cell "0,000" [ref=f8e819]
+              - cell "Sem dado" [ref=f8e820]
+              - cell "Sem dado" [ref=f8e821]
+              - cell "OK (24/24h)" [ref=f8e822]
+            - row [ref=f8e823]:
+              - cell "07/08/2026" [ref=f8e824]
+              - cell "—" [ref=f8e825]
+              - cell "Riser P4" [ref=f8e826]
+              - cell "Topside" [ref=f8e827]
+              - cell "Riser_P4" [ref=f8e828]
+              - cell "B13" [ref=f8e829]
+              - cell "Sem dado" [ref=f8e830]
+              - cell "Sem dado" [ref=f8e831]
+              - cell "0,000" [ref=f8e832]
+              - cell "0,000" [ref=f8e833]
+              - cell "0,000" [ref=f8e834]
+              - cell "0,000" [ref=f8e835]
+              - cell "0,000" [ref=f8e836]
+              - cell "0,00" [ref=f8e837]
+              - cell "0" [ref=f8e838]
+              - cell "0,00" [ref=f8e839]
+              - cell "99,3" [ref=f8e840]
+              - cell "62,58" [ref=f8e841]
+              - cell "0,000" [ref=f8e842]
+              - cell "Sem dado" [ref=f8e843]
+              - cell "Sem dado" [ref=f8e844]
+              - cell "OK (24/24h)" [ref=f8e845]
+            - row [ref=f8e846]:
+              - cell "07/08/2026" [ref=f8e847]
+              - cell "—" [ref=f8e848]
+              - cell "Poço PW-104" [ref=f8e849]
+              - cell "Subsea" [ref=f8e850]
+              - cell "PW-104DA" [ref=f8e851]
+              - cell "B15" [ref=f8e852]
+              - cell "Sem dado" [ref=f8e853]
+              - cell "Sem dado" [ref=f8e854]
+              - cell "0,000" [ref=f8e855]
+              - cell "0,000" [ref=f8e856]
+              - cell "0,000" [ref=f8e857]
+              - cell "0,000" [ref=f8e858]
+              - cell "0,000" [ref=f8e859]
+              - cell "0,00" [ref=f8e860]
+              - cell "0" [ref=f8e861]
+              - cell "0,00" [ref=f8e862]
+              - cell "0,6" [ref=f8e863]
+              - cell "0,45" [ref=f8e864]
+              - cell "0,014" [ref=f8e865]
+              - cell "Oil=1.0; Water=1.0" [ref=f8e866]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e867]
+              - cell "OK (24/24h)" [ref=f8e868]
+            - row [ref=f8e869]:
+              - cell "08/08/2026" [ref=f8e870]
+              - cell "—" [ref=f8e871]
+              - cell "Riser P5" [ref=f8e872]
+              - cell "Topside" [ref=f8e873]
+              - cell "Riser_P5" [ref=f8e874]
+              - cell "B03" [ref=f8e875]
+              - cell "109,98" [ref=f8e876]
+              - cell "75,09" [ref=f8e877]
+              - cell "4.165,381" [ref=f8e878]
+              - cell "998,820" [ref=f8e879]
+              - cell "1,046" [ref=f8e880]
+              - cell "5.162,146" [ref=f8e881]
+              - cell "5.165,247" [ref=f8e882]
+              - cell "4.485,19" [ref=f8e883]
+              - cell "1.504.457" [ref=f8e884]
+              - cell "0,84" [ref=f8e885]
+              - cell "67,2" [ref=f8e886]
+              - cell "0,02" [ref=f8e887]
+              - cell "2,047" [ref=f8e888]
+              - cell "Sem dado" [ref=f8e889]
+              - cell "Auto Switch=0.0" [ref=f8e890]
+              - cell "OK (24/24h)" [ref=f8e891]
+            - row [ref=f8e892]:
+              - cell "08/08/2026" [ref=f8e893]
+              - cell "—" [ref=f8e894]
+              - cell "Poço PE-04" [ref=f8e895]
+              - cell "Subsea" [ref=f8e896]
+              - cell "18FT1506" [ref=f8e897]
+              - cell "B05" [ref=f8e898]
+              - cell "482,14" [ref=f8e899]
+              - cell "91,40" [ref=f8e900]
+              - cell "5.497,925" [ref=f8e901]
+              - cell "0,000" [ref=f8e902]
+              - cell "5,011" [ref=f8e903]
+              - cell "5.497,925" [ref=f8e904]
+              - cell "5.502,936" [ref=f8e905]
+              - cell "4.789,08" [ref=f8e906]
+              - cell "1.584.109" [ref=f8e907]
+              - cell "3,02" [ref=f8e908]
+              - cell "0,0" [ref=f8e909]
+              - cell "1,08" [ref=f8e910]
+              - cell "0,000" [ref=f8e911]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e912]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e913]
+              - cell "OK (24/24h)" [ref=f8e914]
+            - row [ref=f8e915]:
+              - cell "08/08/2026" [ref=f8e916]
+              - cell "—" [ref=f8e917]
+              - cell "Poço PE-EO105" [ref=f8e918]
+              - cell "Subsea" [ref=f8e919]
+              - cell "18FT1706" [ref=f8e920]
+              - cell "B05" [ref=f8e921]
+              - cell "Sem dado" [ref=f8e922]
+              - cell "Sem dado" [ref=f8e923]
+              - cell "0,000" [ref=f8e924]
+              - cell "0,000" [ref=f8e925]
+              - cell "0,000" [ref=f8e926]
+              - cell "0,000" [ref=f8e927]
+              - cell "0,000" [ref=f8e928]
+              - cell "0,00" [ref=f8e929]
+              - cell "0" [ref=f8e930]
+              - cell "0,00" [ref=f8e931]
+              - cell "0,0" [ref=f8e932]
+              - cell "1,08" [ref=f8e933]
+              - cell "0,000" [ref=f8e934]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e935]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e936]
+              - cell "OK (24/24h)" [ref=f8e937]
+            - row [ref=f8e938]:
+              - cell "08/08/2026" [ref=f8e939]
+              - cell "—" [ref=f8e940]
+              - cell "Riser P2" [ref=f8e941]
+              - cell "Topside" [ref=f8e942]
+              - cell "Riser_P2" [ref=f8e943]
+              - cell "B08" [ref=f8e944]
+              - cell "121,32" [ref=f8e945]
+              - cell "70,80" [ref=f8e946]
+              - cell "4.665,820" [ref=f8e947]
+              - cell "1.047,773" [ref=f8e948]
+              - cell "0,248" [ref=f8e949]
+              - cell "5.713,392" [ref=f8e950]
+              - cell "5.713,842" [ref=f8e951]
+              - cell "4.962,08" [ref=f8e952]
+              - cell "1.650.450" [ref=f8e953]
+              - cell "0,20" [ref=f8e954]
+              - cell "63,4" [ref=f8e955]
+              - cell "0,00" [ref=f8e956]
+              - cell "1,730" [ref=f8e957]
+              - cell "Sem dado" [ref=f8e958]
+              - cell "Sem dado" [ref=f8e959]
+              - cell "OK (24/24h)" [ref=f8e960]
+            - row [ref=f8e961]:
+              - cell "08/08/2026" [ref=f8e962]
+              - cell "—" [ref=f8e963]
+              - cell "Poço PE-02" [ref=f8e964]
+              - cell "Subsea" [ref=f8e965]
+              - cell "PE_2" [ref=f8e966]
+              - cell "B10" [ref=f8e967]
+              - cell "523,76" [ref=f8e968]
+              - cell "80,75" [ref=f8e969]
+              - cell "5.439,383" [ref=f8e970]
+              - cell "232,232" [ref=f8e971]
+              - cell "0,000" [ref=f8e972]
+              - cell "5.673,961" [ref=f8e973]
+              - cell "5.671,615" [ref=f8e974]
+              - cell "4.940,27" [ref=f8e975]
+              - cell "1.634.121" [ref=f8e976]
+              - cell "0,00" [ref=f8e977]
+              - cell "4,7" [ref=f8e978]
+              - cell "0,00" [ref=f8e979]
+              - cell "0,049" [ref=f8e980]
+              - cell "Oil=0.0; Water=1.0" [ref=f8e981]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e982]
+              - cell "OK (24/24h)" [ref=f8e983]
+            - row [ref=f8e984]:
+              - cell "08/08/2026" [ref=f8e985]
+              - cell "—" [ref=f8e986]
+              - cell "Riser P3" [ref=f8e987]
+              - cell "Topside" [ref=f8e988]
+              - cell "Riser_P3" [ref=f8e989]
+              - cell "B13" [ref=f8e990]
+              - cell "0,98" [ref=f8e991]
+              - cell "24,85" [ref=f8e992]
+              - cell "1,196" [ref=f8e993]
+              - cell "138,373" [ref=f8e994]
+              - cell "0,020" [ref=f8e995]
+              - cell "139,569" [ref=f8e996]
+              - cell "139,589" [ref=f8e997]
+              - cell "4,20" [ref=f8e998]
+              - cell "158.834" [ref=f8e999]
+              - cell "0,02" [ref=f8e1000]
+              - cell "99,3" [ref=f8e1001]
+              - cell "62,58" [ref=f8e1002]
+              - cell "0,000" [ref=f8e1003]
+              - cell "Sem dado" [ref=f8e1004]
+              - cell "Sem dado" [ref=f8e1005]
+              - cell "OK (24/24h)" [ref=f8e1006]
+            - row [ref=f8e1007]:
+              - cell "08/08/2026" [ref=f8e1008]
+              - cell "—" [ref=f8e1009]
+              - cell "Riser P4" [ref=f8e1010]
+              - cell "Topside" [ref=f8e1011]
+              - cell "Riser_P4" [ref=f8e1012]
+              - cell "B13" [ref=f8e1013]
+              - cell "114,90" [ref=f8e1014]
+              - cell "41,32" [ref=f8e1015]
+              - cell "946,024" [ref=f8e1016]
+              - cell "90,242" [ref=f8e1017]
+              - cell "0,013" [ref=f8e1018]
+              - cell "1.035,591" [ref=f8e1019]
+              - cell "1.036,279" [ref=f8e1020]
+              - cell "990,72" [ref=f8e1021]
+              - cell "203.285" [ref=f8e1022]
+              - cell "0,01" [ref=f8e1023]
+              - cell "99,3" [ref=f8e1024]
+              - cell "62,58" [ref=f8e1025]
+              - cell "0,000" [ref=f8e1026]
+              - cell "Sem dado" [ref=f8e1027]
+              - cell "Sem dado" [ref=f8e1028]
+              - cell "OK (24/24h)" [ref=f8e1029]
+            - row [ref=f8e1030]:
+              - cell "08/08/2026" [ref=f8e1031]
+              - cell "—" [ref=f8e1032]
+              - cell "Poço PW-104" [ref=f8e1033]
+              - cell "Subsea" [ref=f8e1034]
+              - cell "PW-104DA" [ref=f8e1035]
+              - cell "B15" [ref=f8e1036]
+              - cell "559,43" [ref=f8e1037]
+              - cell "69,81" [ref=f8e1038]
+              - cell "1.482,134" [ref=f8e1039]
+              - cell "60,765" [ref=f8e1040]
+              - cell "0,018" [ref=f8e1041]
+              - cell "1.543,477" [ref=f8e1042]
+              - cell "1.542,918" [ref=f8e1043]
+              - cell "1.343,97" [ref=f8e1044]
+              - cell "444.552" [ref=f8e1045]
+              - cell "0,02" [ref=f8e1046]
+              - cell "0,6" [ref=f8e1047]
+              - cell "0,45" [ref=f8e1048]
+              - cell "0,014" [ref=f8e1049]
+              - cell "Oil=1.0; Water=1.0" [ref=f8e1050]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1051]
+              - cell "OK (24/24h)" [ref=f8e1052]
+            - row [ref=f8e1053]:
+              - cell "09/08/2026" [ref=f8e1054]
+              - cell "—" [ref=f8e1055]
+              - cell "Riser P5" [ref=f8e1056]
+              - cell "Topside" [ref=f8e1057]
+              - cell "Riser_P5" [ref=f8e1058]
+              - cell "B03" [ref=f8e1059]
+              - cell "Sem dado" [ref=f8e1060]
+              - cell "Sem dado" [ref=f8e1061]
+              - cell "0,000" [ref=f8e1062]
+              - cell "0,000" [ref=f8e1063]
+              - cell "0,000" [ref=f8e1064]
+              - cell "0,000" [ref=f8e1065]
+              - cell "0,000" [ref=f8e1066]
+              - cell "0,00" [ref=f8e1067]
+              - cell "0" [ref=f8e1068]
+              - cell "0,00" [ref=f8e1069]
+              - cell "67,2" [ref=f8e1070]
+              - cell "0,02" [ref=f8e1071]
+              - cell "2,047" [ref=f8e1072]
+              - cell "Sem dado" [ref=f8e1073]
+              - cell "Auto Switch=0.0" [ref=f8e1074]
+              - cell "OK (24/24h)" [ref=f8e1075]
+            - row [ref=f8e1076]:
+              - cell "09/08/2026" [ref=f8e1077]
+              - cell "—" [ref=f8e1078]
+              - cell "Poço PE-04" [ref=f8e1079]
+              - cell "Subsea" [ref=f8e1080]
+              - cell "18FT1506" [ref=f8e1081]
+              - cell "B05" [ref=f8e1082]
+              - cell "Sem dado" [ref=f8e1083]
+              - cell "Sem dado" [ref=f8e1084]
+              - cell "0,000" [ref=f8e1085]
+              - cell "0,000" [ref=f8e1086]
+              - cell "0,000" [ref=f8e1087]
+              - cell "0,000" [ref=f8e1088]
+              - cell "0,000" [ref=f8e1089]
+              - cell "0,00" [ref=f8e1090]
+              - cell "0" [ref=f8e1091]
+              - cell "0,00" [ref=f8e1092]
+              - cell "0,0" [ref=f8e1093]
+              - cell "1,08" [ref=f8e1094]
+              - cell "0,000" [ref=f8e1095]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e1096]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1097]
+              - cell "OK (24/24h)" [ref=f8e1098]
+            - row [ref=f8e1099]:
+              - cell "09/08/2026" [ref=f8e1100]
+              - cell "—" [ref=f8e1101]
+              - cell "Poço PE-EO105" [ref=f8e1102]
+              - cell "Subsea" [ref=f8e1103]
+              - cell "18FT1706" [ref=f8e1104]
+              - cell "B05" [ref=f8e1105]
+              - cell "Sem dado" [ref=f8e1106]
+              - cell "Sem dado" [ref=f8e1107]
+              - cell "0,000" [ref=f8e1108]
+              - cell "0,000" [ref=f8e1109]
+              - cell "0,000" [ref=f8e1110]
+              - cell "0,000" [ref=f8e1111]
+              - cell "0,000" [ref=f8e1112]
+              - cell "0,00" [ref=f8e1113]
+              - cell "0" [ref=f8e1114]
+              - cell "0,00" [ref=f8e1115]
+              - cell "0,0" [ref=f8e1116]
+              - cell "1,08" [ref=f8e1117]
+              - cell "0,000" [ref=f8e1118]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e1119]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1120]
+              - cell "OK (24/24h)" [ref=f8e1121]
+            - row [ref=f8e1122]:
+              - cell "09/08/2026" [ref=f8e1123]
+              - cell "—" [ref=f8e1124]
+              - cell "Riser P2" [ref=f8e1125]
+              - cell "Topside" [ref=f8e1126]
+              - cell "Riser_P2" [ref=f8e1127]
+              - cell "B08" [ref=f8e1128]
+              - cell "116,60" [ref=f8e1129]
+              - cell "43,00" [ref=f8e1130]
+              - cell "1.518,625" [ref=f8e1131]
+              - cell "18,130" [ref=f8e1132]
+              - cell "0,671" [ref=f8e1133]
+              - cell "1.534,723" [ref=f8e1134]
+              - cell "1.537,426" [ref=f8e1135]
+              - cell "1.587,57" [ref=f8e1136]
+              - cell "178.508" [ref=f8e1137]
+              - cell "0,54" [ref=f8e1138]
+              - cell "63,4" [ref=f8e1139]
+              - cell "0,00" [ref=f8e1140]
+              - cell "1,730" [ref=f8e1141]
+              - cell "Sem dado" [ref=f8e1142]
+              - cell "Sem dado" [ref=f8e1143]
+              - cell "OK (24/24h)" [ref=f8e1144]
+            - row [ref=f8e1145]:
+              - cell "09/08/2026" [ref=f8e1146]
+              - cell "—" [ref=f8e1147]
+              - cell "Poço PE-02" [ref=f8e1148]
+              - cell "Subsea" [ref=f8e1149]
+              - cell "PE_2" [ref=f8e1150]
+              - cell "B10" [ref=f8e1151]
+              - cell "373,23" [ref=f8e1152]
+              - cell "30,62" [ref=f8e1153]
+              - cell "331,902" [ref=f8e1154]
+              - cell "240,190" [ref=f8e1155]
+              - cell "0,038" [ref=f8e1156]
+              - cell "574,518" [ref=f8e1157]
+              - cell "572,131" [ref=f8e1158]
+              - cell "498,08" [ref=f8e1159]
+              - cell "164.752" [ref=f8e1160]
+              - cell "0,03" [ref=f8e1161]
+              - cell "4,7" [ref=f8e1162]
+              - cell "0,00" [ref=f8e1163]
+              - cell "0,049" [ref=f8e1164]
+              - cell "Oil=0.0; Water=1.0" [ref=f8e1165]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1166]
+              - cell "OK (24/24h)" [ref=f8e1167]
+            - row [ref=f8e1168]:
+              - cell "09/08/2026" [ref=f8e1169]
+              - cell "—" [ref=f8e1170]
+              - cell "Riser P3" [ref=f8e1171]
+              - cell "Topside" [ref=f8e1172]
+              - cell "Riser_P3" [ref=f8e1173]
+              - cell "B13" [ref=f8e1174]
+              - cell "1,15" [ref=f8e1175]
+              - cell "22,74" [ref=f8e1176]
+              - cell "0,838" [ref=f8e1177]
+              - cell "143,840" [ref=f8e1178]
+              - cell "0,008" [ref=f8e1179]
+              - cell "144,678" [ref=f8e1180]
+              - cell "144,686" [ref=f8e1181]
+              - cell "2,67" [ref=f8e1182]
+              - cell "159.775" [ref=f8e1183]
+              - cell "0,01" [ref=f8e1184]
+              - cell "99,3" [ref=f8e1185]
+              - cell "62,58" [ref=f8e1186]
+              - cell "0,000" [ref=f8e1187]
+              - cell "Sem dado" [ref=f8e1188]
+              - cell "Sem dado" [ref=f8e1189]
+              - cell "OK (24/24h)" [ref=f8e1190]
+            - row [ref=f8e1191]:
+              - cell "09/08/2026" [ref=f8e1192]
+              - cell "—" [ref=f8e1193]
+              - cell "Riser P4" [ref=f8e1194]
+              - cell "Topside" [ref=f8e1195]
+              - cell "Riser_P4" [ref=f8e1196]
+              - cell "B13" [ref=f8e1197]
+              - cell "121,89" [ref=f8e1198]
+              - cell "60,09" [ref=f8e1199]
+              - cell "1.313,494" [ref=f8e1200]
+              - cell "259,422" [ref=f8e1201]
+              - cell "0,187" [ref=f8e1202]
+              - cell "1.572,703" [ref=f8e1203]
+              - cell "1.573,104" [ref=f8e1204]
+              - cell "1.392,55" [ref=f8e1205]
+              - cell "431.713" [ref=f8e1206]
+              - cell "0,15" [ref=f8e1207]
+              - cell "99,3" [ref=f8e1208]
+              - cell "62,58" [ref=f8e1209]
+              - cell "0,000" [ref=f8e1210]
+              - cell "Sem dado" [ref=f8e1211]
+              - cell "Sem dado" [ref=f8e1212]
+              - cell "OK (24/24h)" [ref=f8e1213]
+            - row [ref=f8e1214]:
+              - cell "09/08/2026" [ref=f8e1215]
+              - cell "—" [ref=f8e1216]
+              - cell "Poço PW-104" [ref=f8e1217]
+              - cell "Subsea" [ref=f8e1218]
+              - cell "PW-104DA" [ref=f8e1219]
+              - cell "B15" [ref=f8e1220]
+              - cell "491,57" [ref=f8e1221]
+              - cell "79,37" [ref=f8e1222]
+              - cell "2.809,853" [ref=f8e1223]
+              - cell "159,396" [ref=f8e1224]
+              - cell "0,135" [ref=f8e1225]
+              - cell "2.970,763" [ref=f8e1226]
+              - cell "2.969,383" [ref=f8e1227]
+              - cell "2.586,42" [ref=f8e1228]
+              - cell "855.522" [ref=f8e1229]
+              - cell "0,11" [ref=f8e1230]
+              - cell "0,6" [ref=f8e1231]
+              - cell "0,45" [ref=f8e1232]
+              - cell "0,014" [ref=f8e1233]
+              - cell "Oil=1.0; Water=1.0" [ref=f8e1234]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1235]
+              - cell "OK (24/24h)" [ref=f8e1236]
+            - row [ref=f8e1237]:
+              - cell "10/08/2026" [ref=f8e1238]
+              - cell "—" [ref=f8e1239]
+              - cell "Riser P5" [ref=f8e1240]
+              - cell "Topside" [ref=f8e1241]
+              - cell "Riser_P5" [ref=f8e1242]
+              - cell "B03" [ref=f8e1243]
+              - cell "8,95" [ref=f8e1244]
+              - cell "44,93" [ref=f8e1245]
+              - cell "0,118" [ref=f8e1246]
+              - cell "0,435" [ref=f8e1247]
+              - cell "0,037" [ref=f8e1248]
+              - cell "0,547" [ref=f8e1249]
+              - cell "0,590" [ref=f8e1250]
+              - cell "0,04" [ref=f8e1251]
+              - cell "499" [ref=f8e1252]
+              - cell "0,02" [ref=f8e1253]
+              - cell "67,2" [ref=f8e1254]
+              - cell "0,02" [ref=f8e1255]
+              - cell "2,047" [ref=f8e1256]
+              - cell "Sem dado" [ref=f8e1257]
+              - cell "Auto Switch=0.0" [ref=f8e1258]
+              - cell "OK (24/24h)" [ref=f8e1259]
+            - row [ref=f8e1260]:
+              - cell "10/08/2026" [ref=f8e1261]
+              - cell "—" [ref=f8e1262]
+              - cell "Poço PE-04" [ref=f8e1263]
+              - cell "Subsea" [ref=f8e1264]
+              - cell "18FT1506" [ref=f8e1265]
+              - cell "B05" [ref=f8e1266]
+              - cell "564,43" [ref=f8e1267]
+              - cell "82,85" [ref=f8e1268]
+              - cell "2.694,143" [ref=f8e1269]
+              - cell "0,000" [ref=f8e1270]
+              - cell "2,478" [ref=f8e1271]
+              - cell "2.694,143" [ref=f8e1272]
+              - cell "2.696,621" [ref=f8e1273]
+              - cell "2.346,82" [ref=f8e1274]
+              - cell "776.270" [ref=f8e1275]
+              - cell "1,30" [ref=f8e1276]
+              - cell "0,0" [ref=f8e1277]
+              - cell "1,08" [ref=f8e1278]
+              - cell "0,000" [ref=f8e1279]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e1280]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1281]
+              - cell "OK (24/24h)" [ref=f8e1282]
+            - row [ref=f8e1283]:
+              - cell "10/08/2026" [ref=f8e1284]
+              - cell "—" [ref=f8e1285]
+              - cell "Poço PE-EO105" [ref=f8e1286]
+              - cell "Subsea" [ref=f8e1287]
+              - cell "18FT1706" [ref=f8e1288]
+              - cell "B05" [ref=f8e1289]
+              - cell "619,10" [ref=f8e1290]
+              - cell "28,66" [ref=f8e1291]
+              - cell "66,349" [ref=f8e1292]
+              - cell "0,969" [ref=f8e1293]
+              - cell "11,877" [ref=f8e1294]
+              - cell "67,318" [ref=f8e1295]
+              - cell "79,195" [ref=f8e1296]
+              - cell "58,64" [ref=f8e1297]
+              - cell "19.396" [ref=f8e1298]
+              - cell "9,54" [ref=f8e1299]
+              - cell "0,0" [ref=f8e1300]
+              - cell "1,08" [ref=f8e1301]
+              - cell "0,000" [ref=f8e1302]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e1303]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1304]
+              - cell "OK (24/24h)" [ref=f8e1305]
+            - row [ref=f8e1306]:
+              - cell "10/08/2026" [ref=f8e1307]
+              - cell "—" [ref=f8e1308]
+              - cell "Riser P2" [ref=f8e1309]
+              - cell "Topside" [ref=f8e1310]
+              - cell "Riser_P2" [ref=f8e1311]
+              - cell "B08" [ref=f8e1312]
+              - cell "110,57" [ref=f8e1313]
+              - cell "68,16" [ref=f8e1314]
+              - cell "8.152,795" [ref=f8e1315]
+              - cell "1.761,625" [ref=f8e1316]
+              - cell "2,933" [ref=f8e1317]
+              - cell "9.913,647" [ref=f8e1318]
+              - cell "9.917,353" [ref=f8e1319]
+              - cell "9.625,72" [ref=f8e1320]
+              - cell "3.078.314" [ref=f8e1321]
+              - cell "2,36" [ref=f8e1322]
+              - cell "63,4" [ref=f8e1323]
+              - cell "0,00" [ref=f8e1324]
+              - cell "1,730" [ref=f8e1325]
+              - cell "Sem dado" [ref=f8e1326]
+              - cell "Sem dado" [ref=f8e1327]
+              - cell "OK (24/24h)" [ref=f8e1328]
+            - row [ref=f8e1329]:
+              - cell "10/08/2026" [ref=f8e1330]
+              - cell "—" [ref=f8e1331]
+              - cell "Poço PE-02" [ref=f8e1332]
+              - cell "Subsea" [ref=f8e1333]
+              - cell "PE_2" [ref=f8e1334]
+              - cell "B10" [ref=f8e1335]
+              - cell "486,91" [ref=f8e1336]
+              - cell "82,58" [ref=f8e1337]
+              - cell "8.940,497" [ref=f8e1338]
+              - cell "373,860" [ref=f8e1339]
+              - cell "0,000" [ref=f8e1340]
+              - cell "9.318,133" [ref=f8e1341]
+              - cell "9.314,357" [ref=f8e1342]
+              - cell "8.113,77" [ref=f8e1343]
+              - cell "2.683.835" [ref=f8e1344]
+              - cell "0,01" [ref=f8e1345]
+              - cell "4,7" [ref=f8e1346]
+              - cell "0,00" [ref=f8e1347]
+              - cell "0,049" [ref=f8e1348]
+              - cell "Oil=0.0; Water=1.0" [ref=f8e1349]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1350]
+              - cell "OK (24/24h)" [ref=f8e1351]
+            - row [ref=f8e1352]:
+              - cell "10/08/2026" [ref=f8e1353]
+              - cell "—" [ref=f8e1354]
+              - cell "Riser P3" [ref=f8e1355]
+              - cell "Topside" [ref=f8e1356]
+              - cell "Riser_P3" [ref=f8e1357]
+              - cell "B13" [ref=f8e1358]
+              - cell "1,21" [ref=f8e1359]
+              - cell "21,83" [ref=f8e1360]
+              - cell "0,622" [ref=f8e1361]
+              - cell "145,942" [ref=f8e1362]
+              - cell "0,004" [ref=f8e1363]
+              - cell "146,563" [ref=f8e1364]
+              - cell "146,567" [ref=f8e1365]
+              - cell "1,94" [ref=f8e1366]
+              - cell "169.414" [ref=f8e1367]
+              - cell "0,01" [ref=f8e1368]
+              - cell "99,3" [ref=f8e1369]
+              - cell "62,58" [ref=f8e1370]
+              - cell "0,000" [ref=f8e1371]
+              - cell "Sem dado" [ref=f8e1372]
+              - cell "Sem dado" [ref=f8e1373]
+              - cell "OK (24/24h)" [ref=f8e1374]
+            - row [ref=f8e1375]:
+              - cell "10/08/2026" [ref=f8e1376]
+              - cell "—" [ref=f8e1377]
+              - cell "Riser P4" [ref=f8e1378]
+              - cell "Topside" [ref=f8e1379]
+              - cell "Riser_P4" [ref=f8e1380]
+              - cell "B13" [ref=f8e1381]
+              - cell "112,31" [ref=f8e1382]
+              - cell "68,03" [ref=f8e1383]
+              - cell "6.501,369" [ref=f8e1384]
+              - cell "1.473,809" [ref=f8e1385]
+              - cell "0,002" [ref=f8e1386]
+              - cell "7.975,147" [ref=f8e1387]
+              - cell "7.975,180" [ref=f8e1388]
+              - cell "6.981,61" [ref=f8e1389]
+              - cell "2.289.479" [ref=f8e1390]
+              - cell "0,01" [ref=f8e1391]
+              - cell "99,3" [ref=f8e1392]
+              - cell "62,58" [ref=f8e1393]
+              - cell "0,000" [ref=f8e1394]
+              - cell "Sem dado" [ref=f8e1395]
+              - cell "Sem dado" [ref=f8e1396]
+              - cell "OK (24/24h)" [ref=f8e1397]
+            - row [ref=f8e1398]:
+              - cell "10/08/2026" [ref=f8e1399]
+              - cell "—" [ref=f8e1400]
+              - cell "Poço PW-104" [ref=f8e1401]
+              - cell "Subsea" [ref=f8e1402]
+              - cell "PW-104DA" [ref=f8e1403]
+              - cell "B15" [ref=f8e1404]
+              - cell "446,98" [ref=f8e1405]
+              - cell "86,19" [ref=f8e1406]
+              - cell "9.074,675" [ref=f8e1407]
+              - cell "610,056" [ref=f8e1408]
+              - cell "0,000" [ref=f8e1409]
+              - cell "9.690,526" [ref=f8e1410]
+              - cell "9.684,731" [ref=f8e1411]
+              - cell "8.436,05" [ref=f8e1412]
+              - cell "2.790.438" [ref=f8e1413]
+              - cell "0,01" [ref=f8e1414]
+              - cell "0,6" [ref=f8e1415]
+              - cell "0,45" [ref=f8e1416]
+              - cell "0,014" [ref=f8e1417]
+              - cell "Oil=1.0; Water=1.0" [ref=f8e1418]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1419]
+              - cell "OK (24/24h)" [ref=f8e1420]
+            - row [ref=f8e1421]:
+              - cell "11/08/2026" [ref=f8e1422]
+              - cell "—" [ref=f8e1423]
+              - cell "Riser P5" [ref=f8e1424]
+              - cell "Topside" [ref=f8e1425]
+              - cell "Riser_P5" [ref=f8e1426]
+              - cell "B03" [ref=f8e1427]
+              - cell "Sem dado" [ref=f8e1428]
+              - cell "Sem dado" [ref=f8e1429]
+              - cell "0,000" [ref=f8e1430]
+              - cell "0,000" [ref=f8e1431]
+              - cell "0,000" [ref=f8e1432]
+              - cell "0,000" [ref=f8e1433]
+              - cell "0,000" [ref=f8e1434]
+              - cell "0,00" [ref=f8e1435]
+              - cell "0" [ref=f8e1436]
+              - cell "0,00" [ref=f8e1437]
+              - cell "67,2" [ref=f8e1438]
+              - cell "0,02" [ref=f8e1439]
+              - cell "2,047" [ref=f8e1440]
+              - cell "Sem dado" [ref=f8e1441]
+              - cell "Auto Switch=0.0" [ref=f8e1442]
+              - cell "OK (24/24h)" [ref=f8e1443]
+            - row [ref=f8e1444]:
+              - cell "11/08/2026" [ref=f8e1445]
+              - cell "—" [ref=f8e1446]
+              - cell "Poço PE-04" [ref=f8e1447]
+              - cell "Subsea" [ref=f8e1448]
+              - cell "18FT1506" [ref=f8e1449]
+              - cell "B05" [ref=f8e1450]
+              - cell "611,63" [ref=f8e1451]
+              - cell "82,70" [ref=f8e1452]
+              - cell "2.154,991" [ref=f8e1453]
+              - cell "0,000" [ref=f8e1454]
+              - cell "1,968" [ref=f8e1455]
+              - cell "2.154,991" [ref=f8e1456]
+              - cell "2.156,959" [ref=f8e1457]
+              - cell "1.877,15" [ref=f8e1458]
+              - cell "620.915" [ref=f8e1459]
+              - cell "1,71" [ref=f8e1460]
+              - cell "0,0" [ref=f8e1461]
+              - cell "1,08" [ref=f8e1462]
+              - cell "0,000" [ref=f8e1463]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e1464]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1465]
+              - cell "OK (24/24h)" [ref=f8e1466]
+            - row [ref=f8e1467]:
+              - cell "11/08/2026" [ref=f8e1468]
+              - cell "—" [ref=f8e1469]
+              - cell "Poço PE-EO105" [ref=f8e1470]
+              - cell "Subsea" [ref=f8e1471]
+              - cell "18FT1706" [ref=f8e1472]
+              - cell "B05" [ref=f8e1473]
+              - cell "547,02" [ref=f8e1474]
+              - cell "80,47" [ref=f8e1475]
+              - cell "4.368,082" [ref=f8e1476]
+              - cell "219,443" [ref=f8e1477]
+              - cell "311,904" [ref=f8e1478]
+              - cell "4.587,525" [ref=f8e1479]
+              - cell "4.899,429" [ref=f8e1480]
+              - cell "3.995,04" [ref=f8e1481]
+              - cell "1.321.462" [ref=f8e1482]
+              - cell "250,51" [ref=f8e1483]
+              - cell "0,0" [ref=f8e1484]
+              - cell "1,08" [ref=f8e1485]
+              - cell "0,000" [ref=f8e1486]
+              - cell "Oil=0.0; Water=0.0" [ref=f8e1487]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1488]
+              - cell "OK (24/24h)" [ref=f8e1489]
+            - row [ref=f8e1490]:
+              - cell "11/08/2026" [ref=f8e1491]
+              - cell "—" [ref=f8e1492]
+              - cell "Riser P2" [ref=f8e1493]
+              - cell "Topside" [ref=f8e1494]
+              - cell "Riser_P2" [ref=f8e1495]
+              - cell "B08" [ref=f8e1496]
+              - cell "107,25" [ref=f8e1497]
+              - cell "68,00" [ref=f8e1498]
+              - cell "5.585,817" [ref=f8e1499]
+              - cell "1.279,661" [ref=f8e1500]
+              - cell "2,086" [ref=f8e1501]
+              - cell "6.865,391" [ref=f8e1502]
+              - cell "6.867,564" [ref=f8e1503]
+              - cell "5.969,28" [ref=f8e1504]
+              - cell "1.976.379" [ref=f8e1505]
+              - cell "1,68" [ref=f8e1506]
+              - cell "63,4" [ref=f8e1507]
+              - cell "0,00" [ref=f8e1508]
+              - cell "1,730" [ref=f8e1509]
+              - cell "Sem dado" [ref=f8e1510]
+              - cell "Sem dado" [ref=f8e1511]
+              - cell "OK (24/24h)" [ref=f8e1512]
+            - row [ref=f8e1513]:
+              - cell "11/08/2026" [ref=f8e1514]
+              - cell "—" [ref=f8e1515]
+              - cell "Poço PE-02" [ref=f8e1516]
+              - cell "Subsea" [ref=f8e1517]
+              - cell "PE_2" [ref=f8e1518]
+              - cell "B10" [ref=f8e1519]
+              - cell "556,65" [ref=f8e1520]
+              - cell "80,05" [ref=f8e1521]
+              - cell "6.483,527" [ref=f8e1522]
+              - cell "219,896" [ref=f8e1523]
+              - cell "0,000" [ref=f8e1524]
+              - cell "6.705,644" [ref=f8e1525]
+              - cell "6.703,423" [ref=f8e1526]
+              - cell "5.839,13" [ref=f8e1527]
+              - cell "1.931.441" [ref=f8e1528]
+              - cell "0,01" [ref=f8e1529]
+              - cell "4,7" [ref=f8e1530]
+              - cell "0,00" [ref=f8e1531]
+              - cell "0,049" [ref=f8e1532]
+              - cell "Oil=0.0; Water=1.0" [ref=f8e1533]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1534]
+              - cell "OK (24/24h)" [ref=f8e1535]
+            - row [ref=f8e1536]:
+              - cell "11/08/2026" [ref=f8e1537]
+              - cell "—" [ref=f8e1538]
+              - cell "Riser P3" [ref=f8e1539]
+              - cell "Topside" [ref=f8e1540]
+              - cell "Riser_P3" [ref=f8e1541]
+              - cell "B13" [ref=f8e1542]
+              - cell "1,17" [ref=f8e1543]
+              - cell "22,10" [ref=f8e1544]
+              - cell "0,647" [ref=f8e1545]
+              - cell "144,499" [ref=f8e1546]
+              - cell "0,004" [ref=f8e1547]
+              - cell "145,146" [ref=f8e1548]
+              - cell "145,150" [ref=f8e1549]
+              - cell "1,93" [ref=f8e1550]
+              - cell "167.607" [ref=f8e1551]
+              - cell "0,01" [ref=f8e1552]
+              - cell "99,3" [ref=f8e1553]
+              - cell "62,58" [ref=f8e1554]
+              - cell "0,000" [ref=f8e1555]
+              - cell "Sem dado" [ref=f8e1556]
+              - cell "Sem dado" [ref=f8e1557]
+              - cell "OK (24/24h)" [ref=f8e1558]
+            - row [ref=f8e1559]:
+              - cell "11/08/2026" [ref=f8e1560]
+              - cell "—" [ref=f8e1561]
+              - cell "Riser P4" [ref=f8e1562]
+              - cell "Topside" [ref=f8e1563]
+              - cell "Riser_P4" [ref=f8e1564]
+              - cell "B13" [ref=f8e1565]
+              - cell "108,93" [ref=f8e1566]
+              - cell "63,47" [ref=f8e1567]
+              - cell "3.057,185" [ref=f8e1568]
+              - cell "660,155" [ref=f8e1569]
+              - cell "0,013" [ref=f8e1570]
+              - cell "3.717,147" [ref=f8e1571]
+              - cell "3.717,353" [ref=f8e1572]
+              - cell "3.274,23" [ref=f8e1573]
+              - cell "1.043.737" [ref=f8e1574]
+              - cell "0,02" [ref=f8e1575]
+              - cell "99,3" [ref=f8e1576]
+              - cell "62,58" [ref=f8e1577]
+              - cell "0,000" [ref=f8e1578]
+              - cell "Sem dado" [ref=f8e1579]
+              - cell "Sem dado" [ref=f8e1580]
+              - cell "OK (24/24h)" [ref=f8e1581]
+            - row [ref=f8e1582]:
+              - cell "11/08/2026" [ref=f8e1583]
+              - cell "—" [ref=f8e1584]
+              - cell "Poço PW-104" [ref=f8e1585]
+              - cell "Subsea" [ref=f8e1586]
+              - cell "PW-104DA" [ref=f8e1587]
+              - cell "B15" [ref=f8e1588]
+              - cell "507,85" [ref=f8e1589]
+              - cell "83,46" [ref=f8e1590]
+              - cell "6.384,297" [ref=f8e1591]
+              - cell "287,349" [ref=f8e1592]
+              - cell "0,000" [ref=f8e1593]
+              - cell "6.674,376" [ref=f8e1594]
+              - cell "6.671,646" [ref=f8e1595]
+              - cell "5.810,35" [ref=f8e1596]
+              - cell "1.921.919" [ref=f8e1597]
+              - cell "0,01" [ref=f8e1598]
+              - cell "0,6" [ref=f8e1599]
+              - cell "0,45" [ref=f8e1600]
+              - cell "0,014" [ref=f8e1601]
+              - cell "Oil=1.0; Water=1.0" [ref=f8e1602]
+              - cell "Multiphase=1.0; Wet Gas=0.0; Auto Switch=0.0" [ref=f8e1603]
+              - cell "OK (24/24h)" [ref=f8e1604]
+      - heading "Resumo do último dia processado" [level=2] [ref=f8e1605]
+      - generic [ref=f8e1606]: "Mensagem para gestão: em 11/08/2026, a produção total corrigida foi de 31.161,5 t, composta por 28.034,5 t de óleo, 2.811,0 t de gás e 315,98 t de água. Status executivo: ATENÇÃO."
+      - generic [ref=f8e1607]:
+        - generic [ref=f8e1608]:
+          - generic [ref=f8e1609]: Status executivo
+          - generic [ref=f8e1610]: ATENÇÃO
+          - generic [ref=f8e1611]: 1 item(ns) de reconciliação/desvio requer(em) atenção
+        - generic [ref=f8e1612]:
+          - generic [ref=f8e1613]: Produção do dia
+          - generic [ref=f8e1614]:
+            - generic [ref=f8e1615]:
+              - generic [ref=f8e1616]: HC corrigido
+              - generic [ref=f8e1617]: 30.850,2 t
+            - generic [ref=f8e1618]:
+              - generic [ref=f8e1619]: Total corrigido
+              - generic [ref=f8e1620]: 31.161,5 t
+          - generic [ref=f8e1621]: "D-1 (total): -32,2%"
+      - heading "Desvios críticos RANP 44 — Subsea × Topside" [level=3] [ref=f8e1622]
+      - generic [ref=f8e1623]:
+        - generic [ref=f8e1624]:
+          - generic [ref=f8e1625]: PE-02 × Riser P2
+          - generic [ref=f8e1626]:
+            - generic [ref=f8e1627]:
+              - generic [ref=f8e1628]: Desvio HC · limite ±10% ● conforme
+              - generic [ref=f8e1629]: "-2,33%"
+            - generic [ref=f8e1630]:
+              - generic [ref=f8e1631]: Desvio Total · limite ±7% ● conforme
+              - generic [ref=f8e1632]: "-2,39%"
+          - generic [ref=f8e1633]: "referência: Riser P2 Topside | 11/08/2026"
+        - generic [ref=f8e1634]:
+          - generic [ref=f8e1635]: PW-104 × Riser P4
+          - generic [ref=f8e1636]:
+            - generic [ref=f8e1637]:
+              - generic [ref=f8e1638]: Desvio HC · limite ±10% ● fora do limite
+              - generic [ref=f8e1639]: 79,56%
+            - generic [ref=f8e1640]:
+              - generic [ref=f8e1641]: Desvio Total · limite ±7% ● fora do limite
+              - generic [ref=f8e1642]: 79,47%
+          - generic [ref=f8e1643]: "referência: Riser P4 Topside | 11/08/2026"
+      - heading "Desvios por fase em volume padrão" [level=3] [ref=f8e1644]
+      - generic [ref=f8e1645]:
+        - generic [ref=f8e1646]:
+          - generic [ref=f8e1647]: PE-02 × Riser P2
+          - generic [ref=f8e1648]:
+            - generic [ref=f8e1649]:
+              - generic [ref=f8e1650]: Óleo
+              - generic [ref=f8e1651]: "-2,18%"
+            - generic [ref=f8e1652]:
+              - generic [ref=f8e1653]: Gás
+              - generic [ref=f8e1654]: "-2,27%"
+            - generic [ref=f8e1655]:
+              - generic [ref=f8e1656]: Água
+              - generic [ref=f8e1657]: "-99,70%"
+          - generic [ref=f8e1658]: volume padrão 20 °C | 1 atm — diagnóstico, sem limite RANP
+        - generic [ref=f8e1659]:
+          - generic [ref=f8e1660]: PW-104 × Riser P4
+          - generic [ref=f8e1661]:
+            - generic [ref=f8e1662]:
+              - generic [ref=f8e1663]: Óleo
+              - generic [ref=f8e1664]: 77,46%
+            - generic [ref=f8e1665]:
+              - generic [ref=f8e1666]: Gás
+              - generic [ref=f8e1667]: 84,14%
+            - generic [ref=f8e1668]:
+              - generic [ref=f8e1669]: Água
+              - generic [ref=f8e1670]: —
+          - generic [ref=f8e1671]: volume padrão 20 °C | 1 atm — diagnóstico, sem limite RANP
+      - heading "Produção e qualidade por medidor funcional" [level=3] [ref=f8e1672]
+      - generic [ref=f8e1673]:
+        - generic [ref=f8e1674]:
+          - searchbox "Pesquisar nesta tabela" [ref=f8e1675]
+          - generic [ref=f8e1676]: 7 de 7 registros
+        - table [ref=f8e1677]:
+          - rowgroup [ref=f8e1678]:
+            - row [ref=f8e1679]:
+              - columnheader "Local ↕" [ref=f8e1680] [cursor=pointer]
+              - columnheader "Banco ↕" [ref=f8e1681] [cursor=pointer]
+              - columnheader "TAG ↕" [ref=f8e1682] [cursor=pointer]
+              - columnheader "Pressão (barg) ↕" [ref=f8e1683] [cursor=pointer]
+              - columnheader "Temperatura (°C) ↕" [ref=f8e1684] [cursor=pointer]
+              - columnheader "Massa óleo corrigida (t) ↕" [ref=f8e1685] [cursor=pointer]
+              - columnheader "Massa gás corrigida (t) ↕" [ref=f8e1686] [cursor=pointer]
+              - columnheader "Massa água corrigida (t) ↕" [ref=f8e1687] [cursor=pointer]
+              - columnheader "Massa HC corrigida (t) ↕" [ref=f8e1688] [cursor=pointer]
+              - columnheader "Massa total corrigida (t) ↕" [ref=f8e1689] [cursor=pointer]
+              - columnheader "Volume óleo 20°C/1 atm (m³) ↕" [ref=f8e1690] [cursor=pointer]
+              - columnheader "Volume gás 20°C/1 atm (Sm³) ↕" [ref=f8e1691] [cursor=pointer]
+              - columnheader "Volume água 20°C/1 atm (m³) ↕" [ref=f8e1692] [cursor=pointer]
+          - rowgroup [ref=f8e1693]:
+            - row [ref=f8e1694]:
+              - cell "Subsea" [ref=f8e1695]
+              - cell "B05" [ref=f8e1696]
+              - cell "18FT1506" [ref=f8e1697]
+              - cell "611,63" [ref=f8e1698]
+              - cell "82,70" [ref=f8e1699]
+              - cell "2.154,99" [ref=f8e1700]
+              - cell "0,00" [ref=f8e1701]
+              - cell "1,968" [ref=f8e1702]
+              - cell "2.154,99" [ref=f8e1703]
+              - cell "2.156,96" [ref=f8e1704]
+              - cell "1.877,2" [ref=f8e1705]
+              - cell "620.915" [ref=f8e1706]
+              - cell "1,711" [ref=f8e1707]
+            - row [ref=f8e1708]:
+              - cell "Subsea" [ref=f8e1709]
+              - cell "B05" [ref=f8e1710]
+              - cell "18FT1706" [ref=f8e1711]
+              - cell "547,02" [ref=f8e1712]
+              - cell "80,47" [ref=f8e1713]
+              - cell "4.368,08" [ref=f8e1714]
+              - cell "219,44" [ref=f8e1715]
+              - cell "311,904" [ref=f8e1716]
+              - cell "4.587,52" [ref=f8e1717]
+              - cell "4.899,43" [ref=f8e1718]
+              - cell "3.995,0" [ref=f8e1719]
+              - cell "1.321.462" [ref=f8e1720]
+              - cell "250,513" [ref=f8e1721]
+            - row [ref=f8e1722]:
+              - cell "Subsea" [ref=f8e1723]
+              - cell "B10" [ref=f8e1724]
+              - cell "PE_2" [ref=f8e1725]
+              - cell "556,65" [ref=f8e1726]
+              - cell "80,05" [ref=f8e1727]
+              - cell "6.483,53" [ref=f8e1728]
+              - cell "219,90" [ref=f8e1729]
+              - cell "0,000" [ref=f8e1730]
+              - cell "6.705,64" [ref=f8e1731]
+              - cell "6.703,42" [ref=f8e1732]
+              - cell "5.839,1" [ref=f8e1733]
+              - cell "1.931.441" [ref=f8e1734]
+              - cell "0,005" [ref=f8e1735]
+            - row [ref=f8e1736]:
+              - cell "Subsea" [ref=f8e1737]
+              - cell "B15" [ref=f8e1738]
+              - cell "PW-104DA" [ref=f8e1739]
+              - cell "507,85" [ref=f8e1740]
+              - cell "83,46" [ref=f8e1741]
+              - cell "6.384,30" [ref=f8e1742]
+              - cell "287,35" [ref=f8e1743]
+              - cell "0,000" [ref=f8e1744]
+              - cell "6.674,38" [ref=f8e1745]
+              - cell "6.671,65" [ref=f8e1746]
+              - cell "5.810,3" [ref=f8e1747]
+              - cell "1.921.919" [ref=f8e1748]
+              - cell "0,005" [ref=f8e1749]
+            - row [ref=f8e1750]:
+              - cell "Topside" [ref=f8e1751]
+              - cell "B08" [ref=f8e1752]
+              - cell "Riser_P2" [ref=f8e1753]
+              - cell "107,25" [ref=f8e1754]
+              - cell "68,00" [ref=f8e1755]
+              - cell "5.585,82" [ref=f8e1756]
+              - cell "1.279,66" [ref=f8e1757]
+              - cell "2,086" [ref=f8e1758]
+              - cell "6.865,39" [ref=f8e1759]
+              - cell "6.867,56" [ref=f8e1760]
+              - cell "5.969,3" [ref=f8e1761]
+              - cell "1.976.379" [ref=f8e1762]
+              - cell "1,677" [ref=f8e1763]
+            - row [ref=f8e1764]:
+              - cell "Topside" [ref=f8e1765]
+              - cell "B13" [ref=f8e1766]
+              - cell "Riser_P3" [ref=f8e1767]
+              - cell "1,17" [ref=f8e1768]
+              - cell "22,10" [ref=f8e1769]
+              - cell "0,65" [ref=f8e1770]
+              - cell "144,50" [ref=f8e1771]
+              - cell "0,004" [ref=f8e1772]
+              - cell "145,15" [ref=f8e1773]
+              - cell "145,15" [ref=f8e1774]
+              - cell "1,9" [ref=f8e1775]
+              - cell "167.607" [ref=f8e1776]
+              - cell "0,007" [ref=f8e1777]
+            - row [ref=f8e1778]:
+              - cell "Topside" [ref=f8e1779]
+              - cell "B13" [ref=f8e1780]
+              - cell "Riser_P4" [ref=f8e1781]
+              - cell "108,93" [ref=f8e1782]
+              - cell "63,47" [ref=f8e1783]
+              - cell "3.057,18" [ref=f8e1784]
+              - cell "660,15" [ref=f8e1785]
+              - cell "0,013" [ref=f8e1786]
+              - cell "3.717,15" [ref=f8e1787]
+              - cell "3.717,35" [ref=f8e1788]
+              - cell "3.274,2" [ref=f8e1789]
+              - cell "1.043.737" [ref=f8e1790]
+              - cell "0,015" [ref=f8e1791]
+      - generic [ref=f8e1792]: "Pareto de alarmes por categoria: categorias em ordem decrescente; a linha mostra o percentual acumulado. A categoria é derivada de IssueFlag; flags múltiplas contam em cada categoria aplicável."
+      - generic [ref=f8e1793]:
+        - button "−" [ref=f8e1794] [cursor=pointer]
+        - spinbutton "Percentual de zoom" [ref=f8e1795]: "100"
+        - button "+" [ref=f8e1796] [cursor=pointer]
+      - generic [ref=f8e1797]:
+        - img "Pareto de alarmes por categoria" [ref=f8e1798]:
+          - generic [ref=f8e1799]: Pareto de alarmes/eventos — categorias e acumulado
+          - generic [ref=f8e1800]: "0"
+          - generic [ref=f8e1801]: "27"
+          - generic [ref=f8e1802]: "55"
+          - generic [ref=f8e1803]: "83"
+          - generic [ref=f8e1804]: "111"
+          - 'generic "FAILED: 111 ocorrências — 88 Critical / 23 General" [ref=f8e1805]'
+          - generic [ref=f8e1806]: "111"
+          - generic [ref=f8e1807]: FAILED
+          - 'generic "CRITICAL: 89 ocorrências — 89 Critical / 0 General" [ref=f8e1808]'
+          - generic [ref=f8e1809]: "89"
+          - generic [ref=f8e1810]: CRITICAL
+          - 'generic "COMM: 88 ocorrências — 88 Critical / 0 General" [ref=f8e1811]'
+          - generic [ref=f8e1812]: "88"
+          - generic [ref=f8e1813]: COMM
+          - 'generic "DEVIATION: 44 ocorrências — 0 Critical / 44 General" [ref=f8e1814]'
+          - generic [ref=f8e1815]: "44"
+          - generic [ref=f8e1816]: DEVIATION
+          - 'generic "PVT: 35 ocorrências — 0 Critical / 35 General" [ref=f8e1817]'
+          - generic [ref=f8e1818]: "35"
+          - generic [ref=f8e1819]: PVT
+          - 'generic "LOW_FLOW: 29 ocorrências — 0 Critical / 29 General" [ref=f8e1820]'
+          - generic [ref=f8e1821]: "29"
+          - generic [ref=f8e1822]: LOW_FLOW
+          - 'generic "LOW_DP: 5 ocorrências — 0 Critical / 5 General" [ref=f8e1823]'
+          - generic [ref=f8e1824]: "5"
+          - generic [ref=f8e1825]: LOW_DP
+          - generic "27.7% acumulado" [ref=f8e1827]
+          - generic "49.9% acumulado" [ref=f8e1828]
+          - generic "71.8% acumulado" [ref=f8e1829]
+          - generic "82.8% acumulado" [ref=f8e1830]
+          - generic "91.5% acumulado" [ref=f8e1831]
+          - generic "98.8% acumulado" [ref=f8e1832]
+          - generic "100.0% acumulado" [ref=f8e1833]
+          - generic [ref=f8e1834]: 100%
+        - text: Deslize para explorar →
+      - generic [ref=f8e1835]:
+        - generic [ref=f8e1836]: "Barras: ocorrências"
+        - generic [ref=f8e1838]: "Linha: acumulado (%)"
+        - generic [ref=f8e1840]: Contém Critical
+    - text: ＋ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ Deslize para explorar → ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ＋ Deslize para explorar → ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ＋ Deslize para explorar → ↕ ↕ ↕ ＋ Deslize para explorar → Deslize para explorar → ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ＋ Deslize para explorar → ＋ Deslize para explorar → ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕

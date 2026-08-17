@@ -1,0 +1,61 @@
+{
+  "status": "APROVADO",
+  "validatedAt": "13/08/2026 12:19",
+  "dashboard": "/workspace/scratch/80c18c6ca1d3/project/unpacked/automacao_pdf_txt_tdo/BASE_UNICA_STANDALONE_20260812_094902_STANDALONE_DASHBOARD.html",
+  "workbook": "/workspace/scratch/80c18c6ca1d3/project/unpacked/automacao_pdf_txt_tdo/BASE_UNICA_STANDALONE_20260812_094902.xlsx",
+  "rules": {
+    "html_rico_gerado": true,
+    "layout_responsivo_sem_lacuna": true,
+    "manifesto_embutido": true,
+    "arquivo_fonte_correto": true,
+    "todas_abas_representadas": true,
+    "linhas_colunas_conferem": true,
+    "conteudo_conferido_por_hash": true,
+    "localidade_pt_br": true,
+    "formato_data_hora_br": true
+  },
+  "sheets": [
+    {
+      "name": "PI_EXTRACT",
+      "rows": 25995,
+      "columns": 22,
+      "fingerprint": "3744e4d2e19c4f132df4f4ab8cc33c5c45f22c7148f289c79b218d65548aabb5"
+    },
+    {
+      "name": "PI_EXTRACT_RESUMO",
+      "rows": 7,
+      "columns": 2,
+      "fingerprint": "bc8d63c02f0144718bcf20e299fc0e417d7ad88b203c44457b3b896093f1c6a8"
+    },
+    {
+      "name": "BASE_UNICA_STANDALONE",
+      "rows": 1710,
+      "columns": 125,
+      "fingerprint": "9377e41a762e97c1cc68636d92f84688cb949af7f8e080595550d4c50a0452ef"
+    },
+    {
+      "name": "ALARMES_EVENTOS",
+      "rows": 166,
+      "columns": 15,
+      "fingerprint": "0ca19fde2df15eb5068c7ec11448a05e90260fd76ced972d6b3bba6a90104824"
+    },
+    {
+      "name": "COMPARATIVO_TOTAL",
+      "rows": 60,
+      "columns": 45,
+      "fingerprint": "c1a38a735d22991df8086ace0fd6a44b39f61a1030d49a2d39b3674673a2f0b7"
+    },
+    {
+      "name": "COMPARATIVO_PARES",
+      "rows": 487,
+      "columns": 15,
+      "fingerprint": "516e0d8cac6b814165b1a8ead91d5c1edd9414c5ad7cc662e36fd0b4dc950758"
+    },
+    {
+      "name": "COMPARATIVO_MANUAL",
+      "rows": 212,
+      "columns": 45,
+      "fingerprint": "d222076b8a7750fa96ed45eba720cba1f57d023dd16d3b4089e18bd8d76d0188"
+    }
+  ]
+}

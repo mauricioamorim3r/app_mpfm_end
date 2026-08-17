@@ -1,6 +1,6 @@
 {
   "_descricao": "Cadastro de instrumentação MPFM — Bacalhau FPSO. Extraído de documentação de engenharia.",
-  "_atualizado": "2026-03-05",
+  "_atualizado": "2026-08-07",
   "banks_subsea": [
     {
       "bank": "Bank10",
@@ -134,7 +134,7 @@
       "nome_anp": "",
       "poco_equinor": "",
       "chega_riser": "",
-      "ativo": false,
+      "ativo": true,
       "aprovado_anp": false
     },
     {

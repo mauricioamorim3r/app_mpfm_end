@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import io
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 import xml.etree.ElementTree as ET
@@ -275,6 +275,30 @@ def build_xml042_preview(candidate: dict) -> str:
     )
 
 
+def _safe_filename_part(value: str) -> str:
+    return "".join(ch for ch in str(value or "").strip() if ch.isalnum() or ch in ("-", "_")) or "sem_ref"
+
+
+def _build_anp_xml042_filename(cnpj8: str, folder: Path, target_dir: Optional[Path] = None) -> str:
+    """Build an ANP-compliant XML042 filename: 042_<CNPJ8>_<AAAAMMDDHHmmSS>.xml.
+
+    The ANP naming convention does not include the well code. When multiple files
+    are generated in the same second, advance the timestamp by one second until
+    the filename is free in both the app output folder and the optional SGM target
+    folder. This preserves the accepted format without overwriting files.
+    """
+    current = datetime.now().replace(microsecond=0)
+    for offset in range(86400):
+        stamp = (current + timedelta(seconds=offset)).strftime("%Y%m%d%H%M%S")
+        filename = f"042_{cnpj8}_{stamp}.xml"
+        if (folder / filename).exists():
+            continue
+        if target_dir is not None and (target_dir / filename).exists():
+            continue
+        return filename
+    raise RuntimeError("Não foi possível criar nome XML042 único no padrão ANP.")
+
+
 def list_xml042_candidates(
     repo,
     *,
@@ -430,10 +454,10 @@ def generate_xml042_document(
         raise ValueError("Linha ainda não aprovada.")
     xml_text = build_xml042_preview(candidate)
     generated_at = datetime.now().isoformat(timespec="seconds")
-    stamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"042_{cnpj8}_{stamp}.xml"
     folder = output_dir / "xml042"
     folder.mkdir(parents=True, exist_ok=True)
+    dest_path = target_dir if target_dir is not None else Path(DEFAULT_XML042_DEST_DIR)
+    filename = _build_anp_xml042_filename(cnpj8, folder, dest_path)
     file_path = folder / filename
     data = xml_text.encode("iso-8859-1", errors="xmlcharrefreplace")
     file_path.write_bytes(data)
@@ -441,7 +465,6 @@ def generate_xml042_document(
 
     saved_to_target_dir = False
     target_file_path = ""
-    dest_path = target_dir if target_dir is not None else Path(DEFAULT_XML042_DEST_DIR)
     try:
         if dest_path and str(dest_path).strip():
             dest_path.mkdir(parents=True, exist_ok=True)

@@ -126,6 +126,51 @@ CREATE INDEX IF NOT EXISTS idx_measurements_curated_lookup
 CREATE INDEX IF NOT EXISTS idx_measurements_curated_source
     ON measurements_curated(source_record_id, is_official);
 
+CREATE TABLE IF NOT EXISTS mpfm_adjustment_imports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    imported_at TEXT NOT NULL,
+    source_file TEXT NOT NULL,
+    source_hash TEXT DEFAULT '',
+    author TEXT DEFAULT '',
+    notes TEXT DEFAULT '',
+    rows_seen INTEGER DEFAULT 0,
+    rows_marked INTEGER DEFAULT 0,
+    metrics_changed INTEGER DEFAULT 0,
+    status TEXT DEFAULT 'applied',
+    summary_json TEXT DEFAULT '{}'
+);
+
+CREATE TABLE IF NOT EXISTS mpfm_adjustment_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    import_id INTEGER NOT NULL,
+    day_ref TEXT NOT NULL,
+    hour_ref INTEGER,
+    row_kind TEXT NOT NULL,
+    bank TEXT DEFAULT '',
+    loop TEXT DEFAULT '',
+    tipo TEXT DEFAULT '',
+    tag TEXT DEFAULT '',
+    metric_name TEXT NOT NULL,
+    old_value REAL,
+    new_value REAL,
+    reason TEXT DEFAULT '',
+    responsible TEXT DEFAULT '',
+    observation TEXT DEFAULT '',
+    created_at TEXT NOT NULL,
+    FOREIGN KEY(import_id) REFERENCES mpfm_adjustment_imports(id)
+);
+CREATE INDEX IF NOT EXISTS idx_mpfm_adjustment_items_lookup
+    ON mpfm_adjustment_items(day_ref, row_kind, bank, tag, metric_name);
+
+CREATE TABLE IF NOT EXISTS measurement_dimensions (
+    dimension_kind TEXT NOT NULL,
+    dimension_value TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY(dimension_kind, dimension_value)
+);
+CREATE INDEX IF NOT EXISTS idx_measurement_dimensions_lookup
+    ON measurement_dimensions(dimension_kind, dimension_value);
+
 CREATE TABLE IF NOT EXISTS validation_issues (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     run_id INTEGER,

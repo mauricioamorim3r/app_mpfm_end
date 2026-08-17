@@ -2,13 +2,17 @@
 
 import io
 import json
+import os
+import tempfile
 from copy import copy
 from collections import defaultdict
 from pathlib import Path
 
 from fastapi import HTTPException
-from fastapi.responses import Response, StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
+from starlette.background import BackgroundTask
 from routes.date_utils import normalize_date_input, normalize_date_range
+from services.streaming_export import iter_pivoted_measurements
 from services.excel_template_service import (
     PRODUCTION_EXPORT_TEMPLATE,
     SEP_EXPORT_TEMPLATE,
@@ -24,6 +28,25 @@ def register_export_routes(app, ctx: dict) -> None:
     load_prefs = ctx["load_prefs"]
     sep_detail_headers = ctx["sep_detail_headers"]
     sep_detail_kind = ctx["sep_detail_kind"]
+
+    def workbook_file_response(wb, filename: str) -> FileResponse:
+        temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+        temp_path = temp.name
+        temp.close()
+        try:
+            wb.save(temp_path)
+        except Exception:
+            try:
+                os.unlink(temp_path)
+            except FileNotFoundError:
+                pass
+            raise
+        return FileResponse(
+            temp_path,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            filename=filename,
+            background=BackgroundTask(os.unlink, temp_path),
+        )
 
     @app.get("/api/export-sep-excel")
     def api_export_sep_excel(date_from: str = "", date_to: str = "", unit: str = ""):
@@ -62,8 +85,6 @@ def register_export_routes(app, ctx: dict) -> None:
             detail_sql += "AND bank=? "
             params.append(unit)
         detail_sql += "ORDER BY day_ref, row_kind, COALESCE(hour_ref,-1), tag, metric_name"
-        detail_rows = [dict(item) for item in cur.execute(detail_sql, params).fetchall()]
-        conn.close()
 
         detail_sheet_config = {
             "oleo": [
@@ -132,12 +153,42 @@ def register_export_routes(app, ctx: dict) -> None:
                 for col_idx in range(start_col, ws.max_column + 1):
                     ws.cell(row_idx, col_idx).value = None
 
+        # Cache de estilos por planilha+linha para evitar cópias repetidas (O(1) por linha)
+        _style_cache: dict = {}
+
+        def _build_style_cache(ws, rows, start_col: int, end_col: int) -> None:
+            key = id(ws)
+            if key not in _style_cache:
+                _style_cache[key] = {}
+            for r in rows:
+                _style_cache[key][r] = {
+                    c: (
+                        copy(ws.cell(r, c).font),
+                        copy(ws.cell(r, c).fill),
+                        copy(ws.cell(r, c).border),
+                        copy(ws.cell(r, c).alignment),
+                        ws.cell(r, c).number_format,
+                        copy(ws.cell(r, c).protection),
+                    )
+                    for c in range(start_col, end_col + 1)
+                }
+                _style_cache[key][r]["_height"] = ws.row_dimensions[r].height
+
         def copy_template_row(ws, template_row: int, target_row: int, start_col: int, end_col: int):
             if target_row == template_row and target_row <= ws.max_row:
                 return
-            for col_idx in range(start_col, end_col + 1):
-                copy_cell_style(ws.cell(template_row, col_idx), ws.cell(target_row, col_idx))
-            ws.row_dimensions[target_row].height = ws.row_dimensions[template_row].height
+            cache = _style_cache.get(id(ws), {}).get(template_row)
+            if cache:
+                for col_idx in range(start_col, end_col + 1):
+                    cached = cache.get(col_idx)
+                    if cached:
+                        c = ws.cell(target_row, col_idx)
+                        c.font, c.fill, c.border, c.alignment, c.number_format, c.protection = cached
+                ws.row_dimensions[target_row].height = cache.get("_height")
+            else:
+                for col_idx in range(start_col, end_col + 1):
+                    copy_cell_style(ws.cell(template_row, col_idx), ws.cell(target_row, col_idx))
+                ws.row_dimensions[target_row].height = ws.row_dimensions[template_row].height
 
         def sorted_detail_keys(pivot):
             return sorted(
@@ -158,7 +209,7 @@ def register_export_routes(app, ctx: dict) -> None:
                 "grouped": defaultdict(list),
                 "day_rows": {},
             }
-        for row in detail_rows:
+        for row in cur.execute(detail_sql, params):
             fluid = fluid_by_detail_kind[row["row_kind"]]
             key = (row["day_ref"], row["hour_ref"], row["tag"], row["instrument"])
             detail_store[fluid]["pivot"][key][row["metric_name"]] = row["metric_value"]
@@ -169,6 +220,7 @@ def register_export_routes(app, ctx: dict) -> None:
                 "tag": row["tag"],
                 "instrument": row["instrument"],
             }
+        conn.close()
         for fluid, payload in detail_store.items():
             for key in sorted_detail_keys(payload["pivot"]):
                 item_meta = payload["meta"][key]
@@ -270,6 +322,17 @@ def register_export_routes(app, ctx: dict) -> None:
             payload = detail_store[fluid]
             row_idx = 2
             last_col = 2 + len(headers2)
+            # Pré-cache estilos das linhas-template (rows 2, 3, 4-27) uma única vez
+            _build_style_cache(ws2, list(range(2, min(28, ws2.max_row + 1))), 1, last_col)
+            # Pré-cache do estilo da célula de metadados (col 3 da row 2)
+            meta_style_src = ws2.cell(2, 3)
+            meta_style = (
+                copy(meta_style_src.font), copy(meta_style_src.fill),
+                copy(meta_style_src.border), copy(meta_style_src.alignment),
+                meta_style_src.number_format, copy(meta_style_src.protection),
+            )
+            # Acumula merges para aplicar de uma vez no final (evita O(n²))
+            pending_merges = []
             for day_ref in sorted(payload["grouped"]):
                 hourly_entries = [
                     (key, item_meta)
@@ -285,8 +348,8 @@ def register_export_routes(app, ctx: dict) -> None:
                     column=3,
                     value=f"Data: {day_ref}  |  TAG: {day_meta['tag'] or '-'}  |  Meter ID: {day_meta['instrument'] or '-'}",
                 )
-                copy_cell_style(ws2.cell(2, 3), meta_cell)
-                ws2.merge_cells(start_row=row_idx, start_column=3, end_row=row_idx, end_column=last_col)
+                meta_cell.font, meta_cell.fill, meta_cell.border, meta_cell.alignment, meta_cell.number_format, meta_cell.protection = meta_style
+                pending_merges.append((row_idx, 3, row_idx, last_col))
                 row_idx += 1
 
                 if row_idx > ws2.max_row:
@@ -299,8 +362,9 @@ def register_export_routes(app, ctx: dict) -> None:
                 row_idx += 1
 
                 for hour_idx in range(24):
+                    # Linhas horárias não precisam de cópia de estilo — só dados
                     if row_idx > ws2.max_row:
-                        copy_template_row(ws2, 4 + min(hour_idx, 23), row_idx, 1, last_col)
+                        ws2.row_dimensions[row_idx].height = ws2.row_dimensions.get(4 + min(hour_idx, 23), ws2.row_dimensions.get(4, None)) and ws2.row_dimensions[4 + min(hour_idx, 23)].height
                     if hour_idx < len(hourly_entries):
                         key, item_meta = hourly_entries[hour_idx]
                         values = [int(item_meta["hour_ref"])]
@@ -308,6 +372,10 @@ def register_export_routes(app, ctx: dict) -> None:
                         for ci, value in enumerate(values, 3):
                             ws2.cell(row=row_idx, column=ci, value=value)
                     row_idx += 1
+            # Aplica todos os merges de uma vez (O(n) total em vez de O(n²))
+            from openpyxl.utils import get_column_letter as _gcl
+            for r1, c1, r2, c2 in pending_merges:
+                ws2.merged_cells.add(f"{_gcl(c1)}{r1}:{_gcl(c2)}{r2}")
             ws2.auto_filter.ref = f"C1:{get_column_letter(last_col)}{max(2, ws2.max_row)}"
             if row_idx <= ws2.max_row:
                 clear_export_region(ws2, row_idx, 3)
@@ -315,14 +383,7 @@ def register_export_routes(app, ctx: dict) -> None:
         add_fluid_sheet("separador oleo", "oleo")
         add_fluid_sheet("separador gas", "gas")
         add_fluid_sheet("separador agua", "agua")
-        bio = io.BytesIO()
-        wb.save(bio)
-        bio.seek(0)
-        return StreamingResponse(
-            bio,
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            headers={"Content-Disposition": f"attachment; filename=SEP_Dados_{date_from}_a_{date_to}.xlsx"},
-        )
+        return workbook_file_response(wb, f"SEP_Dados_{date_from}_a_{date_to}.xlsx")
 
     @app.get("/api/export-sep-csv")
     def api_export_sep_csv(date_from: str = "", date_to: str = "", unit: str = ""):
@@ -347,59 +408,81 @@ def register_export_routes(app, ctx: dict) -> None:
             sql += " AND bank=?"
             params.append(unit)
         sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), bank, metric_name"
-        rows = cur.execute(sql, params).fetchall()
-        conn.close()
 
-        conn = db_conn()
-        cur = conn.cursor()
         align_map = {}
         for row in cur.execute(
             "SELECT production_date, GROUP_CONCAT(bank, ', ') AS banks "
             "FROM sep_alignments WHERE is_active=1 AND production_date BETWEEN ? AND ? "
             "GROUP BY production_date",
             (date_from, date_to),
-        ).fetchall():
-            align_map[row["production_date"]] = row["banks"] or ""
-        conn.close()
-
-        pivot_map = defaultdict(dict)
-        pivot_meta = {}
-        metric_set = []
-        for row in rows:
-            key = (row[1], row[2], row[3], "")
-            pivot_map[key][row[4]] = row[5]
-            pivot_meta[key] = {
-                "day_ref": row[1],
-                "hour_ref": row[2],
-                "bank": row[3],
-                "tag": "",
-                "aligned_banks": align_map.get(row[1], ""),
-            }
-            if row[4] not in metric_set:
-                metric_set.append(row[4])
-
-        buf = io.StringIO()
-        writer = csv_mod.writer(buf)
-        writer.writerow(["Data", "Hora", "Origem SEP", "TAG SEP", "Status SEP", "Bancos alinhados"] + metric_set)
-        for key in sorted(
-            pivot_map.keys(),
-            key=lambda item: (item[0] or "", -1 if item[1] is None else item[1], item[2] or "", item[3] or ""),
         ):
-            meta = pivot_meta[key]
-            hour_label = "DAY" if meta["hour_ref"] is None else f"{int(meta['hour_ref']):02d}:00"
-            row = [
-                meta["day_ref"],
-                hour_label,
-                meta["bank"],
-                meta.get("tag", ""),
-                "Aplicado" if meta.get("aligned_banks") else "Extraído",
-                meta.get("aligned_banks", ""),
-            ] + [pivot_map[key].get(metric, "") for metric in metric_set]
-            writer.writerow(row)
+            align_map[row["production_date"]] = row["banks"] or ""
+        metric_sql = (
+            "SELECT DISTINCT metric_name "
+            "FROM measurements_active WHERE row_kind='sep' AND COALESCE(is_official,1)=1 "
+            "AND day_ref BETWEEN ? AND ?"
+        )
+        metric_params = [date_from, date_to]
+        if unit:
+            metric_sql += " AND bank=?"
+            metric_params.append(unit)
+        metric_sql += " ORDER BY metric_name"
+        metric_set = [row["metric_name"] for row in cur.execute(metric_sql, metric_params)]
+
+        def sep_csv_chunks():
+            output = io.StringIO()
+            writer = csv_mod.writer(output)
+            writer.writerow(["Data", "Hora", "Origem SEP", "TAG SEP", "Status SEP", "Bancos alinhados"] + metric_set)
+            yield "\ufeff" + output.getvalue()
+            output.seek(0)
+            output.truncate(0)
+            current_key = None
+            metric_values = {}
+            meta = None
+
+            def write_current():
+                if meta is None:
+                    return
+                hour_label = "DAY" if meta["hour_ref"] is None else f"{int(meta['hour_ref']):02d}:00"
+                writer.writerow(
+                    [
+                        meta["day_ref"],
+                        hour_label,
+                        meta["bank"],
+                        meta.get("tag", ""),
+                        "Aplicado" if meta.get("aligned_banks") else "Extraído",
+                        meta.get("aligned_banks", ""),
+                    ]
+                    + [metric_values.get(metric, "") for metric in metric_set]
+                )
+
+            try:
+                for row in cur.execute(sql, params):
+                    key = (row[1], row[2], row[3], "")
+                    if current_key is not None and key != current_key:
+                        write_current()
+                        yield output.getvalue()
+                        output.seek(0)
+                        output.truncate(0)
+                        metric_values.clear()
+                    current_key = key
+                    metric_values[row[4]] = row[5]
+                    meta = {
+                        "day_ref": row[1],
+                        "hour_ref": row[2],
+                        "bank": row[3],
+                        "tag": "",
+                        "aligned_banks": align_map.get(row[1], ""),
+                    }
+                if current_key is not None:
+                    write_current()
+                    yield output.getvalue()
+            finally:
+                conn.close()
 
         period = f"{date_from}_a_{date_to}".replace("-", "")
-        return Response(
-            content=buf.getvalue().encode("utf-8-sig"),
+        return StreamingResponse(
+            sep_csv_chunks(),
             media_type="text/csv",
             headers={"Content-Disposition": f'attachment; filename="SEP_Dados_{period}.csv"'},
         )
@@ -410,7 +493,6 @@ def register_export_routes(app, ctx: dict) -> None:
         date_from, date_to = normalize_date_range(date_from, date_to)
         if date and not date_from and not date_to:
             date_from = date_to = date
-        from io import BytesIO
         from reportlab.lib.colors import HexColor, black, white
         from reportlab.lib.pagesizes import A4, landscape
         from reportlab.pdfgen import canvas
@@ -428,9 +510,11 @@ def register_export_routes(app, ctx: dict) -> None:
         if not cards:
             raise HTTPException(404, f"Nenhum card disponível para {date_from} até {date_to}.")
 
-        buf = BytesIO()
+        pdf_temp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+        pdf_path = pdf_temp.name
+        pdf_temp.close()
         page_w, page_h = landscape(A4)
-        canvas_obj = canvas.Canvas(buf, pagesize=landscape(A4))
+        canvas_obj = canvas.Canvas(pdf_path, pagesize=landscape(A4))
         margin = 24
         gap = 16
         card_w = (page_w - margin * 2 - gap) / 2
@@ -586,12 +670,12 @@ def register_export_routes(app, ctx: dict) -> None:
             idx += 1
 
         canvas_obj.save()
-        buf.seek(0)
         fname = f"cards_{date_from}_{date_to}.pdf"
-        return StreamingResponse(
-            buf,
+        return FileResponse(
+            pdf_path,
             media_type="application/pdf",
-            headers={"Content-Disposition": f"attachment; filename={fname}"},
+            filename=fname,
+            background=BackgroundTask(os.unlink, pdf_path),
         )
 
     @app.get("/api/export-producao-excel")
@@ -627,10 +711,9 @@ def register_export_routes(app, ctx: dict) -> None:
                 sql += " AND bank=?"
                 params.append(bank)
             sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), bank, tag, metric_name"
-            rows = cur.execute(sql, params).fetchall()
             piv = defaultdict(dict)
             metrics = []
-            for row in rows:
+            for row in cur.execute(sql, params):
                 key = (row["day_ref"], row["hour_ref"], row["bank"], row["loop"], row["tipo"], row["tag"])
                 piv[key][row["metric_name"]] = row["metric_value"]
                 if row["metric_name"] not in metrics:
@@ -651,10 +734,42 @@ def register_export_routes(app, ctx: dict) -> None:
                 for col_idx in range(1, ws.max_column + 1):
                     ws.cell(row_idx, col_idx).value = None
 
+        # Cache de estilos por planilha para clone_template_row (mesmo padrão do SEP)
+        _prod_style_cache: dict = {}
+
+        def _build_prod_cache(ws, rows) -> None:
+            key = id(ws)
+            if key in _prod_style_cache:
+                return
+            _prod_style_cache[key] = {
+                r: {
+                    c: (
+                        copy(ws.cell(r, c).font), copy(ws.cell(r, c).fill),
+                        copy(ws.cell(r, c).border), copy(ws.cell(r, c).alignment),
+                        ws.cell(r, c).number_format, copy(ws.cell(r, c).protection),
+                    )
+                    for c in range(1, ws.max_column + 1)
+                }
+                for r in rows
+                if r <= ws.max_row
+            }
+            for r in rows:
+                if r <= ws.max_row:
+                    _prod_style_cache[key][r]["_height"] = ws.row_dimensions[r].height
+
         def clone_template_row(ws, template_row: int, target_row: int):
-            for col_idx in range(1, ws.max_column + 1):
-                copy_cell_style(ws.cell(template_row, col_idx), ws.cell(target_row, col_idx))
-            ws.row_dimensions[target_row].height = ws.row_dimensions[template_row].height
+            cache = _prod_style_cache.get(id(ws), {}).get(template_row)
+            if cache:
+                for col_idx in range(1, ws.max_column + 1):
+                    cached = cache.get(col_idx)
+                    if cached:
+                        c = ws.cell(target_row, col_idx)
+                        c.font, c.fill, c.border, c.alignment, c.number_format, c.protection = cached
+                ws.row_dimensions[target_row].height = cache.get("_height")
+            else:
+                for col_idx in range(1, ws.max_column + 1):
+                    copy_cell_style(ws.cell(template_row, col_idx), ws.cell(target_row, col_idx))
+                ws.row_dimensions[target_row].height = ws.row_dimensions[template_row].height
 
         def set_sheet_subtitle(ws):
             ws["A2"] = subtitle
@@ -662,10 +777,21 @@ def register_export_routes(app, ctx: dict) -> None:
 
         def write_template_rows(ws, row_dicts):
             headers = template_headers(ws)
+            if not any(headers) and row_dicts:
+                headers = list(row_dicts[0].keys())
+                for col_idx, header in enumerate(headers, start=1):
+                    ws.cell(4, col_idx, header)
+            elif row_dicts:
+                missing_headers = [header for header in row_dicts[0].keys() if header not in headers]
+                for header in missing_headers:
+                    headers.append(header)
+                    ws.cell(4, len(headers), header)
             clear_template_data(ws)
             start_row = 5
             style_even_row = start_row
             style_odd_row = min(start_row + 1, max(ws.max_row, start_row))
+            # Pré-cache dos estilos de estilo even/odd uma única vez por planilha
+            _build_prod_cache(ws, [style_even_row, style_odd_row])
             for row_idx, row_dict in enumerate(row_dicts, start=start_row):
                 if row_idx > ws.max_row:
                     style_row = style_even_row if (row_idx - start_row) % 2 == 0 else style_odd_row
@@ -802,12 +928,11 @@ def register_export_routes(app, ctx: dict) -> None:
             if bank:
                 sql += " AND (bank=? OR bank='SEP')"
             sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), tag, metric_name"
-            rows = [dict(row) for row in cur.execute(sql, params).fetchall()]
             ws = wb[title] if title in wb.sheetnames else wb.create_sheet(title)
             set_sheet_subtitle(ws)
             piv = defaultdict(dict)
-            for row in rows:
-                key = (row["day_ref"], row["hour_ref"], row["tag"], row["instrument"], row.get("bank") or "SEP")
+            for row in cur.execute(sql, params):
+                key = (row["day_ref"], row["hour_ref"], row["tag"], row["instrument"], row["bank"] or "SEP")
                 piv[key][row["metric_name"]] = row["metric_value"]
             sep_rows = []
             if fluid_flags[fluid]:
@@ -826,19 +951,16 @@ def register_export_routes(app, ctx: dict) -> None:
 
         if "CARDS_RESUMO" in wb.sheetnames:
             del wb["CARDS_RESUMO"]
+        if "Sheet" in wb.sheetnames and len(wb.sheetnames) > 1:
+            ws_sheet = wb["Sheet"]
+            if not any(cell.value not in (None, "") for row in ws_sheet.iter_rows() for cell in row):
+                del wb["Sheet"]
         for ws in wb.worksheets:
             center_filled_cells(ws)
         conn.close()
 
-        buf = io.BytesIO()
-        wb.save(buf)
-        buf.seek(0)
         filename = f"dados_producao_{date_from}_{date_to}.xlsx"
-        return StreamingResponse(
-            iter([buf.read()]),
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
-        )
+        return workbook_file_response(wb, filename)
 
     @app.get("/api/export-excel")
     def api_export_excel(
@@ -882,17 +1004,10 @@ def register_export_routes(app, ctx: dict) -> None:
             sql += f" AND metric_name IN ({placeholders})"
             params.extend(selected)
         sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), bank, tag, metric_name"
-        rows = cur.execute(sql, params).fetchall()
-        conn.close()
+        rows = cur.execute(sql, params)
 
-        pivot = defaultdict(dict)
-        for row in rows:
-            key = (row[0], row[1], row[2], row[3], row[4], row[5])
-            pivot[key][row[6]] = row[7]
-
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = f"Exportação {date_from}"
+        wb = openpyxl.Workbook(write_only=True)
+        ws = wb.create_sheet(title=f"Exportação {date_from}")
 
         thin = Side(style="thin", color="CCCCCC")
         border = Border(left=thin, right=thin, top=thin, bottom=thin)
@@ -900,46 +1015,60 @@ def register_export_routes(app, ctx: dict) -> None:
         alt_fill = PatternFill("solid", fgColor="EEF2FF")
 
         headers = ["Data", "Hora", "Banco", "Loop", "Tipo", "TAG"] + selected
+        fixed_widths = [13, 9, 12, 12, 14, 22]
         for ci, header in enumerate(headers, 1):
-            cell = ws.cell(1, ci, header)
+            col_letter = openpyxl.utils.get_column_letter(ci)
+            width = fixed_widths[ci - 1] if ci <= len(fixed_widths) else min(max(len(str(header)) + 3, 14), 32)
+            ws.column_dimensions[col_letter].width = width
+
+        from openpyxl.cell import WriteOnlyCell
+
+        header_cells = []
+        for header in headers:
+            cell = WriteOnlyCell(ws, value=header)
             cell.font = Font(bold=True, color="FFFFFF", size=10)
             cell.fill = hdr_fill
             cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
             cell.border = border
-        ws.row_dimensions[1].height = 30
+            header_cells.append(cell)
+        ws.append(header_cells)
         ws.freeze_panes = "A2"
 
-        for ri, (key, metric_dict) in enumerate(sorted(pivot.items()), 2):
-            day, hour, bank_name, loop, tipo, tag_name = key
-            base = [day, "" if hour is None else f"{int(hour):02d}:00", bank_name, loop, tipo, tag_name]
+        for ri, values in enumerate(iter_pivoted_measurements(rows, selected), 2):
             fill = alt_fill if ri % 2 == 0 else None
-            for ci, value in enumerate(base, 1):
-                cell = ws.cell(ri, ci, value)
+            output_cells = []
+            for ci, value in enumerate(values, 1):
+                cell = WriteOnlyCell(ws, value=value)
                 cell.border = border
-                cell.alignment = Alignment(horizontal="left", vertical="center")
+                cell.alignment = Alignment(
+                    horizontal="right" if ci > 6 and value is not None else "left",
+                    vertical="center",
+                )
                 if fill:
                     cell.fill = fill
-            for ci, metric in enumerate(selected, len(base) + 1):
-                value = metric_dict.get(metric)
-                cell = ws.cell(ri, ci, value)
-                cell.border = border
-                cell.alignment = Alignment(horizontal="right" if value is not None else "left", vertical="center")
-                if fill and value is not None:
-                    cell.fill = fill
+                output_cells.append(cell)
+            ws.append(output_cells)
 
-        for ci in range(1, len(headers) + 1):
-            col_letter = openpyxl.utils.get_column_letter(ci)
-            values = [str(ws.cell(row, ci).value or "") for row in range(1, min(ws.max_row + 1, 200))]
-            ws.column_dimensions[col_letter].width = min(max((len(item) for item in values), default=8) + 3, 40)
+        conn.close()
 
-        buf = io.BytesIO()
-        wb.save(buf)
-        buf.seek(0)
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+        temp_path = temp_file.name
+        temp_file.close()
+        try:
+            wb.save(temp_path)
+        except Exception:
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+            raise
         fname = f"mpfm_export_{date_from}_{date_to}.xlsx"
-        return StreamingResponse(
-            iter([buf.read()]),
+        return FileResponse(
+            temp_path,
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            filename=fname,
             headers={"Content-Disposition": f'attachment; filename="{fname}"'},
+            background=BackgroundTask(os.unlink, temp_path),
         )
 
     @app.get("/api/export-csv")
@@ -981,26 +1110,28 @@ def register_export_routes(app, ctx: dict) -> None:
             sql += f" AND metric_name IN ({placeholders})"
             params.extend(selected)
         sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), bank, tag, metric_name"
-        rows = cur.execute(sql, params).fetchall()
-        conn.close()
 
-        pivot = defaultdict(dict)
-        for row in rows:
-            key = (row[0], row[1], row[2], row[3], row[4], row[5])
-            pivot[key][row[6]] = row[7]
-
-        output = io.StringIO()
-        writer = csv.writer(output)
         headers = ["Data", "Hora", "Banco", "Loop", "Tipo", "TAG"] + selected
-        writer.writerow(headers)
-        for (day, hour, bank_name, loop, tipo, tag_name), metric_dict in sorted(pivot.items()):
-            row = [day, "" if hour is None else f"{int(hour):02d}:00", bank_name, loop, tipo, tag_name]
-            row += [metric_dict.get(metric, "") for metric in selected]
-            writer.writerow(row)
-        output.seek(0)
+
+        def csv_chunks():
+            output = io.StringIO()
+            writer = csv.writer(output)
+            writer.writerow(headers)
+            yield "\ufeff" + output.getvalue()
+            output.seek(0)
+            output.truncate(0)
+            try:
+                for row_values in iter_pivoted_measurements(cur.execute(sql, params), selected):
+                    writer.writerow(row_values)
+                    yield output.getvalue()
+                    output.seek(0)
+                    output.truncate(0)
+            finally:
+                conn.close()
+
         fname = f"mpfm_export_{date_from}_{date_to}.csv"
         return StreamingResponse(
-            iter([output.getvalue()]),
+            csv_chunks(),
             media_type="text/csv",
             headers={"Content-Disposition": f'attachment; filename="{fname}"'},
         )
@@ -1387,12 +1518,5 @@ def register_export_routes(app, ctx: dict) -> None:
         for col in ["A", "B", "C", "D", "E"]:
             ws.column_dimensions[col].width = max(ws.column_dimensions[col].width, 22)
 
-        buf = io.BytesIO()
-        wb.save(buf)
-        buf.seek(0)
         fname = f'Recon_{data["bank"]}_{data["tag"]}_{data["day_ref"]}.xlsx'
-        return StreamingResponse(
-            iter([buf.read()]),
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            headers={"Content-Disposition": f'attachment; filename="{fname}"'},
-        )
+        return workbook_file_response(wb, fname)

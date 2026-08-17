@@ -20,6 +20,8 @@ from app_config import (
     AUTH_ENABLED,
     AUTH_PASSWORD,
     AUTH_USERNAME,
+    BACKUP_DB_RETENTION,
+    BACKUP_ZIP_RETENTION,
     BBL_PER_M3,
     DB_PATH,
     DEFAULT_DENSITY,
@@ -29,6 +31,8 @@ from app_config import (
     MONTH_PT,
     OUTPUT_DIR,
     PUBLIC_BASE_URL,
+    DAILY_BACKUP_ENABLED,
+    STARTUP_BACKUP_ENABLED,
     STATIC_DIR,
     UPLOAD_DIR,
     WORK_DIR,
@@ -44,8 +48,11 @@ from routes.cards_routes import register_cards_routes
 from routes.export_routes import register_export_routes
 from routes.monthly_reports_routes import register_monthly_reports_routes
 from routes.methodology_flow_routes import register_methodology_flow_routes
+from routes.mpfm_adjustment_routes import register_mpfm_adjustment_routes
 from routes.ops_routes import register_ops_routes
 from services.ops.monitoring_service import invalidate_months_cache
+from cache_manager import invalidate_cache
+from services.measurement_dimensions import ensure_measurement_dimensions, refresh_measurement_dimensions
 from routes.painel_operador_routes import register_painel_operador_routes
 from routes.recon_routes import register_recon_routes
 from routes.sep_routes import register_sep_routes
@@ -250,6 +257,7 @@ def db_conn():
     try:
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA cache_size = -64000")
     except Exception as _pragma_err:
         print(f"[WARNING] SQLite PRAGMA failed: {_pragma_err}")
     return conn
@@ -268,7 +276,7 @@ def _backup_db_now(label: str = "auto") -> None:
         src.backup(dst)
         dst.close()
         src.close()
-        _prune_backups(keep=14)
+        _prune_backups(keep=BACKUP_DB_RETENTION)
     except Exception as e:
         print(f"[BACKUP] Falha ao criar backup: {e}")
 
@@ -291,7 +299,7 @@ def _daily_backup_loop() -> None:
         try:
             _backup_db_now("daily")
             _build_backup_zip()
-            _prune_backup_zips(keep=7)
+            _prune_backup_zips(keep=BACKUP_ZIP_RETENTION)
         except Exception as e:
             print(f"[BACKUP] Erro no backup diário: {e}")
         _time.sleep(86400)
@@ -317,14 +325,18 @@ def init_db():
     conn.commit()
     from app_config import get_inactive_tag_associados
     rebuild_active_view(conn, get_inactive_tag_associados())
+    ensure_measurement_dimensions(conn)
     conn.close()
 
 
-# Inicia o backup de inicialização em segundo plano para não travar o uvicorn (banco de 1.8GB)
-threading.Thread(target=_backup_db_now, args=("startup",), daemon=True, name="startup-backup").start()
+# A cópia integral no bootstrap é opt-in: mesmo em thread ela compete por disco
+# com as primeiras consultas do dashboard.
+if STARTUP_BACKUP_ENABLED:
+    threading.Thread(target=_backup_db_now, args=("startup",), daemon=True, name="startup-backup").start()
 init_db()
 
-threading.Thread(target=_daily_backup_loop, daemon=True, name="daily-backup").start()
+if DAILY_BACKUP_ENABLED:
+    threading.Thread(target=_daily_backup_loop, daemon=True, name="daily-backup").start()
 
 
 def start_run(source_type: str, source_ref: str, density: float, files_count: int) -> int:
@@ -1628,7 +1640,10 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
     - Salva histórico em SQLite.
     """
     import pandas as pd
+    import time as _time
     run_id = start_run(source_type, source_ref, density, len(paths_names))
+    print(f"[diag] run {run_id}: iniciando parse de {len(paths_names)} arquivo(s)", flush=True)
+    _t_parse0 = _time.monotonic()
     import_repo = ImportRepository(db_conn, _file_sha1, _infer_metric_unit)
     with import_repo.batch_writes():
         prepared = prepare_ingestion_batches(
@@ -1648,6 +1663,7 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
     log = list(prepared['log'])
     by_month = prepared['by_month']
     months_found = prepared['months_found']
+    print(f"[diag] run {run_id}: parse concluido em {_time.monotonic()-_t_parse0:.2f}s ({len(months_found)} mes(es))", flush=True)
 
     def _postcheck_run_payload():
         conn = db_conn()
@@ -1794,9 +1810,13 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
         state = load_state(yr, mo)
 
         log.append(f'\n━━━ {label} ━━━')
+        _t_month0 = _time.monotonic()
+        print(f"[diag] run {run_id}: iniciando mes {label}", flush=True)
 
         recon_targets = _apply_mpfm_overwrite_purges(data, state, run_id, fname, log.append)
+        print(f"[diag] run {run_id}: purge de overwrite concluido em {_time.monotonic()-_t_month0:.2f}s", flush=True)
 
+        _t_sep0 = _time.monotonic()
         process_monthly_sep_inputs(
             data['txts'],
             run_id=run_id,
@@ -1814,8 +1834,10 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
             ser_fn=_ser,
             logger=log.append,
         )
+        print(f"[diag] run {run_id}: SEP mensal concluido em {_time.monotonic()-_t_sep0:.2f}s", flush=True)
 
         new_sheets = {}
+        _t_mpfm0 = _time.monotonic()
         month_result = process_monthly_mpfm_inputs(
             data,
             run_id=run_id,
@@ -1837,6 +1859,7 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
         area_rows = month_result['area_rows']
         sheet_records_for_db = month_result['sheet_records_for_db']
         state = month_result['state']
+        print(f"[diag] run {run_id}: MPFM mensal concluido em {_time.monotonic()-_t_mpfm0:.2f}s ({len(sheet_records_for_db)} sheet(s) para gravar)", flush=True)
 
         # STATUS_MES
         try:
@@ -1848,12 +1871,16 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
 
         if new_sheets:
             try:
+                _t_merge0 = _time.monotonic()
                 engine._merge_excel(str(outxls), new_sheets, area_rows)
+                print(f"[diag] run {run_id}: _merge_excel concluido em {_time.monotonic()-_t_merge0:.2f}s", flush=True)
                 log.append(f'  ✅ {fname}  ({len(new_sheets)} abas + BASE_UNICA_MES)')
                 excels.append(fname)
+                _t_dbwrite0 = _time.monotonic()
                 with import_repo.batch_writes():
                     for sheet_name, rows in sheet_records_for_db:
                         import_repo.store_sheet_rows(run_id, fname, sheet_name, rows)
+                print(f"[diag] run {run_id}: gravacao em measurements_curated concluida em {_time.monotonic()-_t_dbwrite0:.2f}s", flush=True)
                 touched_keys = sorted(set(list(data.get('daily', {}).keys()) + list(data.get('hourly', {}).keys())))
                 for key in touched_keys:
                     unit_code = key.split('_')[0]
@@ -1898,8 +1925,11 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
 
         state['last_run'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         save_state(state)
+        print(f"[diag] run {run_id}: mes {label} finalizado em {_time.monotonic()-_t_month0:.2f}s", flush=True)
 
+    _t_postcheck0 = _time.monotonic()
     import_check = _postcheck_run_payload()
+    print(f"[diag] run {run_id}: postcheck concluido em {_time.monotonic()-_t_postcheck0:.2f}s ({import_check['checked_files']} arquivo(s) checados)", flush=True)
     if import_check['problem_files'] or import_check['failed_files']:
         log.append('\n⚠️  Pós-checagem da carga:')
         for item in import_check['problem_files']:
@@ -1913,8 +1943,16 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
 
     run_status = 'warn' if import_check['problem_files'] or import_check['failed_files'] else 'ok'
     finish_run(run_id, run_status, {'excels': excels, 'log_lines': len(log), 'import_check': import_check})
+    dimension_conn = db_conn()
+    try:
+        refresh_measurement_dimensions(dimension_conn, run_id=run_id)
+    finally:
+        dimension_conn.close()
     # Invalida o cache de meses para que o painel reflita os novos dados imediatamente
     invalidate_months_cache()
+    invalidate_cache("mpfm_metadata")
+    invalidate_cache("ops_months")
+    invalidate_cache("ops_month_summary")
     return {'log': log, 'excels': list(dict.fromkeys(excels)), 'run_id': run_id, 'import_check': import_check, 'status': run_status}
 
 
@@ -2427,6 +2465,14 @@ register_export_routes(
         'sep_detail_kind': _sep_detail_kind,
         'write_cards_to_workbook': _write_cards_to_workbook,
         'is_monthly_workbook_rebuilding': is_monthly_workbook_rebuilding,
+    },
+)
+
+register_mpfm_adjustment_routes(
+    app,
+    {
+        'db_conn': db_conn,
+        'invalidate_cache': invalidate_cache,
     },
 )
 

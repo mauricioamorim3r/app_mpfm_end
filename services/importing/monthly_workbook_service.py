@@ -37,11 +37,59 @@ BASE_UNICA_COLUMNS = [
     "Pressão (barg)","Temperatura (°C)","Dens. Gás (kg/m³)","Dens. Óleo (kg/m³)","Dens. Água (kg/m³)",
     "SEP TAG","SEP Medidor","SEP Local","SEP Status","Bancos alinhados",
     "SEP Óleo Vol. Bruto (m³) CV","SEP Óleo (t) CV","SEP Gás (t) CV","SEP Água (t) CV","SEP HC (t)","SEP Total (t)","SEP Temperatura Méd. (°C)","SEP Pressão Méd. (barg)",
+    "Desvio HC (%)","Desvio Total (%)",
     "Recon Cobertura","Recon Horas","Recon Daily Gás (t)","Recon Daily Óleo (t)","Recon Daily HC (t)","Recon Daily Água (t)",
     "Recon Soma h. Gás (t)","Recon Soma h. Óleo (t)","Recon Soma h. HC (t)","Recon Soma h. Água (t)",
     "Recon Δ Gás (t)","Recon Δ Óleo (t)","Recon Δ HC (t)","Recon Δ Água (t)",
     "Status Gás","Status Óleo","Status HC","Status Água","Fonte","SourceFile","IsOfficial"
 ]
+
+# Colunas SEP_Dados (separador de testes) mescladas na MESMA linha da leitura MPFM
+# quando o dia está alinhado (sep_alignments) a um ou mais bancos. Mantidas como
+# constantes para reuso no export (monthly_workbook_service) e no import reverso
+# (base_unica_import_service).
+SEP_METRIC_TO_COLUMN = {
+    "oil_m3": "SEP Óleo Vol. Bruto (m³) CV",
+    "oil_t": "SEP Óleo (t) CV",
+    "gas_t": "SEP Gás (t) CV",
+    "water_t": "SEP Água (t) CV",
+    "hc_t": "SEP HC (t)",
+    "total_t": "SEP Total (t)",
+    "temp": "SEP Temperatura Méd. (°C)",
+    "pressure_barg": "SEP Pressão Méd. (barg)",
+}
+
+# Colunas calculadas (não são metric_name persistido) — devem ser ignoradas na
+# reimportação soberana da BASE_UNICA_MES para não poluir measurements_curated.
+BASE_UNICA_DERIVED_COLUMNS = {"Desvio HC (%)", "Desvio Total (%)"}
+
+
+def _mpfm_hour_from_sep_hour(sep_hour_ref):
+    """Converte a numeração de hora do TXT do separador (1-24) para a
+    convenção usada pelos relatórios MPFM (0-23), onde a hora 24 do TXT
+    corresponde à hora 0 (última hora do dia) do PDF."""
+    if sep_hour_ref is None:
+        return None
+    try:
+        hour = int(sep_hour_ref)
+    except Exception:
+        return None
+    return 0 if hour == 24 else hour
+
+
+def _sep_desvio_pct(mpfm_value, sep_value):
+    """% Desvio = ((MPFM - SEP) / SEP) × 100, referência = Separador (mesma
+    fórmula usada historicamente por mpfm_engine._desvio para o SEP_Dados)."""
+    try:
+        if mpfm_value in (None, "") or sep_value in (None, ""):
+            return ""
+        mpfm_f = float(mpfm_value)
+        sep_f = float(sep_value)
+        if sep_f == 0:
+            return ""
+        return round((mpfm_f - sep_f) / sep_f * 100, 2)
+    except Exception:
+        return ""
 
 
 def excel_name(month_pt: dict, year, month):
@@ -330,6 +378,72 @@ def _restore_user_hidden_sheets(wb, saved_sheets: list) -> None:
                     new_ws.cell(row=row_idx, column=col_idx, value=value)
 
 
+def _fill_sep_columns(out_row: dict, values: dict, meta_info: dict, aligns_csv: str, status: str) -> None:
+    out_row["SEP TAG"] = meta_info.get("tag") or "SEP"
+    out_row["SEP Medidor"] = meta_info.get("instrument") or ""
+    out_row["SEP Local"] = meta_info.get("loop") or meta_info.get("tipo") or ""
+    out_row["SEP Status"] = status
+    out_row["Bancos alinhados"] = aligns_csv or ""
+    for metric, column in SEP_METRIC_TO_COLUMN.items():
+        if metric in values:
+            out_row[column] = values[metric]
+
+
+def _build_standalone_sep_row(day_ref: str, hour_ref, values: dict, meta_info: dict, aligns_csv: str) -> dict:
+    """Linha SEP isolada — usada apenas quando o dia não tem banco alinhado
+    (sep_alignments) ou nenhuma linha MPFM correspondente foi encontrada para
+    aquela hora/banco, evitando perder o dado extraído do separador."""
+    out_row = {column: "" for column in BASE_UNICA_COLUMNS}
+    out_row.update(
+        {
+            "ProductionDate": day_ref,
+            "Hour": "" if hour_ref is None else f"{int(hour_ref):02d}:00",
+            "Granularity": "Daily" if hour_ref is None else "Hourly",
+            "Origin": "SEP",
+            "SourceType": "TXT",
+            "Area": "",
+            "System": "",
+            "Bank": "",
+            "Loop": meta_info.get("loop") or "",
+            "Tipo": meta_info.get("tipo") or "",
+            "Entity": meta_info.get("tag") or "",
+            "Tag": meta_info.get("tag") or "",
+            "Instrumento": meta_info.get("instrument") or "",
+            "Fonte": "Separador",
+            "SourceFile": meta_info.get("source_file") or "",
+            "IsOfficial": 1,
+        }
+    )
+    _fill_sep_columns(out_row, values, meta_info, aligns_csv, "Extraído")
+    return out_row
+
+
+def _merge_sep_into_base_unica(out_rows: list, mpfm_row_index: dict, sep_piv: dict, sep_meta: dict, aligns: dict) -> None:
+    """Mescla as leituras do separador de testes (sep_piv) na MESMA linha da
+    leitura MPFM do(s) banco(s) alinhados naquele dia (sep_alignments). Sem
+    alinhamento (ou sem linha MPFM correspondente naquela hora), cai de volta
+    para uma linha própria (Origin=SEP), preservando o dado extraído."""
+    by_day = defaultdict(dict)
+    for (day_ref, hour_ref), values in sep_piv.items():
+        by_day[day_ref][hour_ref] = values
+
+    for day_ref, hour_values in by_day.items():
+        meta_info = sep_meta.get(day_ref, {})
+        aligns_csv = aligns.get(day_ref, "")
+        aligned_banks = [b.strip().upper() for b in aligns_csv.split(",") if b.strip()]
+        for hour_ref, values in hour_values.items():
+            hour_key = "" if hour_ref is None else f"{int(hour_ref):02d}:00"
+            matched = False
+            for bank in aligned_banks:
+                for out_row in mpfm_row_index.get((day_ref, hour_key, bank), []):
+                    matched = True
+                    _fill_sep_columns(out_row, values, meta_info, aligns_csv, "Aplicado")
+                    out_row["Desvio HC (%)"] = _sep_desvio_pct(out_row.get("MPFM corr HC (t)"), values.get("hc_t"))
+                    out_row["Desvio Total (%)"] = _sep_desvio_pct(out_row.get("MPFM corr Total (t)"), values.get("total_t"))
+            if not matched:
+                out_rows.append(_build_standalone_sep_row(day_ref, hour_ref, values, meta_info, aligns_csv))
+
+
 def build_monthly_base_unica(
     db_conn_fn,
     workbook_path: Path,
@@ -408,28 +522,50 @@ def build_monthly_base_unica(
 
     piv = defaultdict(dict)
     meta = {}
+    # Dados do separador (row_kind='sep') NÃO entram no piv/meta padrão — são
+    # coletados à parte e depois mesclados na MESMA linha da leitura MPFM do(s)
+    # banco(s) alinhado(s) naquele dia (sep_alignments), em vez de virarem uma
+    # linha própria. Chave por (day_ref, hora MPFM 0-23 ou None p/ diário).
+    sep_piv = defaultdict(dict)
+    sep_meta = {}
     for row in rows:
+        if row["row_kind"] == "sep":
+            mpfm_hour = _mpfm_hour_from_sep_hour(row["hour_ref"])
+            sep_key = (row["day_ref"], mpfm_hour)
+            sep_piv[sep_key][row["metric_name"]] = row["metric_value"]
+            sep_meta.setdefault(
+                row["day_ref"],
+                {
+                    "tag": row["tag"] or "SEP",
+                    "instrument": row["instrument"] or "",
+                    "loop": row["loop"] or "",
+                    "tipo": row["tipo"] or "",
+                    "source_file": row["source_file"] or "",
+                },
+            )
+            continue
         key = (row["day_ref"], row["hour_ref"], row["row_kind"], row["bank"], row["loop"], row["tipo"], row["tag"], row["instrument"], row["source_file"])
         piv[key][row["metric_name"]] = row["metric_value"]
         meta[key] = {
             "ProductionDate": row["day_ref"],
             "Hour": "" if row["hour_ref"] is None else f"{int(row['hour_ref']):02d}:00",
             "Granularity": "Hourly" if row["row_kind"] == "hourly" else "Daily" if row["row_kind"] == "daily" else "Recon" if row["row_kind"] == "recon" else ("Hourly" if row["hour_ref"] is not None else "Daily"),
-            "Origin": "SEP" if row["row_kind"] == "sep" else ("RECON" if row["row_kind"] == "recon" else "MPFM"),
-            "SourceType": "TXT" if row["row_kind"] == "sep" else ("CALC" if row["row_kind"] == "recon" else "PDF"),
+            "Origin": "RECON" if row["row_kind"] == "recon" else "MPFM",
+            "SourceType": "CALC" if row["row_kind"] == "recon" else "PDF",
             "Area": "",
             "System": "",
-            "Bank": "" if row["bank"] == "SEP" else (row["bank"] or ""),
+            "Bank": row["bank"] or "",
             "Loop": row["loop"] or "",
             "Tipo": row["tipo"] or "",
             "Entity": row["tag"] or "",
             "Tag": row["tag"] or "",
             "Instrumento": row["instrument"] or "",
-            "Fonte": "Separador" if row["row_kind"] == "sep" else ("Reconciliação" if row["row_kind"] == "recon" else "MPFM"),
+            "Fonte": "Reconciliação" if row["row_kind"] == "recon" else "MPFM",
             "SourceFile": row["source_file"] or "",
             "IsOfficial": 1,
         }
     out_rows = []
+    mpfm_row_index = defaultdict(list)
     for key in sorted(piv.keys(), key=lambda item: (item[0], -1 if item[1] is None else item[1], item[2], item[3], item[6])):
         out_row = {column: "" for column in BASE_UNICA_COLUMNS}
         out_row.update(meta[key])
@@ -437,25 +573,6 @@ def build_monthly_base_unica(
         for column in BASE_UNICA_COLUMNS:
             if column in values:
                 out_row[column] = values[column]
-        if meta[key]["Origin"] == "SEP":
-            out_row["SEP TAG"] = meta[key]["Tag"] or "SEP"
-            out_row["SEP Medidor"] = meta[key]["Instrumento"]
-            out_row["SEP Local"] = meta[key]["Loop"] or meta[key]["Tipo"]
-            out_row["SEP Status"] = "Aplicado" if aligns.get(meta[key]["ProductionDate"]) else "Extraído"
-            out_row["Bancos alinhados"] = aligns.get(meta[key]["ProductionDate"], "")
-            metric_map = {
-                "oil_m3": "SEP Óleo Vol. Bruto (m³) CV",
-                "oil_t": "SEP Óleo (t) CV",
-                "gas_t": "SEP Gás (t) CV",
-                "water_t": "SEP Água (t) CV",
-                "hc_t": "SEP HC (t)",
-                "total_t": "SEP Total (t)",
-                "temp": "SEP Temperatura Méd. (°C)",
-                "pressure_barg": "SEP Pressão Méd. (barg)",
-            }
-            for metric, column in metric_map.items():
-                if metric in values:
-                    out_row[column] = values[metric]
         if meta[key]["Origin"] == "RECON":
             recon_map = {
                 "Cobertura": "Recon Cobertura",
@@ -481,6 +598,10 @@ def build_monthly_base_unica(
                 if metric in values:
                     out_row[column] = values[metric]
         out_rows.append(out_row)
+        if out_row["Origin"] == "MPFM":
+            mpfm_row_index[(out_row["ProductionDate"], out_row["Hour"], out_row["Bank"])].append(out_row)
+
+    _merge_sep_into_base_unica(out_rows, mpfm_row_index, sep_piv, sep_meta, aligns)
 
     df = pd.DataFrame(out_rows, columns=BASE_UNICA_COLUMNS) if out_rows else pd.DataFrame(columns=BASE_UNICA_COLUMNS)
     _user_hidden_sheets = _save_user_hidden_sheets(workbook_path)

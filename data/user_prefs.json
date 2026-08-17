@@ -38,7 +38,7 @@
       {
         "id": "folder-1785003910367",
         "label": "PE-4",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.4_18-FT-1506 PE 4 - Subsea B05\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05\\2026\\07. Julho",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -117,17 +117,15 @@
   ],
   "summary_layout": {
     "cards": false,
-    "bank": false,
-    "tag": false,
+    "bank": true,
+    "tag": true,
     "daily": true
   },
   "summary_daily_chart": {
     "visibleSeries": [
       "mpfm_oil",
       "mpfm_gas",
-      "mpfm_water",
-      "mpfm_hc",
-      "mpfm_total"
+      "mpfm_water"
     ]
   }
 }

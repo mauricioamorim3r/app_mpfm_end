@@ -75,6 +75,7 @@ def prepare_ingestion_batches(
     parsed_pdfs = []
     txt_files = []
     seen_identity_hashes = {}
+    seen_file_hashes = {}
 
     def _pdf_report_meta(record: dict, unit_code: str, report_type: str) -> dict:
         if report_type == "daily":
@@ -206,6 +207,28 @@ def prepare_ingestion_batches(
         if ext == "pdf":
             report_type = file_type if file_type in ("daily", "hourly") else "daily"
             if not force_overwrite and file_hash:
+                prior_same_hash = seen_file_hashes.get(file_hash)
+                if prior_same_hash:
+                    log_file_fn(
+                        run_id,
+                        name,
+                        ext,
+                        report_type,
+                        unit or "",
+                        meter_id,
+                        location,
+                        content_date,
+                        info.get("report_start", ""),
+                        info.get("report_end", ""),
+                        content_date[:7],
+                        info.get("identity_key", ""),
+                        info.get("time_source", ""),
+                        file_hash,
+                        True,
+                        f"Conteudo identico ja incluido neste lote por {prior_same_hash} - parse ignorado",
+                    )
+                    log.append(f"ℹ️  {name}  →  PDF identico no mesmo lote - parse ignorado")
+                    continue
                 existing_by_hash = find_existing_import_by_hash_fn(file_hash)
                 if existing_by_hash:
                     raw_file_id = log_raw_file_fn(run_id, Path(path), source_type, info)
@@ -370,6 +393,8 @@ def prepare_ingestion_batches(
                     continue
                 if meta["identity_key"]:
                     seen_identity_hashes[meta["identity_key"]] = file_hash or ""
+                if file_hash and not force_overwrite:
+                    seen_file_hashes[file_hash] = name
                 overwrite_existing = bool(existing and ((existing.get("file_hash") or "") != (file_hash or "") or force_overwrite))
                 record["_overwrite_existing"] = overwrite_existing
                 record["_previous_import_id"] = existing.get("id") if existing else None

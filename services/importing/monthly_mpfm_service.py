@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 
 def process_monthly_mpfm_inputs(
     data,
@@ -24,7 +26,9 @@ def process_monthly_mpfm_inputs(
     sheet_records_for_db = []
 
     all_keys = sorted(set(list(data["daily"]) + list(data["hourly"])))
-    for key in all_keys:
+    print(f"[diag] process_monthly_mpfm_inputs: {len(all_keys)} dia(s) a processar", flush=True)
+    for _key_idx, key in enumerate(all_keys, 1):
+        _key_t0 = time.monotonic()
         daily_rec, unit_code = data["daily"].get(key, (None, key.split("_")[0]))
         hourly_recs_all = list(data["hourly"].get(key, []))
         day_tag_check = "_".join(key.split("_")[1:])
@@ -123,6 +127,8 @@ def process_monthly_mpfm_inputs(
             state["processed_hours_by_key"][key] = sorted(set(existing + persisted_hours))
             day_existing = state.setdefault("processed_hours", {}).get(day_tag, [])
             state["processed_hours"][day_tag] = sorted(set(day_existing + persisted_hours))
+
+        print(f"[diag] ({_key_idx}/{len(all_keys)}) {key}: {time.monotonic()-_key_t0:.2f}s", flush=True)
 
     return {
         "area_rows": area_rows,

@@ -30,14 +30,29 @@ async function ensureFileHash(file) {
   file._sha1 = await file._sha1Promise;
   return file._sha1;
 }
-async function buildQueueManifest() {
-  return Promise.all((state.queue || []).map(async (file) => ({
-    file_id: ensureQueueId(file),
-    filename: file.name,
-    file_hash: await ensureFileHash(file),
-    size: file.size || 0,
-    last_modified: file.lastModified || 0,
-  })));
+async function buildQueueManifest(progressCallback) {
+  const files = state.queue || [];
+  const result = [];
+  const batchSize = 3; // Processa 3 arquivos por vez para evitar travar a UI
+  
+  for (let i = 0; i < files.length; i += batchSize) {
+    const batch = files.slice(i, i + batchSize);
+    if (progressCallback) {
+      progressCallback(i, files.length);
+    }
+    const batchResults = await Promise.all(batch.map(async (file) => ({
+      file_id: ensureQueueId(file),
+      filename: file.name,
+      file_hash: await ensureFileHash(file),
+      size: file.size || 0,
+      last_modified: file.lastModified || 0,
+    })));
+    result.push(...batchResults);
+    // Yield para a UI entre batches
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  
+  return result;
 }
 function addFiles(files) {
   files.filter(f => /\.(pdf|txt)$/i.test(f.name)).forEach(f => {
@@ -100,6 +115,9 @@ document.getElementById('clearQueue').onclick = () => { state.queue=[]; renderQu
 function setMainProcessingBusy(isBusy) {
   const processBtn = document.getElementById('processBtn');
   const processFolderBtn = document.getElementById('processFolderBtn');
+  const processLatestDayBtn = document.getElementById('btnProcessLatestDay');
+  const processLatest3DaysBtn = document.getElementById('btnProcessLatest3Days');
+  const processSelectedWindowBtn = document.getElementById('btnProcessSelectedWindow');
   const clearQueueBtn = document.getElementById('clearQueue');
   const folderInput = document.getElementById('folderPath');
   const fileInput = document.getElementById('fileInput');
@@ -108,6 +126,9 @@ function setMainProcessingBusy(isBusy) {
   const hasFolder = !!(folderInput?.value || '').trim();
   if (processBtn) processBtn.disabled = busy || !hasQueue;
   if (processFolderBtn) processFolderBtn.disabled = busy || !hasFolder;
+  if (processLatestDayBtn) processLatestDayBtn.disabled = busy;
+  if (processLatest3DaysBtn) processLatest3DaysBtn.disabled = busy;
+  if (processSelectedWindowBtn) processSelectedWindowBtn.disabled = busy;
   if (clearQueueBtn) clearQueueBtn.disabled = busy || !hasQueue;
   if (folderInput) folderInput.disabled = busy;
   if (fileInput) fileInput.disabled = busy;
@@ -203,10 +224,14 @@ async function startProcessing(overwriteMap) {
   if (state.mainProcessingBusy) return;
   state.mainProcessingBusy = true;
   setMainProcessingBusy(true);
-  setProcessLogStatus('Processando…');
+  setProcessLogStatus('Preparando upload…');
   try {
     const fd = new FormData();
-    const manifest = await buildQueueManifest();
+    setProcessLogStatus('Calculando hash dos arquivos…');
+    const manifest = await buildQueueManifest((processed, total) => {
+      setProcessLogStatus(`Calculando hash dos arquivos… ${processed}/${total}`);
+    });
+    setProcessLogStatus('Enviando arquivos…');
     fd.append('file_manifest', JSON.stringify(manifest));
     state.queue.forEach(f => fd.append('files', f));
     if (overwriteMap) fd.append('overwrite_map', JSON.stringify(overwriteMap));
@@ -221,6 +246,8 @@ async function startProcessing(overwriteMap) {
     if (typeof loadAutoFolderMonitorStatus === 'function') {
       await loadAutoFolderMonitorStatus();
     }
+    // ✅ Navegar de volta para a página de resumo após upload completo
+    setPage('resumo');
   } catch (error) {
     console.error('Falha ao processar arquivos da fila', error);
     setProcessLogStatus(error?.message || 'Falha ao processar os arquivos da fila.');
@@ -265,6 +292,127 @@ async function startFolderProcessing(folder, overwriteMap) {
   }
 }
 
+function getSelectedIngestionWindow() {
+  const targetDay = (document.getElementById('latestTargetDay')?.value || '').trim();
+  const rawWindow = parseInt(document.getElementById('latestWindowDays')?.value || '1', 10);
+  const daysCount = Math.max(1, Math.min(31, Number.isFinite(rawWindow) ? rawWindow : 1));
+  return {targetDay, daysCount};
+}
+
+function buildLatestDayPayload(daysCount = 1, overwriteMap = null, targetDay = '') {
+  return {
+    days_count: daysCount,
+    target_day: targetDay || '',
+    sep_root: (document.getElementById('sepFolderRoot')?.value || '').trim(),
+    sep_folder_names: (document.getElementById('sepFolderNames')?.value || 'FC13, FC14, FC17')
+      .split(/[,;]/)
+      .map(item => item.trim())
+      .filter(Boolean),
+    overwrite_map: overwriteMap || null,
+    force_overwrite: !!overwriteMap && Object.values(overwriteMap).some(value => value === 'overwrite'),
+  };
+}
+
+function formatLatestDayPreview(preview) {
+  const folders = preview?.folders || [];
+  const targetDays = preview?.target_days || (preview?.target_day ? [preview.target_day] : []);
+  const requestedDay = preview?.requested_day || '';
+  const daysLabel = targetDays.length > 1 ? targetDays.slice().sort().join(' a ') : (targetDays[0] || 'não identificado');
+  const folderLines = folders.map(folder => {
+    const expectedHourly = 24 * Math.max(1, targetDays.length || preview?.days_count || 1);
+    const status = folder.exists ? `${folder.daily_found || 0} daily · ${folder.hourly_found || 0}/${expectedHourly} hourly` : 'pasta não encontrada';
+    const missing = (folder.missing || []).length ? ` · faltando: ${(folder.missing || []).join(', ')}` : '';
+    return `• ${folder.label || folder.path}: ${status}${missing}`;
+  });
+  const sep = preview?.sep || {};
+  const sepLine = sep.enabled
+    ? `SEP TXT: ${preview.sep_count || 0} arquivo(s) selecionado(s) · ${sep.complete ? 'trio completo' : 'trio incompleto/ausente'}`
+    : `SEP TXT: ${sep.message || 'pasta SEP não informada'}`;
+  return [
+    `${requestedDay ? (targetDays.length > 1 ? 'Janela solicitada' : 'Dia solicitado') : (targetDays.length > 1 ? 'Últimos dias vigentes' : 'Último dia vigente')}: ${daysLabel}`,
+    `${preview?.message || ''}`,
+    `MPFM PDF: ${preview?.mpfm_count || 0} arquivo(s)` ,
+    sepLine,
+    `Duplicados detectados: ${preview?.duplicates_count || 0}`,
+    '',
+    ...folderLines,
+  ].join('\n');
+}
+
+async function startLatestDayProcessing(daysCount = 1, overwriteMap = null, targetDay = '') {
+  if (state.mainProcessingBusy) return;
+  state.mainProcessingBusy = true;
+  setMainProcessingBusy(true);
+  setProcessLogStatus(targetDay
+    ? `Processando janela de ${daysCount} dia(s) até ${targetDay}…`
+    : (daysCount > 1 ? `Processando ${daysCount} últimos dias vigentes…` : 'Processando último dia vigente…'));
+  try {
+    const res = await j(`${API}/latest-day-ingestion/process`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(buildLatestDayPayload(daysCount, overwriteMap, targetDay)),
+    });
+    setProcessLogStatus((res.log || []).join('\n') || formatLatestDayPreview(res));
+    appendImportCheckFeedback(res);
+    if (res.last_date) {
+      const moSel = document.getElementById('globalMonth');
+      if (moSel) moSel.value = res.last_date.slice(0, 7);
+    }
+    await notifyDataChanged(['upload','mpfm','separador','cards','alertas','exportar','monitoramento','xml042']);
+    syncGlobal();
+    await loadSummary();
+    await loadProcessHistory();
+    if (typeof loadAutoFolderMonitorStatus === 'function') {
+      await loadAutoFolderMonitorStatus();
+    }
+  } catch (error) {
+    console.error('Falha ao processar último dia vigente', error);
+    setProcessLogStatus(error?.message || 'Falha ao processar o último dia vigente.');
+  } finally {
+    state.mainProcessingBusy = false;
+    setMainProcessingBusy(false);
+  }
+}
+
+async function previewAndMaybeProcessLatestDays(daysCount = 1, targetDay = '') {
+  if (state.mainProcessingBusy || state.mainCheckBusy) return;
+  state.mainCheckBusy = true;
+  setMainProcessingBusy(true);
+  const label = targetDay
+    ? `janela de ${daysCount} dia(s) até ${targetDay}`
+    : (daysCount > 1 ? `${daysCount} últimos dias vigentes` : 'último dia vigente');
+  setProcessLogStatus(`Verificando arquivos elegíveis da ${label} nas pastas MPFM configuradas…`);
+  try {
+    const preview = await j(`${API}/latest-day-ingestion/preview`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(buildLatestDayPayload(daysCount, null, targetDay)),
+    });
+    const summary = formatLatestDayPreview(preview);
+    setProcessLogStatus(summary);
+    if (!preview.has_eligible) {
+      alert('Não foram encontrados arquivos elegíveis para processar.');
+      return;
+    }
+    const proceed = confirm(`${summary}\n\nDeseja processar agora?`);
+    if (!proceed) return;
+    const dups = preview.duplicates || [];
+    if (dups.length) {
+      openDuplicateModal(dups, async () => startLatestDayProcessing(daysCount, state.dupDecisions, targetDay));
+      return;
+    }
+    await startLatestDayProcessing(daysCount, null, targetDay);
+  } catch (error) {
+    console.error(`Falha ao verificar ${label}`, error);
+    setProcessLogStatus(error?.message || `Falha ao verificar ${label}.`);
+  } finally {
+    state.mainCheckBusy = false;
+    if (!state.mainProcessingBusy) {
+      setMainProcessingBusy(false);
+    }
+  }
+}
+
 function openDuplicateModal(dups, confirmHandler) {
   state.dupDecisions = {};
   dups.forEach(d => state.dupDecisions[d.file_id] = 'overwrite');
@@ -278,7 +426,7 @@ function openDuplicateModal(dups, confirmHandler) {
         <div style="font-size:11px;color:var(--muted);margin-top:2px">${d.duplicate_mode === 'same_content' ? 'Mesmo conteúdo já importado' : 'Mesmo nome já importado'} · ${d.last_imported||'data desconhecida'} · ${d.content_date||''} · ${d.file_type||''}${d.meter_id ? ` · ${d.meter_id}` : ''}</div>
       </div>
       <div class="row" style="gap:6px;flex-shrink:0">
-        <button class="btn sm" id="ow_${CSS.escape(d.file_id)}" onclick="dupToggle('${d.file_id.replace(/'/g,"\\'")}')" style="min-width:120px">🔄 Sobrescrever</button>
+        <button class="btn sm" id="ow_${CSS.escape(d.file_id)}" onclick="dupToggle(${JSON.stringify(d.file_id)})" style="min-width:120px">🔄 Sobrescrever</button>
       </div>
     </div>`).join('');
   setDuplicateModalBusy(false, state.dupStatusBase);
@@ -290,9 +438,12 @@ document.getElementById('processBtn').onclick = async () => {
   if (!state.queue.length || state.mainProcessingBusy || state.mainCheckBusy) return;
   state.mainCheckBusy = true;
   setMainProcessingBusy(true);
-  setProcessLogStatus('Verificando duplicidades na fila…');
+  setProcessLogStatus('Calculando hash dos arquivos…');
   try {
-    const items = await buildQueueManifest();
+    const items = await buildQueueManifest((processed, total) => {
+      setProcessLogStatus(`Calculando hash dos arquivos… ${processed}/${total}`);
+    });
+    setProcessLogStatus('Verificando duplicidades na fila…');
     const chk = await j(`${API}/check-duplicates`, {method:'POST',
       headers:{'Content-Type':'application/json'}, body:JSON.stringify({items})});
     const dups = chk.duplicates || [];
@@ -396,6 +547,18 @@ document.getElementById('processFolderBtn').onclick = async () => {
     }
   }
 };
+
+document.getElementById('btnProcessLatestDay')?.addEventListener('click', () => previewAndMaybeProcessLatestDays(1));
+document.getElementById('btnProcessLatest3Days')?.addEventListener('click', () => previewAndMaybeProcessLatestDays(3));
+document.getElementById('btnProcessSelectedWindow')?.addEventListener('click', () => {
+  const {targetDay, daysCount} = getSelectedIngestionWindow();
+  if (!targetDay) {
+    alert('Informe a data de produção para pesquisar a janela.');
+    document.getElementById('latestTargetDay')?.focus();
+    return;
+  }
+  previewAndMaybeProcessLatestDays(daysCount, targetDay);
+});
 
 function buildSepFolderPayload() {
   return {

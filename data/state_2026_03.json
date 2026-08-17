@@ -12,9 +12,17 @@
     "B15_30_03"
   ],
   "sep_by_day": {},
-  "processed_hours": {},
-  "processed_hours_by_key": {},
+  "processed_hours": {
+    "15_03": [
+      18
+    ]
+  },
+  "processed_hours_by_key": {
+    "B08_15_03": [
+      18
+    ]
+  },
   "sep_days": [],
   "file_notes": [],
-  "last_run": "2026-05-03 18:24:20"
+  "last_run": "2026-08-03 12:46:56"
 }

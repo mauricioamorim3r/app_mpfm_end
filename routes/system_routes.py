@@ -11,7 +11,7 @@ import sqlite3
 import tempfile
 import threading
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from fastapi import HTTPException, Request
@@ -36,6 +36,13 @@ def register_system_routes(app, ctx: dict) -> None:
     db_path = ctx["db_path"]
     is_monthly_workbook_rebuilding = ctx["is_monthly_workbook_rebuilding"]
     prefs_path = work_dir / "user_prefs.json"
+
+    _B05_OLD_FOLDER = "3.1.4_18-FT-1506 PE 4 - Subsea B05"
+    _B05_OFFICIAL_FOLDER = "3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05"
+
+    def _canonical_monitor_folder_path(folder_path: str) -> str:
+        """Mantém PE-4A e PE-EO105 na única pasta oficial compartilhada."""
+        return str(folder_path or "").strip().replace(_B05_OLD_FOLDER, _B05_OFFICIAL_FOLDER)
     
     allowed_output_patterns = (
         re.compile(r"^MPFM_(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)_\d{4}\.xlsx$", re.IGNORECASE),
@@ -142,7 +149,7 @@ def register_system_routes(app, ctx: dict) -> None:
         for idx, item in enumerate(base.get("folders") or []):
             if not isinstance(item, dict):
                 continue
-            folder_path = str(item.get("path") or "").strip()
+            folder_path = _canonical_monitor_folder_path(item.get("path") or "")
             if not folder_path:
                 continue
             duplicate_policy = str(item.get("duplicate_policy") or "skip").strip().lower()
@@ -187,7 +194,7 @@ def register_system_routes(app, ctx: dict) -> None:
         for idx, item in enumerate((config or {}).get("folders") or []):
             if not isinstance(item, dict):
                 continue
-            folder_path = str(item.get("path") or "").strip()
+            folder_path = _canonical_monitor_folder_path(item.get("path") or "")
             if not folder_path:
                 continue
             duplicate_policy = str(item.get("duplicate_policy") or "skip").strip().lower()
@@ -270,6 +277,14 @@ def register_system_routes(app, ctx: dict) -> None:
                         (fname,),
                     ).fetchone()
                     mode = "same_name" if row else ""
+                if not row and fname and fname.lower().endswith(".txt"):
+                    row = cur.execute(
+                        """SELECT source_file AS filename, fluid_kind AS file_type, production_date AS content_date,
+                                  updated_at AS created_at, meter_id, location
+                           FROM sep_source_files WHERE source_file=? ORDER BY id DESC LIMIT 1""",
+                        (fname,),
+                    ).fetchone()
+                    mode = "same_name" if row else ""
                 if row:
                     results.append(
                         {
@@ -336,6 +351,316 @@ def register_system_routes(app, ctx: dict) -> None:
             except OSError:
                 continue
         return stable
+
+    def _parse_mpfm_pdf_filename(path: Path) -> dict | None:
+        match = re.search(r"(?P<bank>B\d{2})_MPFM_(?P<kind>Daily|Hourly)-(?P<date>\d{8})-(?P<time>\d{6})", path.name, re.IGNORECASE)
+        if not match:
+            return None
+        kind = match.group("kind").lower()
+        try:
+            end_dt = datetime.strptime(f'{match.group("date")}{match.group("time")}', "%Y%m%d%H%M%S")
+        except ValueError:
+            return None
+        if kind == "daily":
+            production_day = (end_dt.date() - timedelta(days=1)).isoformat()
+            hour = None
+        else:
+            start_dt = end_dt - timedelta(hours=1)
+            production_day = start_dt.date().isoformat()
+            hour = start_dt.hour
+        return {
+            "path": path,
+            "name": path.name,
+            "bank": match.group("bank").upper(),
+            "report_type": kind,
+            "production_day": production_day,
+            "hour": hour,
+        }
+
+    def _active_mpfm_monitor_folders() -> list[dict]:
+        return [folder for folder in monitor_prefs.get("folders", []) if folder.get("active", True)]
+
+    def _candidate_existing_mpfm_roots(folder_path: str) -> list[Path]:
+        raw = Path(_canonical_monitor_folder_path(folder_path))
+        variants: list[Path] = []
+        if str(raw):
+            variants.append(raw)
+            parts = list(raw.parts)
+            for idx, part in enumerate(parts):
+                if part == "3. Registros de Operação SGM Multifasico" and idx + 1 < len(parts) and parts[idx + 1] == "3.1 Registros Diarios MPFM":
+                    try:
+                        variants.append(Path(parts[0], *parts[1:idx], *parts[idx + 1:]))
+                    except Exception:
+                        pass
+                    break
+
+        roots: list[Path] = []
+        seen: set[str] = set()
+        month_match = re.match(r"^(?P<num>\d{2})\.", raw.name or "")
+        preferred_months: set[int] = set()
+        if month_match:
+            try:
+                month_num = int(month_match.group("num"))
+                preferred_months.update({month_num - 1, month_num, month_num + 1})
+            except Exception:
+                preferred_months = set()
+        for variant in variants:
+            if not variant.exists() or not variant.is_dir():
+                continue
+            scan_roots = [variant]
+            if re.match(r"^\d{2}\.", variant.name or "") and variant.parent.is_dir() and re.match(r"^\d{4}$", variant.parent.name or ""):
+                siblings = [item for item in variant.parent.iterdir() if item.is_dir() and re.match(r"^\d{2}\.", item.name or "")]
+                filtered = []
+                for item in siblings:
+                    item_match = re.match(r"^(\d{2})\.", item.name or "")
+                    if not item_match:
+                        continue
+                    try:
+                        if int(item_match.group(1)) in preferred_months:
+                            filtered.append(item)
+                    except Exception:
+                        continue
+                scan_roots = filtered or [variant]
+            for root in scan_roots:
+                key = str(root.resolve()).casefold()
+                if key in seen:
+                    continue
+                seen.add(key)
+                roots.append(root.resolve())
+        return sorted(roots, key=lambda item: str(item).casefold())
+
+    def _discover_mpfm_pdf_files_fast(scan_root: Path) -> list[Path]:
+        candidates: list[Path] = []
+        if scan_root.name.lower() in {"daily", "hourly"}:
+            candidates.extend(scan_root.glob("*.pdf"))
+        else:
+            for child_name in ("Daily", "DAILY", "daily", "Hourly", "HOURLY", "hourly"):
+                child = scan_root / child_name
+                if child.is_dir():
+                    candidates.extend(child.glob("*.pdf"))
+            candidates.extend(scan_root.glob("*.pdf"))
+        seen: set[str] = set()
+        result: list[Path] = []
+        for path in candidates:
+            if not path.is_file():
+                continue
+            key = str(path.resolve()).casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            result.append(path.resolve())
+        return sorted(result, key=lambda item: item.name.casefold())
+
+    def _scan_latest_day_ingestion(body: dict | None = None) -> dict:
+        body = body or {}
+        requested_day = normalize_date_input(str(body.get("target_day") or body.get("production_day") or "").strip())
+        try:
+            days_count = max(1, min(31, int(body.get("days_count") or body.get("last_days") or 1)))
+        except Exception:
+            days_count = 1
+        if requested_day and not re.match(r"^\d{4}-\d{2}-\d{2}$", requested_day):
+            raise HTTPException(400, "Data de produção inválida. Use YYYY-MM-DD ou DD/MM/YYYY.")
+        configured_folders = _active_mpfm_monitor_folders()
+        folder_candidates: list[dict] = []
+        folder_summaries: list[dict] = []
+
+        for folder in configured_folders:
+            folder_path = str(folder.get("path") or "").strip()
+            label = folder.get("label") or Path(folder_path).name
+            summary = {
+                "folder_id": folder.get("id") or "",
+                "label": label,
+                "path": folder_path,
+                "exists": False,
+                "scan_roots": [],
+                "daily_found": 0,
+                "hourly_found": 0,
+                "selected": 0,
+                "missing": [],
+                "error": "",
+            }
+            scan_roots = _candidate_existing_mpfm_roots(folder_path)
+            summary["exists"] = bool(scan_roots)
+            summary["scan_roots"] = [str(path) for path in scan_roots]
+            if not scan_roots:
+                summary["error"] = f"Pasta não encontrada: {folder_path}"
+                folder_summaries.append(summary)
+                continue
+            try:
+                files = []
+                for scan_root in scan_roots:
+                    files.extend(_discover_mpfm_pdf_files_fast(scan_root))
+            except Exception as exc:
+                summary["error"] = str(exc)
+                folder_summaries.append(summary)
+                continue
+            for path in files:
+                meta = _parse_mpfm_pdf_filename(path)
+                if not meta:
+                    continue
+                meta["folder_id"] = summary["folder_id"]
+                meta["folder_label"] = label
+                folder_candidates.append(meta)
+            folder_summaries.append(summary)
+
+        available_days = sorted({item["production_day"] for item in folder_candidates}, reverse=True)
+        if requested_day:
+            end_day = datetime.strptime(requested_day, "%Y-%m-%d").date()
+            start_day = end_day - timedelta(days=days_count - 1)
+            target_days = [(start_day + timedelta(days=offset)).isoformat() for offset in range(days_count)]
+        else:
+            target_days = available_days[:days_count]
+        target_day = target_days[0] if target_days else ""
+        target_day_set = set(target_days)
+        selected_mpfm = [item for item in folder_candidates if item["production_day"] in target_day_set] if target_days else []
+        selected_paths = {str(item["path"].resolve()) for item in selected_mpfm}
+
+        by_folder_type: dict[tuple[str, str], int] = {}
+        by_folder_day_type: dict[tuple[str, str, str], int] = {}
+        for item in selected_mpfm:
+            key = (item.get("folder_id") or "", item["report_type"])
+            by_folder_type[key] = by_folder_type.get(key, 0) + 1
+            day_key = (item.get("folder_id") or "", item["production_day"], item["report_type"])
+            by_folder_day_type[day_key] = by_folder_day_type.get(day_key, 0) + 1
+        for summary in folder_summaries:
+            summary["daily_found"] = by_folder_type.get((summary["folder_id"], "daily"), 0)
+            summary["hourly_found"] = by_folder_type.get((summary["folder_id"], "hourly"), 0)
+            summary["selected"] = summary["daily_found"] + summary["hourly_found"]
+            if summary["exists"] and target_days:
+                for day in sorted(target_days):
+                    day_daily = by_folder_day_type.get((summary["folder_id"], day, "daily"), 0)
+                    day_hourly = by_folder_day_type.get((summary["folder_id"], day, "hourly"), 0)
+                    if day_daily < 1:
+                        summary["missing"].append(f"{day} daily")
+                    if day_hourly < 24:
+                        summary["missing"].append(f"{day} hourly {day_hourly}/24")
+
+        sep_root_raw = str(body.get("sep_root") or body.get("sep_folder") or "").strip()
+        raw_folders = body.get("sep_folder_names") or body.get("folder_names") or DEFAULT_FOLDER_NAMES
+        if isinstance(raw_folders, str):
+            raw_folders = [item.strip() for item in re.split(r"[,;]", raw_folders)]
+        sep_selected = []
+        sep_preview = {
+            "enabled": bool(sep_root_raw),
+            "source_root": sep_root_raw,
+            "selected_count": 0,
+            "candidate_count": 0,
+            "complete": False,
+            "message": "Pasta SEP não informada; a rotina seguirá apenas com PDFs MPFM.",
+        }
+        if sep_root_raw:
+            if not os.path.isdir(sep_root_raw):
+                sep_preview["message"] = f"Pasta SEP não encontrada: {sep_root_raw}"
+            elif target_days:
+                try:
+                    sep_date_from = min(target_days)
+                    sep_date_to = max(target_days)
+                    _sep_candidates, sep_selected, raw_preview = scan_sep_folder(
+                        Path(sep_root_raw),
+                        date_from=sep_date_from,
+                        date_to=sep_date_to,
+                        folder_names=raw_folders,
+                        include_incomplete_days=True,
+                    )
+                    sep_selected = [item for item in sep_selected if item.content_date in target_day_set]
+                    stats = raw_preview.get("stats") or {}
+                    day_rows = raw_preview.get("days") or []
+                    complete_days = {row.get("date") for row in day_rows if row.get("is_complete")}
+                    sep_preview = {
+                        **raw_preview,
+                        "enabled": True,
+                        "selected_count": len(sep_selected),
+                        "candidate_count": int(stats.get("candidate_count") or 0),
+                        "complete": all(day in complete_days for day in target_days),
+                        "message": f"{len(sep_selected)} TXT(s) SEP elegível(is) para {sep_date_from} a {sep_date_to}.",
+                    }
+                except Exception as exc:
+                    sep_preview["message"] = f"Falha na varredura SEP: {exc}"
+
+        items = []
+        for item in sorted(selected_mpfm, key=lambda row: (row["folder_label"], row["report_type"], row.get("hour") if row.get("hour") is not None else -1, row["name"])):
+            items.append(
+                {
+                    "file_id": str(item["path"].resolve()),
+                    "filename": item["name"],
+                    "path": str(item["path"].resolve()),
+                    "kind": f"mpfm_{item['report_type']}",
+                    "bank": item.get("bank") or "",
+                    "folder_label": item.get("folder_label") or "",
+                    "production_day": item["production_day"],
+                    "hour": item.get("hour"),
+                    "file_hash": "",
+                }
+            )
+        for item in sep_selected:
+            path_key = str(item.path.resolve())
+            if path_key in selected_paths:
+                continue
+            items.append(
+                {
+                    "file_id": path_key,
+                    "filename": item.name,
+                    "path": path_key,
+                    "kind": item.fluid_kind,
+                    "bank": "SEP",
+                    "folder_label": item.folder_name,
+                    "production_day": item.content_date,
+                    "hour": None,
+                    "file_hash": "",
+                }
+            )
+
+        duplicates = _find_duplicates(items)
+        return {
+            "ok": True,
+            "requested_day": requested_day,
+            "target_day": target_day,
+            "target_days": target_days,
+            "days_count": len(target_days) or days_count,
+            "has_eligible": bool(items),
+            "mpfm_count": len(selected_mpfm),
+            "sep_count": len(sep_selected),
+            "files_count": len(items),
+            "duplicates_count": len(duplicates),
+            "folders": folder_summaries,
+            "sep": sep_preview,
+            "items": items,
+            "duplicates": duplicates,
+            "message": (f"Sim: {len(items)} arquivo(s) elegível(is) encontrados para {target_days[0] if len(target_days) == 1 else f'{min(target_days)} a {max(target_days)}'}." if items else f"Não: nenhum arquivo elegível encontrado para {target_day or 'o último dia'}.")
+        }
+
+    def _process_latest_day_ingestion(body: dict | None = None) -> dict:
+        body = body or {}
+        preview = _scan_latest_day_ingestion(body)
+        if not preview.get("items"):
+            return {**preview, "processed": 0, "skipped": 0, "log": [preview.get("message") or "Nenhum arquivo elegível."]}
+        overwrite_map = body.get("overwrite_map") or {}
+        pairs = []
+        skipped_log = []
+        for item in preview.get("items") or []:
+            path = item.get("path") or ""
+            filename = item.get("filename") or Path(path).name
+            decision = overwrite_map.get(path) or overwrite_map.get(filename) or overwrite_map.get(item.get("file_id") or "")
+            if decision == "skip":
+                skipped_log.append(f"⏭️  {filename}  →  ignorado por decisão do usuário")
+                continue
+            pairs.append((Path(path), filename))
+        if not pairs:
+            return {**preview, "processed": 0, "skipped": len(skipped_log), "log": skipped_log + ["⚠ Nenhum arquivo para processar (todos ignorados)."]}
+        force_overwrite = bool(body.get("force_overwrite") or any(value == "overwrite" for value in overwrite_map.values()))
+        result = process_file_list(
+            pairs,
+            default_density,
+            source_type="latest-day",
+            source_ref=f"latest-day:{','.join(preview.get('target_days') or [preview.get('target_day') or ''])}",
+            force_overwrite=force_overwrite,
+        )
+        result["log"] = skipped_log + result.get("log", [])
+        conn = db_conn()
+        cur = conn.cursor()
+        last_date = cur.execute("SELECT MAX(day_ref) FROM measurements_curated").fetchone()[0] or ""
+        conn.close()
+        return {**preview, **result, "ok": True, "processed": len(pairs), "skipped": len(skipped_log), "last_date": last_date}
 
     def _run_monitored_folder(folder_cfg: dict, trigger: str = "interval") -> dict:
         with monitor_state["lock"]:
@@ -800,6 +1125,14 @@ def register_system_routes(app, ctx: dict) -> None:
         last_date = cur.execute("SELECT MAX(day_ref) FROM measurements_curated").fetchone()[0] or ""
         conn.close()
         return {**result, "ok": True, "last_date": last_date}
+
+    @app.post("/api/latest-day-ingestion/preview")
+    def api_latest_day_ingestion_preview(body: dict):
+        return _scan_latest_day_ingestion(body or {})
+
+    @app.post("/api/latest-day-ingestion/process")
+    def api_latest_day_ingestion_process(body: dict):
+        return _process_latest_day_ingestion(body or {})
 
     @app.post("/api/sep-folder/preview")
     def api_sep_folder_preview(body: dict):

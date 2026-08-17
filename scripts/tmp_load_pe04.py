@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 
 def run_import():
-    base_dir = Path(r"C:\Users\MAUAM\OneDrive - Equinor\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\3. Registros de Operação SGM Multifasico\3.1 Registros Diarios MPFM\3.1.4_18-FT-1506 PE 4 - Subsea B05\2026")
+    base_dir = Path(r"C:\Users\MAUAM\OneDrive - Equinor\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\3.1 Registros Diarios MPFM\3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05\2026")
     
     # Months from July down to February
     months = [

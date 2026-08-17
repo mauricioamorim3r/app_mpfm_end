@@ -382,12 +382,16 @@ function renderChart() {
     datasets.push({
       label: legendLabel,
       data: entry.data || entry.values || [],
+      adjusted: entry.adjusted || [],
+      sources: entry.sources || [],
       yAxisID: axId,
       borderColor: color,
       backgroundColor: filled ? `${color}22` : 'transparent',
       borderWidth: 2,
       pointRadius: payload.labels.length > 60 ? 1 : payload.labels.length > 24 ? 2 : 3,
-      pointBackgroundColor: color,
+      pointBackgroundColor: (entry.adjusted || []).map(isAdjusted => isAdjusted ? '#c4b5fd' : color),
+      pointBorderColor: (entry.adjusted || []).map(isAdjusted => isAdjusted ? '#8b5cf6' : color),
+      pointBorderWidth: (entry.adjusted || []).map(isAdjusted => isAdjusted ? 2 : 1),
       pointHoverRadius: 5,
       tension: 0.3,
       spanGaps: true,
@@ -467,7 +471,10 @@ function renderChart() {
               if (ctx.dataset.label.startsWith('__band')) return null;
               const value = ctx.parsed.y;
               if (value == null) return null;
-              return ` ${ctx.dataset.label}: ${formatChartValue(value)}`;
+              const suffix = ctx.dataset.adjusted?.[ctx.dataIndex]
+                ? ` · Corrigido${ctx.dataset.sources?.[ctx.dataIndex] ? ` (${ctx.dataset.sources[ctx.dataIndex]})` : ''}`
+                : '';
+              return ` ${ctx.dataset.label}: ${formatChartValue(value)}${suffix}`;
             },
           },
         },
@@ -493,15 +500,19 @@ async function plotAdvancedChart() {
   const series = await Promise.all(selected.map(async metric => {
     const query = new URLSearchParams({ date_from: dateFrom, date_to: dateTo, row_kind: kind, bank, tag, metric });
     const data = await j(`${API}/ops/chart-series?${query}`);
-    return { label: metric, metric, data: data.values || [], labels: data.labels || [] };
+    return { label: metric, metric, data: data.values || [], labels: data.labels || [], adjusted: data.adjusted || [], sources: data.sources || [] };
   }));
   const labels = [...new Set(series.flatMap(item => item.labels))].sort();
   const normalizedSeries = series.map(item => {
     const valueMap = Object.fromEntries(item.labels.map((label, idx) => [label, item.data[idx]]));
+    const adjustedMap = Object.fromEntries(item.labels.map((label, idx) => [label, Boolean(item.adjusted?.[idx])]));
+    const sourceMap = Object.fromEntries(item.labels.map((label, idx) => [label, item.sources?.[idx] || '']));
     return {
       label: item.label,
       metric: item.metric,
       data: labels.map(label => valueMap[label] ?? null),
+      adjusted: labels.map(label => Boolean(adjustedMap[label])),
+      sources: labels.map(label => sourceMap[label] || ''),
     };
   });
   chartState().chartData = chartSeriesPayload(normalizedSeries, labels, kind, '');
@@ -534,7 +545,7 @@ async function plotPresetChart() {
     return;
   }
   chartState().chartData = chartSeriesPayload(
-    (data.datasets || []).map(dataset => ({ label: dataset.label, data: dataset.values || [] })),
+    (data.datasets || []).map(dataset => ({ label: dataset.label, data: dataset.values || [], adjusted: dataset.adjusted || [], sources: dataset.sources || [] })),
     data.labels || [],
     data.kind || 'daily',
     data.deviation_key || '',

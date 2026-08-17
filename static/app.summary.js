@@ -612,7 +612,7 @@ async function loadSummary(silent = false) {
     }),
   ].join('');
 
-  loadDeadlinesSummary();
+  if (typeof loadDeadlinesSummary === 'function') loadDeadlinesSummary();
   // By bank table
   document.getElementById('sumByBank').innerHTML =
     (d.by_bank||[]).map(r =>

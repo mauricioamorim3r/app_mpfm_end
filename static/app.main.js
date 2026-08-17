@@ -77,6 +77,7 @@ const PAGE_SCRIPT_MAP = {
   relatorios:       { scripts: ['/static/app.monthly_reports.js'], check: () => typeof loadMonthlyReportsPage === 'function' },
   separador:        { scripts: ['/static/app.sep.js'], check: () => typeof loadSep === 'function' },
   alertas:          { scripts: ['/static/app.alarme.js'], check: () => typeof loadAlarmWorkspace === 'function' },
+  prazos:           { scripts: ['/static/app.cards.js'], check: () => typeof loadDeadlines === 'function' },
   'painel-operador':{ scripts: ['/static/app.painel_operador.js', '/static/app.painel_operador_help.js'], check: () => typeof loadPainelOperador === 'function' },
   cadastro:         { scripts: ['/static/app.cadastro.js'], check: () => typeof loadCadastro === 'function' },
   sgmfm:            { scripts: ['/static/app.sgmfm.js'], check: () => typeof loadSGMFM === 'function' },
@@ -175,7 +176,7 @@ document.querySelectorAll('.navbtn').forEach(b => b.onclick = () => setPage(b.da
 
 async function initDates() {
   // Load available months from server, populate month selector
-  const d = await j(`${API}/ops/month-summary`).catch(() => ({}));
+  const d = await j(`${API}/ops/months`).catch(() => ({}));
   const months = d.months_available || [];
   const sel = document.getElementById('globalMonth');
   if (sel) {
@@ -199,7 +200,7 @@ async function initDates() {
   await loadPrefs();
   renderBranding();
   await loadSummary();
-  loadDeadlines();
+  if (typeof loadDeadlines === 'function') loadDeadlines();
   startAutoRefresh();
   setTimeout(() => {
     const summaryActive = document.getElementById('page-resumo')?.classList.contains('active');

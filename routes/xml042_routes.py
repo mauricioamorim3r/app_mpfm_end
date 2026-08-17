@@ -2,12 +2,16 @@ from __future__ import annotations
 
 from datetime import datetime
 import io
+import json
+import os
 from pathlib import Path
 import re
+import tempfile
 import zipfile
 
 from fastapi import File, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
+from starlette.background import BackgroundTask
 
 from routes.date_utils import normalize_date_input
 from repositories.xml042 import Xml042Repository
@@ -32,6 +36,19 @@ def register_xml042_routes(app, ctx: dict) -> None:
 
     repo = Xml042Repository(db_conn, normalize_tag_name)
     repo.seed_catalog_if_empty(build_xml042_seed_rows(load_cadastro() or {}))
+
+    def _xml042_document_bytes(doc: dict) -> bytes | None:
+        path = Path(doc.get("file_path") or "")
+        if path.exists():
+            return path.read_bytes()
+        try:
+            payload = json.loads(doc.get("payload_json") or "{}")
+        except Exception:
+            payload = {}
+        xml_preview = str(payload.get("xml_preview") or "")
+        if xml_preview:
+            return xml_preview.encode("iso-8859-1", errors="xmlcharrefreplace")
+        return None
 
     @app.get("/api/xml042/catalog")
     def api_xml042_catalog(active_only: int = 0):
@@ -256,18 +273,39 @@ def register_xml042_routes(app, ctx: dict) -> None:
         if not docs:
             raise HTTPException(404, f"Nenhum XML 042 encontrado para o mês {month}")
 
-        buf = io.BytesIO()
-        with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-            for doc in docs:
-                p = Path(doc["file_path"])
-                if p.exists():
-                    zf.write(p, arcname=doc["filename"])
-        buf.seek(0)
         zip_filename = f"xml042_lote_{month or 'todos'}.zip"
-        return StreamingResponse(
-            iter([buf.read()]),
+        temp = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
+        temp_path = temp.name
+        temp.close()
+        try:
+            with zipfile.ZipFile(temp_path, "w", zipfile.ZIP_DEFLATED) as zf:
+                written = 0
+                used_names = set()
+                for doc in docs:
+                    data = _xml042_document_bytes(doc)
+                    if not data:
+                        continue
+                    arcname = doc["filename"]
+                    if arcname in used_names:
+                        stem = Path(arcname).stem
+                        suffix = Path(arcname).suffix or ".xml"
+                        arcname = f"{stem}_{doc.get('id')}{suffix}"
+                    used_names.add(arcname)
+                    zf.writestr(arcname, data)
+                    written += 1
+                if written == 0:
+                    raise FileNotFoundError("Nenhum arquivo XML disponível em disco ou no payload salvo.")
+        except Exception:
+            try:
+                os.unlink(temp_path)
+            except FileNotFoundError:
+                pass
+            raise HTTPException(404, f"Nenhum XML 042 recuperável encontrado para o mês {month}")
+        return FileResponse(
+            temp_path,
             media_type="application/zip",
-            headers={"Content-Disposition": f'attachment; filename="{zip_filename}"'},
+            filename=zip_filename,
+            background=BackgroundTask(os.unlink, temp_path),
         )
 
     @app.get("/api/xml042/documents")
@@ -374,12 +412,49 @@ def register_xml042_routes(app, ctx: dict) -> None:
             headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
 
+    @app.get("/api/xml042/preview-document/{item_id}")
+    def api_xml042_preview_document(item_id: int):
+        row = repo.get_document(item_id)
+        if not row:
+            raise HTTPException(404, "Documento não encontrado")
+        data = _xml042_document_bytes(row)
+        if not data:
+            raise HTTPException(404, "Arquivo XML não encontrado em disco nem no payload salvo")
+        try:
+            xml_text = data.decode("iso-8859-1")
+        except UnicodeDecodeError:
+            xml_text = data.decode("utf-8", errors="replace")
+        return {
+            "ok": True,
+            "id": row.get("id"),
+            "production_day": row.get("production_day", ""),
+            "bank": row.get("bank", ""),
+            "well_operator_name": row.get("well_operator_name", ""),
+            "subsea_tag": row.get("subsea_tag", ""),
+            "cod_cadastro_poco": row.get("cod_cadastro_poco", ""),
+            "filename": row.get("filename", ""),
+            "generated_at": row.get("generated_at", ""),
+            "xml": xml_text,
+        }
+
     @app.get("/api/xml042/download/{item_id}")
     def api_xml042_download(item_id: int):
         row = repo.get_document(item_id)
         if not row:
             raise HTTPException(404, "Documento não encontrado")
         path = Path(row["file_path"])
-        if not path.exists():
-            raise HTTPException(404, "Arquivo XML não encontrado em disco")
-        return FileResponse(str(path), filename=row["filename"], media_type="application/xml")
+        if path.exists():
+            return FileResponse(str(path), filename=row["filename"], media_type="application/xml")
+        data = _xml042_document_bytes(row)
+        if not data:
+            raise HTTPException(404, "Arquivo XML não encontrado em disco nem no payload salvo")
+        temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml")
+        temp_path = temp.name
+        temp.write(data)
+        temp.close()
+        return FileResponse(
+            temp_path,
+            filename=row["filename"],
+            media_type="application/xml",
+            background=BackgroundTask(os.unlink, temp_path),
+        )

@@ -25,7 +25,7 @@ def is_valid_mpfm_pdf(path: Path) -> bool:
 
 def main():
     # Caminho da pasta de relatórios (atualizado: nova estrutura "3.1 Registros Diarios MPFM")
-    root_path = Path(r"C:\Users\MAUAM\OneDrive - Equinor\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\3. Registros de Operação SGM Multifasico\3.1 Registros Diarios MPFM")
+    root_path = Path(r"C:\Users\MAUAM\OneDrive - Equinor\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\3.1 Registros Diarios MPFM")
 
     if not root_path.exists():
         print(f"Erro: Pasta não encontrada: {root_path}")
@@ -61,8 +61,8 @@ def main():
             mtime = datetime.fromtimestamp(path.stat().st_mtime)
             print(f"   📄 {path.name} (modificado: {mtime.strftime('%Y-%m-%d %H:%M')})")
 
-    print("
-✅ Análise concluída!"    print(f"Total de arquivos encontrados: {len(recent_files)}")
+    print("\n✅ Análise concluída!")
+    print(f"Total de arquivos encontrados: {len(recent_files)}")
 
     # Salvar lista em arquivo
     with open("recent_files_found.txt", "w", encoding="utf-8") as f:

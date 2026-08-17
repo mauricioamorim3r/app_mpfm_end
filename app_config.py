@@ -19,6 +19,15 @@ OUTPUT_DIR = WORK_DIR / "outputs"
 STATIC_DIR = BASE_DIR / "static"
 DB_PATH = Path(os.getenv("MPFM_DB_PATH", str(WORK_DIR / "mpfm_local.db")))
 
+# Backups are intentionally decoupled from application bootstrap.  Copying a
+# multi-gigabyte SQLite database while the first dashboard queries are running
+# creates avoidable disk contention.  Daily backups remain enabled by default;
+# an opt-in startup copy is available for installations that explicitly need it.
+STARTUP_BACKUP_ENABLED: bool = os.getenv("MPFM_STARTUP_BACKUP", "false").lower() in {"1", "true", "yes", "on"}
+DAILY_BACKUP_ENABLED: bool = os.getenv("MPFM_DAILY_BACKUP", "true").lower() not in {"0", "false", "no", "off"}
+BACKUP_DB_RETENTION: int = max(1, int(os.getenv("MPFM_BACKUP_DB_RETENTION", "7")))
+BACKUP_ZIP_RETENTION: int = max(1, int(os.getenv("MPFM_BACKUP_ZIP_RETENTION", "4")))
+
 APP_TITLE = "MPFM Manager"
 APP_VERSION = "4.1"
 DEFAULT_HOST = os.getenv("MPFM_HOST", "0.0.0.0")

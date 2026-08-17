@@ -228,9 +228,11 @@ def register_ops_routes(app, ctx: dict) -> None:
             "key": "PE4_RISERP5",
             "title": "PE-04 × Riser P5",
             "subsea_bank": "B05",
-            "subsea_tag": "PE_4",
+            "subsea_tag": "18FT1506",
+            "subsea_tags": ["18FT1506", "PE_4", "PE_4A", "PE-4A", "PE-04"],
             "topside_bank": "B03",
             "topside_tag": "Riser_P5",
+            "topside_tags": ["Riser_P5", "13FT0367"],
             "subsea_label": "Subsea · PE-04",
             "topside_label": "Topside · Riser P5",
         },
@@ -239,8 +241,10 @@ def register_ops_routes(app, ctx: dict) -> None:
             "title": "PE-02 × Riser P2",
             "subsea_bank": "B10",
             "subsea_tag": "PE_2",
+            "subsea_tags": ["PE_2", "18FT0506"],
             "topside_bank": "B08",
             "topside_tag": "Riser_P2",
+            "topside_tags": ["Riser_P2", "13FT0217", "13FT0167"],
             "subsea_label": "Subsea · PE-02",
             "topside_label": "Topside · Riser P2",
         },
@@ -249,8 +253,10 @@ def register_ops_routes(app, ctx: dict) -> None:
             "title": "PW-104DA × Riser P4",
             "subsea_bank": "B15",
             "subsea_tag": "PW-104DA",
+            "subsea_tags": ["PW-104DA", "18FT1106"],
             "topside_bank": "B13",
             "topside_tag": "Riser_P4",
+            "topside_tags": ["Riser_P4", "13FT0317"],
             "subsea_label": "Subsea · PW-104DA",
             "topside_label": "Topside · Riser P4",
         },
@@ -494,6 +500,12 @@ def register_ops_routes(app, ctx: dict) -> None:
         else:
             value_map = {}
         return labels, value_map
+
+    def _chart_adjustment_meta(source_file: str = "") -> tuple[bool, str]:
+        source_name = str(source_file or "")
+        is_adjusted = source_name.lower().startswith("manual_adjustment:")
+        source_label = source_name.split(":", 1)[1] if is_adjusted and ":" in source_name else source_name
+        return is_adjusted, source_label
 
     def _normalize_monitoring_bool(value):
         raw = str(value or "").strip().lower()
@@ -1624,8 +1636,8 @@ def register_ops_routes(app, ctx: dict) -> None:
 
         tags = set()
         for pair in CHART_FOCUS_PAIRS:
-            tags.add(pair["subsea_tag"])
-            tags.add(pair["topside_tag"])
+            tags.update(pair.get("subsea_tags") or [pair["subsea_tag"]])
+            tags.update(pair.get("topside_tags") or [pair["topside_tag"]])
 
         tags = sorted(tags)
         tag_ph = ",".join("?" * len(tags))
@@ -1653,16 +1665,24 @@ def register_ops_routes(app, ctx: dict) -> None:
         ).fetchall()
         conn.close()
 
+        aliases = {}
+        for pair in CHART_FOCUS_PAIRS:
+            for side in ("subsea", "topside"):
+                canonical = pair[f"{side}_tag"]
+                for alias in pair.get(f"{side}_tags") or [canonical]:
+                    aliases[alias] = canonical
+
         data = {}
         for day_ref, tag, metric_name, value in rows:
-            data.setdefault((day_ref, tag), {})[metric_name] = value
+            canonical_tag = aliases.get(tag, tag)
+            data.setdefault((day_ref, canonical_tag), {})[metric_name] = value
 
         presence = {}
         for day_ref, tag, row_count, hours in presence_rows:
-            presence[(day_ref, tag)] = {
-                "present": bool(row_count),
-                "hours": int(hours or 0),
-            }
+            canonical_tag = aliases.get(tag, tag)
+            current = presence.setdefault((day_ref, canonical_tag), {"present": False, "hours": 0})
+            current["present"] = current["present"] or bool(row_count)
+            current["hours"] = max(current["hours"], int(hours or 0))
 
         def _v(day_ref, tag, metric_name):
             return (data.get((day_ref, tag)) or {}).get(metric_name)
@@ -1963,60 +1983,65 @@ def register_ops_routes(app, ctx: dict) -> None:
     @app.get("/api/ops/processing-history")
     def api_processing_history(limit: int = 30):
         conn = db_conn()
-        cur = conn.cursor()
+        try:
+            cur = conn.cursor()
 
-        # ✅ OTIMIZADO: JOIN único ao invés de N+1 queries
-        sql = """
-            SELECT
-                pr.id, pr.started_at, pr.finished_at, pr.source_type,
-                pr.source_ref, pr.files_count, pr.status, pr.notes_json,
-                fi.filename, fi.file_type, fi.content_date, fi.processed_ok, fi.message
-            FROM processing_runs pr
-            LEFT JOIN files_imported fi ON fi.run_id = pr.id
-            ORDER BY pr.id DESC, fi.id
-        """
+            # Subquery limita runs ANTES do JOIN, evitando full scan de files_imported
+            sql = """
+                SELECT
+                    pr.id, pr.started_at, pr.finished_at, pr.source_type,
+                    pr.source_ref, pr.files_count, pr.status, pr.notes_json,
+                    fi.filename, fi.file_type, fi.content_date, fi.processed_ok, fi.message
+                FROM (
+                    SELECT * FROM processing_runs ORDER BY id DESC LIMIT ?
+                ) pr
+                LEFT JOIN files_imported fi ON fi.run_id = pr.id
+                ORDER BY pr.id DESC, fi.id
+            """
+            rows = cur.execute(sql, (limit,)).fetchall()
 
-        # Agrupa resultados por run_id
-        runs_dict = {}
-        for row in cur.execute(sql).fetchall():
-            run_id = row[0]
-            if run_id not in runs_dict:
-                runs_dict[run_id] = {
-                    "id": run_id,
-                    "started_at": row[1],
-                    "finished_at": row[2],
-                    "source_type": row[3],
-                    "source_ref": row[4],
-                    "files_count": row[5],
-                    "status": row[6],
-                    "notes_json": row[7],
-                    "files": [],
-                    "months_updated": set()
-                }
+            # Agrupa resultados por run_id
+            runs_dict = {}
+            for row in rows:
+                run_id = row[0]
+                if run_id not in runs_dict:
+                    runs_dict[run_id] = {
+                        "id": run_id,
+                        "started_at": row[1],
+                        "finished_at": row[2],
+                        "source_type": row[3],
+                        "source_ref": row[4],
+                        "files_count": row[5],
+                        "status": row[6],
+                        "notes_json": row[7],
+                        "files": [],
+                        "months_updated": set()
+                    }
 
-            # Adiciona file se existir (LEFT JOIN pode retornar NULL)
-            if row[8]:  # filename exists
-                file_data = {
-                    "filename": row[8],
-                    "file_type": row[9],
-                    "content_date": row[10],
-                    "processed_ok": row[11],
-                    "message": row[12]
-                }
-                runs_dict[run_id]["files"].append(file_data)
+                # Adiciona file se existir (LEFT JOIN pode retornar NULL)
+                if row[8]:  # filename exists
+                    file_data = {
+                        "filename": row[8],
+                        "file_type": row[9],
+                        "content_date": row[10],
+                        "processed_ok": row[11],
+                        "message": row[12]
+                    }
+                    runs_dict[run_id]["files"].append(file_data)
 
-                # Coleta meses
-                if row[10] and row[10][:4] not in ("", "0000"):
-                    runs_dict[run_id]["months_updated"].add(row[10][:7])
+                    # Coleta meses
+                    if row[10] and row[10][:4] not in ("", "0000"):
+                        runs_dict[run_id]["months_updated"].add(row[10][:7])
 
-        # Converte para lista e limita
-        runs = []
-        for run_id, run_data in list(runs_dict.items())[:limit]:
-            run_data["months_updated"] = sorted(run_data["months_updated"])
-            runs.append(run_data)
+            # Converte para lista
+            runs = []
+            for run_data in runs_dict.values():
+                run_data["months_updated"] = sorted(run_data["months_updated"])
+                runs.append(run_data)
 
-        conn.close()
-        return {"runs": runs}
+            return {"runs": runs}
+        finally:
+            conn.close()
 
     @app.get("/api/ops/mpfm-monitoring")
     def api_ops_mpfm_monitoring(
@@ -2160,7 +2185,11 @@ def register_ops_routes(app, ctx: dict) -> None:
 
         for row in rows:
             source_name = str(row.get("source_file") or "")
-            row["source_kind"] = "manual" if source_name.lower().startswith("manual") else "arquivo"
+            source_lower = source_name.lower()
+            is_adjusted = source_lower.startswith("manual_adjustment:")
+            row["is_adjusted"] = bool(is_adjusted)
+            row["adjustment_source"] = source_name.split(":", 1)[1] if is_adjusted and ":" in source_name else ""
+            row["source_kind"] = "ajustado" if is_adjusted else "manual" if source_lower.startswith("manual") else "arquivo"
 
         # ✅ OTIMIZADO: Retorna informação de paginação
         return {
@@ -2758,7 +2787,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                 dict(r)
                 for r in cur.execute(
                     """
-                    SELECT day_ref, bank, tag, metric_value
+                    SELECT day_ref, bank, tag, metric_value, source_file
                     FROM measurements_active
                     WHERE day_ref BETWEEN ? AND ?
                       AND row_kind='daily'
@@ -2780,10 +2809,22 @@ def register_ops_routes(app, ctx: dict) -> None:
             ]
             subsea_map = {row["day_ref"]: row["metric_value"] for row in rows if row["tag"] == pair["subsea_tag"]}
             topside_map = {row["day_ref"]: row["metric_value"] for row in rows if row["tag"] == pair["topside_tag"]}
+            subsea_adj = {row["day_ref"]: _chart_adjustment_meta(row.get("source_file")) for row in rows if row["tag"] == pair["subsea_tag"]}
+            topside_adj = {row["day_ref"]: _chart_adjustment_meta(row.get("source_file")) for row in rows if row["tag"] == pair["topside_tag"]}
             labels = sorted(set(subsea_map.keys()) | set(topside_map.keys()))
             datasets = [
-                {"label": pair["subsea_label"], "values": [subsea_map.get(label) for label in labels]},
-                {"label": pair["topside_label"], "values": [topside_map.get(label) for label in labels]},
+                {
+                    "label": pair["subsea_label"],
+                    "values": [subsea_map.get(label) for label in labels],
+                    "adjusted": [subsea_adj.get(label, (False, ""))[0] for label in labels],
+                    "sources": [subsea_adj.get(label, (False, ""))[1] for label in labels],
+                },
+                {
+                    "label": pair["topside_label"],
+                    "values": [topside_map.get(label) for label in labels],
+                    "adjusted": [topside_adj.get(label, (False, ""))[0] for label in labels],
+                    "sources": [topside_adj.get(label, (False, ""))[1] for label in labels],
+                },
             ]
             message = pair["title"]
         elif preset == "separator_test":
@@ -2800,7 +2841,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                     dict(r)
                     for r in cur.execute(
                         """
-                        SELECT day_ref, metric_value
+                        SELECT day_ref, metric_value, source_file
                         FROM measurements_active
                         WHERE day_ref BETWEEN ? AND ?
                           AND row_kind='sep'
@@ -2873,10 +2914,16 @@ def register_ops_routes(app, ctx: dict) -> None:
                     ).fetchall()
                 ]
                 mpfm_map = {row["day_ref"]: row["metric_value"] for row in mpfm_rows}
+                mpfm_adj = {row["day_ref"]: _chart_adjustment_meta(row.get("source_file")) for row in mpfm_rows}
                 sep_map = {row["day_ref"]: row["metric_value"] for row in sep_rows}
                 labels = sorted(aligned_days)
                 datasets = [
-                    {"label": f"{bank} · {_chart_format_tag_label(mpfm_tag)}", "values": [mpfm_map.get(label) for label in labels]},
+                    {
+                        "label": f"{bank} · {_chart_format_tag_label(mpfm_tag)}",
+                        "values": [mpfm_map.get(label) for label in labels],
+                        "adjusted": [mpfm_adj.get(label, (False, ""))[0] for label in labels],
+                        "sources": [mpfm_adj.get(label, (False, ""))[1] for label in labels],
+                    },
                     {"label": f"Separador de Teste · {metric_cfg['label']}", "values": [sep_map.get(label) for label in labels]},
                 ]
                 message = f"{bank} · {_chart_format_tag_label(mpfm_tag)} × Separador"
@@ -2958,6 +3005,8 @@ def register_ops_routes(app, ctx: dict) -> None:
             date_from = date_to
         labels = []
         values = []
+        adjusted = []
+        sources = []
         if bank == "SEP" and row_kind in ("daily", "hourly"):
             if row_kind == "daily":
                 sql = """
@@ -2985,13 +3034,17 @@ def register_ops_routes(app, ctx: dict) -> None:
                 for d, h, v in data:
                     labels.append(d)
                     values.append(v)
+                    adjusted.append(False)
+                    sources.append("")
             else:
                 rows = _chart_sep_metric_query(cur, metric, date_from, date_to, tag=tag)
                 value_map = _chart_sep_metric_map("hourly", rows)
                 labels = sorted(value_map.keys())
                 values = [value_map.get(label) for label in labels]
+                adjusted = [False for _ in labels]
+                sources = ["" for _ in labels]
         else:
-            sql = "SELECT day_ref, hour_ref, metric_value FROM measurements_active WHERE day_ref BETWEEN ? AND ?"
+            sql = "SELECT day_ref, hour_ref, metric_value, source_file FROM measurements_active WHERE day_ref BETWEEN ? AND ?"
             params = [date_from, date_to]
             if row_kind in ("hourly", "daily", "recon"):
                 sql += " AND row_kind=?"
@@ -3007,11 +3060,15 @@ def register_ops_routes(app, ctx: dict) -> None:
                 params.append(tag)
             sql += " ORDER BY day_ref, hour_ref"
             data = cur.execute(sql, params).fetchall()
-            for d, h, v in data:
+            for d, h, v, source_file in data:
+                source_name = str(source_file or "")
+                is_adjusted = source_name.lower().startswith("manual_adjustment:")
                 labels.append(f"{d} {int(h):02d}:00" if row_kind == "hourly" and h is not None else d)
                 values.append(v)
+                adjusted.append(bool(is_adjusted))
+                sources.append(source_name.split(":", 1)[1] if is_adjusted and ":" in source_name else source_name)
         conn.close()
-        return {"labels": labels, "values": values, "date_from": date_from, "date_to": date_to}
+        return {"labels": labels, "values": values, "adjusted": adjusted, "sources": sources, "date_from": date_from, "date_to": date_to}
 
     @app.get("/api/monitoring-summary")
     @cached(ttl=90, key_prefix="monitoring_summary")
@@ -3354,12 +3411,16 @@ def register_ops_routes(app, ctx: dict) -> None:
         return result
 
     @app.post("/api/admin/recovery/base-unica-import/preview")
-    async def api_admin_recovery_base_unica_preview(file: UploadFile = File(...)):
+    async def api_admin_recovery_base_unica_preview(request: Request, file: UploadFile = File(...)):
         if not str(file.filename or "").lower().endswith(".xlsx"):
             raise HTTPException(status_code=400, detail="Envie um arquivo .xlsx válido.")
         temp_path = _persist_uploaded_workbook(file)
         try:
-            result = preview_base_unica_import(db_conn, Path(temp_path))
+            result = preview_base_unica_import(
+                db_conn,
+                Path(temp_path),
+                str(request.query_params.get("month") or "").strip(),
+            )
             return result
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc))
@@ -3370,7 +3431,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                 pass
 
     @app.post("/api/admin/recovery/base-unica-import/apply")
-    async def api_admin_recovery_base_unica_apply(file: UploadFile = File(...)):
+    async def api_admin_recovery_base_unica_apply(request: Request, file: UploadFile = File(...)):
         if not str(file.filename or "").lower().endswith(".xlsx"):
             raise HTTPException(status_code=400, detail="Envie um arquivo .xlsx válido.")
         temp_path = _persist_uploaded_workbook(file)
@@ -3386,6 +3447,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                 output_dir=output_dir,
                 excel_name_fn=excel_name,
                 serialize_sep_row_fn=serialize_sep_row,
+                target_month=str(request.query_params.get("month") or "").strip(),
             )
             _invalidate_cache()
             return result

@@ -1,0 +1,16 @@
+CONFIGURAÇÃO OPCIONAL — não coloque senhas neste arquivo
+
+Para configurar caminhos sem informar os parâmetros toda vez, abra um PowerShell na pasta do pacote e defina:
+
+$env:BASE_UNICA_MPFM_ROOT = 'D:\Relatorios\MPFM'
+$env:BASE_UNICA_SEP_ROOT = 'D:\Relatorios\SEP'
+$env:BASE_UNICA_PI_ROOT = 'C:\PI_Vision_Collector'
+$env:BASE_UNICA_DAILY_CONTROL_ROOT = 'C:\DailyControl'
+
+Para o download por Outlook:
+
+$env:DPB_MAILBOX = 'seu.usuario@empresa.com'
+$env:DPB_DAILY_REPORTS_DESTINATION = 'D:\Relatorios\Daily Reports'
+$env:DPB_FCVS_DESTINATION = 'D:\Relatorios\FCVs Updated'
+
+Essas variáveis valem somente para a janela atual do PowerShell. Para tornar permanente, configure-as nas Variáveis de Ambiente do Windows conforme a política de TI.

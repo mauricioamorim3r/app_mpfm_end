@@ -14,7 +14,7 @@ banks_folders = [
     ('B03', '3.1.1_13-FT-0367 Riser P5 - Topside B03'),
     ('B08', '3.1.2_13-FT-0167 Riser P2 - Topside B08'),
     ('B13', '3.1.3_13-FT-0317 Riser P4 - Topside B13'),
-    ('B05', '3.1.4_18-FT-1506 PE 4 - Subsea B05'),
+    ('B05', '3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05'),
     ('B10', '3.1.5_18-FT-0506 PE 2 - Subsea B10'),
     ('B15', '3.1.6_18-FT-1106 PW_104DA - Subsea B15'),
 ]

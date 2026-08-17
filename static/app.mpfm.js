@@ -86,14 +86,20 @@ function renderMPFMContext() {
   if (!host) return;
   const rows = state.mpfmRows || [];
   const uniqueGroups = new Set(rows.map(r => `${r.day_ref}||${r.hour_ref ?? ''}||${r.bank}||${r.tag}`));
-  const manualRows = rows.filter(r => r.source_kind === 'manual');
+  const adjustedRows = rows.filter(r => r.is_adjusted || r.source_kind === 'ajustado');
   const sourceFiles = [...new Set(rows.map(r => r.source_file).filter(Boolean))];
   host.innerHTML = `
     <div class="mpfm-context-card"><div class="k">Linhas carregadas</div><div class="v">${rows.length}</div><div class="m">métricas no recorte atual</div></div>
     <div class="mpfm-context-card"><div class="k">Registros pivotados</div><div class="v">${uniqueGroups.size}</div><div class="m">data + hora + banco + TAG</div></div>
-    <div class="mpfm-context-card"><div class="k">Origem manual</div><div class="v">${manualRows.length}</div><div class="m">métricas inseridas ou ajustadas na aplicação</div></div>
+    <div class="mpfm-context-card"><div class="k">Dados corrigidos</div><div class="v">${adjustedRows.length}</div><div class="m">métricas alteradas por registro de ajustes</div></div>
     <div class="mpfm-context-card"><div class="k">Arquivos de origem</div><div class="v">${sourceFiles.length}</div><div class="m" title="${escapeHtml(sourceFiles.join('\n'))}">${escapeHtml(sourceFiles[0] || 'sem arquivo')}</div></div>
   `;
+}
+
+function mpfmSourceBadge(kind, adjusted) {
+  if (adjusted || kind === 'ajustado') return '<span class="badge adjusted">Corrigido</span>';
+  if (kind === 'manual') return '<span class="badge warn">Manual</span>';
+  return '<span class="badge ok">Arquivo</span>';
 }
 
 function renderMPFM() {
@@ -110,12 +116,25 @@ function renderMPFM() {
         tag:r.tag,
         source_file:r.source_file || '',
         source_kind:r.source_kind || '',
+        is_adjusted:Boolean(r.is_adjusted),
+        adjustment_source:r.adjustment_source || '',
         row_kind:r.row_kind || '',
         __rowKey:key,
+        __adjusted_metrics:new Set(),
       });
     }
-    pivotMap.get(key)[r.metric_name] = r.metric_value;
-    pivotMap.get(key)[`__id_${r.metric_name}`] = r.id;
+    const target = pivotMap.get(key);
+    target[r.metric_name] = r.metric_value;
+    target[`__id_${r.metric_name}`] = r.id;
+    target[`__source_${r.metric_name}`] = r.source_file || '';
+    target[`__adjustment_source_${r.metric_name}`] = r.adjustment_source || '';
+    if (r.is_adjusted || r.source_kind === 'ajustado') {
+      target.is_adjusted = true;
+      target.source_kind = 'ajustado';
+      target.source_file = r.source_file || target.source_file;
+      target.adjustment_source = r.adjustment_source || target.adjustment_source;
+      target.__adjusted_metrics.add(r.metric_name);
+    }
   });
   const rows = [...pivotMap.values()];
   state.mpfmPivotRows = rows;
@@ -130,12 +149,15 @@ function renderMPFM() {
       <td class="mono">${r.hour_ref==null?'—':String(r.hour_ref).padStart(2,'0')+':00'}</td>
       <td>${tagChip(r.bank||'')}</td>
       <td class="mono" style="font-size:12px">${escapeHtml(r.tag||'')}</td>
-      <td><div class="mpfm-origin-cell"><span class="badge ${r.source_kind==='manual'?'warn':'ok'}">${r.source_kind==='manual'?'Manual':'Arquivo'}</span><div class="mpfm-origin-meta" title="${escapeHtml(r.source_file||'')}">${escapeHtml(r.source_file||'sem arquivo')}</div></div></td>
+      <td><div class="mpfm-origin-cell">${mpfmSourceBadge(r.source_kind, r.is_adjusted)}<div class="mpfm-origin-meta" title="${escapeHtml(r.source_file||'')}">${escapeHtml(r.adjustment_source || r.source_file || 'sem arquivo')}</div></div></td>
       ${sel.map(m => {
         const id = r[`__id_${m}`];
         const v  = r[m];
+        const adjusted = r.__adjusted_metrics?.has?.(m);
+        const source = adjusted ? (r[`__adjustment_source_${m}`] || r[`__source_${m}`] || 'Registro de ajustes') : '';
         return `<td class="num" id="mc_${id||'_'+ri+'_'+escapeHtml(m)}" style="cursor:${id?'pointer':'default'}"
-          ${id ? `onclick="editMeasurement(${id}, this, '${jsStr(m)}', '${jsStr(r.day_ref)}', ${r.hour_ref??'null'}, '${jsStr(r.bank)}', 'mpfm')" title="Clique para editar"` : ''}>${fmt(v)}</td>`;
+          ${adjusted ? `data-adjusted="1"` : ''}
+          ${id ? `onclick="editMeasurement(${id}, this, '${jsStr(m)}', '${jsStr(r.day_ref)}', ${r.hour_ref??'null'}, '${jsStr(r.bank)}', 'mpfm')" title="${adjusted ? `Corrigido por registro de ajustes: ${escapeHtml(source)}. ` : ''}Clique para editar"` : ''}>${adjusted ? '<span class="mpfm-adjusted-dot" title="Valor corrigido por registro de ajustes">●</span>' : ''}${fmt(v)}</td>`;
       }).join('')}
       <td style="text-align:center">
         <button class="btn danger sm" onclick="deleteMpfmRow(${ri})" title="Excluir linha do dia na base" aria-label="Excluir linha MPFM">Excluir</button>
@@ -169,4 +191,73 @@ function mpfmExportQs() {
 }
 document.getElementById('btnExportCsv').onclick  = () => window.open(`${API}/export-csv?${mpfmExportQs()}`, '_blank');
 document.getElementById('btnExportXlsx').onclick = () => window.open(`${API}/export-excel?${mpfmExportQs()}`, '_blank');
+
+function mpfmAdjustmentQs() {
+  return new URLSearchParams({
+    date_from: document.getElementById('mDateFrom').value,
+    date_to:   document.getElementById('mDateTo').value,
+    bank:      document.getElementById('mBank').value,
+    tag:       document.getElementById('mTag').value || '',
+  });
+}
+
+function setMpfmAdjustmentStatus(message, kind = '') {
+  const host = document.getElementById('mpfmAdjustmentStatus');
+  if (!host) return;
+  host.textContent = message;
+  host.style.color = kind === 'error' ? '#ff8a8a' : kind === 'success' ? '#7bd88f' : '';
+}
+
+function getMpfmAdjustmentFile() {
+  const input = document.getElementById('mpfmAdjustmentFile');
+  return input?.files?.[0] || null;
+}
+
+async function sendMpfmAdjustmentFile(endpoint, extra = {}) {
+  const file = getMpfmAdjustmentFile();
+  if (!file) throw new Error('Selecione um arquivo .xlsx de ajustes MPFM antes de continuar.');
+  const form = new FormData();
+  form.append('file', file);
+  Object.entries(extra).forEach(([key, value]) => form.append(key, value ?? ''));
+  const res = await fetch(`${API}${endpoint}`, {method: 'POST', body: form});
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(payload.detail || payload.message || 'Falha ao processar o arquivo de ajustes.');
+  return payload;
+}
+
+document.getElementById('btnExportMpfmAdjustments').onclick = () => {
+  window.open(`${API}/mpfm-adjustments/export?${mpfmAdjustmentQs()}`, '_blank');
+};
+document.getElementById('btnPickMpfmAdjustment').onclick = () => document.getElementById('mpfmAdjustmentFile')?.click();
+document.getElementById('mpfmAdjustmentFile').onchange = () => {
+  const file = getMpfmAdjustmentFile();
+  setMpfmAdjustmentStatus(file ? `Registro de ajustes selecionado: ${file.name}` : 'Registro de ajustes: nenhum arquivo selecionado.');
+};
+document.getElementById('btnPreviewMpfmAdjustment').onclick = async () => {
+  try {
+    setMpfmAdjustmentStatus('Validando arquivo de ajustes…');
+    const payload = await sendMpfmAdjustmentFile('/mpfm-adjustments/import/preview');
+    setMpfmAdjustmentStatus(`Prévia: ${payload.rows_marked || 0} linha(s) marcadas; ${payload.metrics_changed || 0} métrica(s) seriam alteradas; ${(payload.skipped || []).length} item(ns) ignorado(s).`, 'success');
+  } catch (error) {
+    console.error('Falha na prévia do registro de ajustes MPFM', error);
+    setMpfmAdjustmentStatus(error?.message || 'Falha na prévia do registro de ajustes.', 'error');
+  }
+};
+document.getElementById('btnApplyMpfmAdjustment').onclick = async () => {
+  try {
+    const file = getMpfmAdjustmentFile();
+    if (!file) throw new Error('Selecione um arquivo .xlsx de ajustes MPFM antes de continuar.');
+    const author = prompt('Responsável pelo ajuste:', '') || '';
+    const ok = confirm(`Aplicar correções do arquivo ${file.name}?\n\nEsta ação atualiza as métricas marcadas com ajustar=Sim e registra auditoria dos valores antigos e novos.`);
+    if (!ok) return;
+    setMpfmAdjustmentStatus('Aplicando ajustes MPFM…');
+    const payload = await sendMpfmAdjustmentFile('/mpfm-adjustments/import/apply', {author});
+    setMpfmAdjustmentStatus(`Ajustes aplicados: ${payload.metrics_changed || 0} métrica(s), ${payload.rows_marked || 0} linha(s) marcadas. Import ID ${payload.import_id || '—'}.`, 'success');
+    await loadMPFM(true);
+    await notifyDataChanged(['mpfm','resumo','cards','monitoramento','xml042','exportar','recon']);
+  } catch (error) {
+    console.error('Falha ao aplicar registro de ajustes MPFM', error);
+    setMpfmAdjustmentStatus(error?.message || 'Falha ao aplicar o registro de ajustes.', 'error');
+  }
+};
 

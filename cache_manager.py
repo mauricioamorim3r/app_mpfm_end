@@ -102,7 +102,11 @@ def cached(ttl: int = 3600, key_prefix: str = ''):
                 'args': str(args),
                 'kwargs': str(sorted(kwargs.items()))
             }
-            key = hashlib.md5(json.dumps(key_data, sort_keys=True).encode()).hexdigest()
+            digest = hashlib.md5(json.dumps(key_data, sort_keys=True).encode()).hexdigest()
+            # Keep the namespace visible so selective invalidation works.
+            # Previously the prefix was inside the MD5 payload, making calls
+            # such as invalidate_cache("mpfm_metadata") unable to match it.
+            key = f"{key_prefix}:{digest}" if key_prefix else digest
 
             # Tenta buscar no cache
             cached_value = _cache.get(key, ttl)

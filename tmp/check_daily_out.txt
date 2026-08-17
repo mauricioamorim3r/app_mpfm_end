@@ -1,0 +1,57 @@
+=== ULTIMOS 10 RUNS ===
+  run  831 | running  | 2026-08-14T15:48 | 904 arqs | ...1,2026-08-02,2026-08-03,2026-08-04,2026-08-05
+  run  830 | ok       | 2026-08-07T19:30 |  26 arqs | ...ui-upload
+  run  829 | ok       | 2026-08-07T19:11 |  18 arqs | ...03 REPORTS\00 - Daily Reports\2026\08. Agosto
+  run  828 | ok       | 2026-08-07T19:04 | 150 arqs | ...latest-day:2026-08-06
+  run  827 | ok       | 2026-08-06T11:19 | 153 arqs | ...latest-day:2026-08-05
+  run  826 | ok       | 2026-08-05T17:28 | 150 arqs | ...latest-day:2026-08-04
+  run  825 | ok       | 2026-08-04T16:53 |   6 arqs | ...ui-upload
+  run  824 | ok       | 2026-08-04T16:46 |   9 arqs | ...03 REPORTS\00 - Daily Reports\2026\08. Agosto
+  run  823 | ok       | 2026-08-03T18:43 |  31 arqs | ...T-0506 PE 2 - Subsea B10\2026\07. Julho\Daily
+  run  822 | ok       | 2026-08-03T18:34 |  50 arqs | ...0506 PE 2 - Subsea B10\2026\08. Agosto\Hourly
+
+=== ULTIMO DIA IMPORTADO POR BANCO (daily) ===
+  Riser_P5        (B03 ) => ultimo daily: 2026-08-06
+  Riser_P6        (B03 ) => ultimo daily: 2026-08-06
+  PE_4            (B05 ) => ultimo daily: 2026-08-06
+  PE_EO10         (B05 ) => ultimo daily: 2026-08-06
+  PE_EO105        (B05 ) => ultimo daily: 2026-08-06
+  PE_EO4          (B05 ) => ultimo daily: 2026-08-06
+  Riser_P1        (B08 ) => ultimo daily: 2026-08-06
+  Riser_P2        (B08 ) => ultimo daily: 2026-08-06
+  PE_2            (B10 ) => ultimo daily: 2026-08-06
+  PE_8            (B10 ) => ultimo daily: 2026-08-06
+  PE_9            (B10 ) => ultimo daily: 2026-08-06
+  Riser_P3        (B13 ) => ultimo daily: 2026-08-06
+  Riser_P4        (B13 ) => ultimo daily: 2026-08-06
+  PE_1            (B15 ) => ultimo daily: 2026-08-06
+  PI_1            (B15 ) => ultimo daily: 2026-08-06
+  PI_2            (B15 ) => ultimo daily: 2026-08-06
+  PW-104DA        (B15 ) => ultimo daily: 2026-08-06
+
+=== ULTIMO DIA IMPORTADO POR BANCO (hourly) ===
+  Riser_P5        (B03 ) => ultimo hourly: 2026-08-06
+  Riser_P6        (B03 ) => ultimo hourly: 2026-08-06
+  PE_4            (B05 ) => ultimo hourly: 2026-08-06
+  PE_EO10         (B05 ) => ultimo hourly: 2026-08-06
+  PE_EO105        (B05 ) => ultimo hourly: 2026-08-06
+  PE_EO4          (B05 ) => ultimo hourly: 2026-08-06
+  Riser_P1        (B08 ) => ultimo hourly: 2026-08-06
+  Riser_P2        (B08 ) => ultimo hourly: 2026-08-06
+  PE_2            (B10 ) => ultimo hourly: 2026-08-06
+  PE_8            (B10 ) => ultimo hourly: 2026-08-06
+  PE_9            (B10 ) => ultimo hourly: 2026-08-06
+  Riser_P3        (B13 ) => ultimo hourly: 2026-08-06
+  Riser_P4        (B13 ) => ultimo hourly: 2026-08-06
+  PE_1            (B15 ) => ultimo hourly: 2026-08-06
+  PI_1            (B15 ) => ultimo hourly: 2026-08-06
+  PI_2            (B15 ) => ultimo hourly: 2026-08-06
+  PW-104DA        (B15 ) => ultimo hourly: 2026-08-06
+
+=== RUNS COM ERRO (ultimos 20) ===
+  run 831 | running | 2026-08-14T15:48 | -08-01,2026-08-02,2026-08-03,2026-08-04,2026-08-05
+  run 820 | error | 2026-08-03T18:31 | 18-FT-0506 PE 2 - Subsea B10\2026\07. Julho\Hourly
+  run 795 | error | 2026-08-03T12:52 | ui-upload
+  run 784 | error | 2026-08-01T10:53 | .6_18-FT-1106 PW_104DA - Subsea B15\2026\07. Julho
+  run 782 | error | 2026-08-01T10:34 | .6_18-FT-1106 PW_104DA - Subsea B15\2026\07. Julho
+  run 682 | error | 2026-07-06T23:19 | 3.2.4_18-FT-1506  PE 4 - Subsea B05\2026\07. Julho

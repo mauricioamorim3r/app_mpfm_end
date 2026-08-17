@@ -8,7 +8,7 @@ import sqlite3
 
 from openpyxl import load_workbook
 
-from services.importing.monthly_workbook_service import BASE_UNICA_COLUMNS
+from services.importing.monthly_workbook_service import BASE_UNICA_COLUMNS, BASE_UNICA_DERIVED_COLUMNS
 
 
 BASE_UNICA_REQUIRED_COLUMNS = {
@@ -186,7 +186,7 @@ def _row_kind(origin: str, granularity: str) -> str:
 
 
 def _metric_name_from_column(row_kind: str, column: str):
-    if column in BASE_UNICA_META_COLUMNS:
+    if column in BASE_UNICA_META_COLUMNS or column in BASE_UNICA_DERIVED_COLUMNS:
         return None
     if row_kind == "sep":
         return SEP_EXPORT_TO_METRIC.get(column)
@@ -210,12 +210,28 @@ def _metric_entries_from_row(row_kind: str, values: dict):
     return out
 
 
-def parse_base_unica_workbook(workbook_path: Path) -> dict:
+def _sep_entries_from_row(values: dict):
+    """Extrai as métricas SEP mescladas em uma linha MPFM/RECON (Base_Unica
+    com SEP e MPFM na mesma linha), reaproveitando SEP_EXPORT_TO_METRIC."""
+    out = []
+    for column, metric_name in SEP_EXPORT_TO_METRIC.items():
+        parsed = _as_float(values.get(column))
+        if parsed is None:
+            continue
+        out.append((metric_name, parsed))
+    return out
+
+
+def parse_base_unica_workbook(workbook_path: Path, target_month: str = "") -> dict:
     wb = load_workbook(workbook_path, read_only=True, data_only=True)
-    if "BASE_UNICA_MES" not in wb.sheetnames:
+    sheet_name = next(
+        (name for name in ("BASE_UNICA_MES", "BASE_UNICA_TOTAL") if name in wb.sheetnames),
+        None,
+    )
+    if not sheet_name:
         wb.close()
-        raise ValueError("A planilha não contém a aba BASE_UNICA_MES.")
-    ws = wb["BASE_UNICA_MES"]
+        raise ValueError("A planilha não contém BASE_UNICA_MES nem BASE_UNICA_TOTAL.")
+    ws = wb[sheet_name]
     header_row = next(ws.iter_rows(min_row=1, max_row=1, values_only=True), None)
     headers = [_as_text(cell) for cell in (header_row or [])]
     header_index = {name: idx for idx, name in enumerate(headers) if name}
@@ -224,7 +240,12 @@ def parse_base_unica_workbook(workbook_path: Path) -> dict:
         wb.close()
         raise ValueError(f"Colunas obrigatórias ausentes na BASE_UNICA_MES: {', '.join(missing)}")
 
+    target_month = _as_text(target_month)
+    if target_month and len(target_month) != 7:
+        wb.close()
+        raise ValueError("O mês-alvo deve estar no formato YYYY-MM.")
     month = ""
+    months = set()
     row_groups = []
     metric_rows = []
     sep_daily = defaultdict(dict)
@@ -239,11 +260,11 @@ def parse_base_unica_workbook(workbook_path: Path) -> dict:
         if not production_date:
             continue
         current_month = production_date[:7]
+        months.add(current_month)
+        if target_month and current_month != target_month:
+            continue
         if not month:
             month = current_month
-        elif current_month != month:
-            wb.close()
-            raise ValueError("A BASE_UNICA_MES deve conter apenas um único mês.")
 
         row_kind = _row_kind(values.get("Origin"), values.get("Granularity"))
         hour_ref = _as_hour_ref(values.get("Hour"))
@@ -256,35 +277,17 @@ def parse_base_unica_workbook(workbook_path: Path) -> dict:
         is_official = _as_int_flag(values.get("IsOfficial"))
 
         entries = _metric_entries_from_row(row_kind, values)
-        if not entries:
+        # Linhas MPFM/RECON podem trazer dados do separador mesclados na mesma
+        # linha (Base_Unica atual): extrai à parte como um grupo row_kind='sep'
+        # próprio, para não perder o dado do separador na reimportação.
+        sep_entries = _sep_entries_from_row(values) if row_kind != "sep" else []
+        if not entries and not sep_entries:
             continue
 
-        row_groups.append(
-            {
-                "production_date": production_date,
-                "hour_ref": hour_ref,
-                "row_kind": row_kind,
-                "bank": bank,
-                "loop": loop,
-                "tipo": tipo,
-                "tag": tag,
-                "instrument": instrument,
-                "source_file": source_file,
-                "is_official": is_official,
-                "row_number": row_number,
-                "metrics": len(entries),
-            }
-        )
-        days.add(production_date)
-        if bank:
-            banks.add(bank)
-        origins[row_kind] += 1
-
-        for metric_name, metric_value in entries:
-            metric_names.add(metric_name)
-            metric_rows.append(
+        if entries:
+            row_groups.append(
                 {
-                    "day_ref": production_date,
+                    "production_date": production_date,
                     "hour_ref": hour_ref,
                     "row_kind": row_kind,
                     "bank": bank,
@@ -292,16 +295,85 @@ def parse_base_unica_workbook(workbook_path: Path) -> dict:
                     "tipo": tipo,
                     "tag": tag,
                     "instrument": instrument,
-                    "metric_name": metric_name,
-                    "metric_value": metric_value,
-                    "metric_unit": "",
                     "source_file": source_file,
-                    "sheet_name": "BASE_UNICA_MES",
                     "is_official": is_official,
+                    "row_number": row_number,
+                    "metrics": len(entries),
                 }
             )
-            if row_kind == "sep" and hour_ref is None:
-                sep_daily[production_date][metric_name] = metric_value
+            days.add(production_date)
+            if bank:
+                banks.add(bank)
+            origins[row_kind] += 1
+
+            for metric_name, metric_value in entries:
+                metric_names.add(metric_name)
+                metric_rows.append(
+                    {
+                        "day_ref": production_date,
+                        "hour_ref": hour_ref,
+                        "row_kind": row_kind,
+                        "bank": bank,
+                        "loop": loop,
+                        "tipo": tipo,
+                        "tag": tag,
+                        "instrument": instrument,
+                        "metric_name": metric_name,
+                        "metric_value": metric_value,
+                        "metric_unit": "",
+                        "source_file": source_file,
+                        "sheet_name": sheet_name,
+                        "is_official": is_official,
+                    }
+                )
+                if row_kind == "sep" and hour_ref is None:
+                    sep_daily[production_date][metric_name] = metric_value
+
+        if sep_entries:
+            sep_tag = _as_text(values.get("SEP TAG")) or "SEP"
+            sep_instrument = _as_text(values.get("SEP Medidor"))
+            sep_loop = _as_text(values.get("SEP Local"))
+            row_groups.append(
+                {
+                    "production_date": production_date,
+                    "hour_ref": hour_ref,
+                    "row_kind": "sep",
+                    "bank": "SEP",
+                    "loop": sep_loop,
+                    "tipo": "",
+                    "tag": sep_tag,
+                    "instrument": sep_instrument,
+                    "source_file": source_file,
+                    "is_official": is_official,
+                    "row_number": row_number,
+                    "metrics": len(sep_entries),
+                }
+            )
+            days.add(production_date)
+            banks.add("SEP")
+            origins["sep"] += 1
+            for metric_name, metric_value in sep_entries:
+                metric_names.add(metric_name)
+                metric_rows.append(
+                    {
+                        "day_ref": production_date,
+                        "hour_ref": hour_ref,
+                        "row_kind": "sep",
+                        "bank": "SEP",
+                        "loop": sep_loop,
+                        "tipo": "",
+                        "tag": sep_tag,
+                        "instrument": sep_instrument,
+                        "metric_name": metric_name,
+                        "metric_value": metric_value,
+                        "metric_unit": "",
+                        "source_file": source_file,
+                        "sheet_name": sheet_name,
+                        "is_official": is_official,
+                    }
+                )
+                if hour_ref is None:
+                    sep_daily[production_date][metric_name] = metric_value
 
     wb.close()
 
@@ -310,6 +382,9 @@ def parse_base_unica_workbook(workbook_path: Path) -> dict:
 
     return {
         "month": month,
+        "months": sorted(months),
+        "sheet_name": sheet_name,
+        "target_month": target_month,
         "row_groups": row_groups,
         "metric_rows": metric_rows,
         "sep_daily": dict(sep_daily),
@@ -325,8 +400,8 @@ def parse_base_unica_workbook(workbook_path: Path) -> dict:
     }
 
 
-def preview_base_unica_import(db_conn_fn, workbook_path: Path) -> dict:
-    parsed = parse_base_unica_workbook(workbook_path)
+def preview_base_unica_import(db_conn_fn, workbook_path: Path, target_month: str = "") -> dict:
+    parsed = parse_base_unica_workbook(workbook_path, target_month)
     month = parsed["month"]
     conn = db_conn_fn()
     conn.row_factory = sqlite3.Row
@@ -387,6 +462,9 @@ def preview_base_unica_import(db_conn_fn, workbook_path: Path) -> dict:
         "mode": "preview",
         "file_name": workbook_path.name,
         "month": month,
+        "months_available": parsed["months"],
+        "sheet_name": parsed["sheet_name"],
+        "target_month": parsed["target_month"],
         "import_summary": parsed["summary"],
         "diff": {
             "existing_metric_rows": len(current_map),
@@ -416,8 +494,16 @@ def apply_base_unica_import(
     output_dir: Path,
     excel_name_fn,
     serialize_sep_row_fn,
+    target_month: str = "",
 ):
-    parsed = parse_base_unica_workbook(workbook_path)
+    parsed = parse_base_unica_workbook(workbook_path, target_month)
+    if len(parsed["months"]) > 1 and not target_month:
+        raise ValueError(
+            "BASE_UNICA_TOTAL contém vários meses. Informe o mês-alvo no formato YYYY-MM "
+            "para aplicar um mês por vez."
+        )
+    if not parsed["month"]:
+        raise ValueError(f"O mês-alvo {target_month or 'informado'} não possui linhas válidas no Excel.")
     month = parsed["month"]
     year = month[:4]
     mon = month[5:7]

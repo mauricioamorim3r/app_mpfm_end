@@ -43,6 +43,7 @@ def _default_db_conn(db_path: Path) -> sqlite3.Connection:
     try:
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA cache_size = -64000")
     except Exception:
         pass
     return conn

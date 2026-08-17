@@ -413,6 +413,38 @@
             </div>
             <div id="uploadAutoMonitorStatus" class="upload-auto-monitor-grid" role="status" aria-live="polite"></div>
           </div>
+          <div class="card ops-card ops-card--accent">
+            <div class="row row--sb-ac-mb12-wrap">
+              <div>
+                <h3 class="section-title modal-h3">Pesquisar e processar por data</h3>
+                <div class="text-muted-11 mt4">Procura Daily/Hourly nas pastas MPFM topside/subsea configuradas para o dia escolhido ou para uma janela de dias. Inclui TXTs SEP se a pasta raiz estiver informada abaixo.</div>
+              </div>
+              <div class="row row--wrap">
+                <button class="btn" id="btnProcessLatestDay">▶ Último dia</button>
+                <button class="btn secondary" id="btnProcessLatest3Days">▶ 3 últimos dias</button>
+              </div>
+            </div>
+            <div class="row ops-filter-row row--fe-wrap mb10">
+              <div class="field f-150">
+                <label for="latestTargetDay">Data de produção</label>
+                <input type="date" id="latestTargetDay">
+              </div>
+              <div class="field f-140">
+                <label for="latestWindowDays">Janela</label>
+                <select id="latestWindowDays">
+                  <option value="1">1 dia</option>
+                  <option value="2">2 dias</option>
+                  <option value="3">3 dias</option>
+                  <option value="5">5 dias</option>
+                  <option value="7">7 dias</option>
+                  <option value="15">15 dias</option>
+                  <option value="31">31 dias</option>
+                </select>
+              </div>
+              <button class="btn" id="btnProcessSelectedWindow" type="button">🔎 Pesquisar janela</button>
+            </div>
+            <div class="text-muted-11">Informe uma data para pesquisar exatamente aquela janela calendário. Se a data ficar vazia, use os botões de último dia vigente. A rotina informa se há arquivos elegíveis antes de executar; arquivos faltantes não bloqueiam a carga.</div>
+          </div>
           <div class="card ops-card">
             <h3 class="section-title">Processar pasta local</h3>
             <div class="row">
@@ -505,12 +537,18 @@
           <button class="btn secondary sm" id="btnColConfig" title="Configurar colunas visíveis">⚙ Colunas</button>
           <button class="btn secondary sm" id="btnExportCsv" title="Exportar CSV com colunas selecionadas">↓ CSV</button>
           <button class="btn secondary sm" id="btnExportXlsx" title="Exportar Excel formatado com colunas selecionadas">↓ Excel</button>
+          <button class="btn secondary sm" id="btnExportMpfmAdjustments" title="Exportar registro mensal de ajustes MPFM">↓ Registro ajustes</button>
+          <input type="file" id="mpfmAdjustmentFile" accept=".xlsx" style="display:none">
+          <button class="btn secondary sm" id="btnPickMpfmAdjustment" title="Selecionar arquivo de ajustes MPFM">↑ Selecionar ajustes</button>
+          <button class="btn secondary sm" id="btnPreviewMpfmAdjustment" title="Validar arquivo antes de aplicar">Prévia ajustes</button>
+          <button class="btn danger sm" id="btnApplyMpfmAdjustment" title="Aplicar correções do arquivo selecionado">Aplicar ajustes</button>
         </div>
       </div>
       <div id="mpfmTableWrap" class="card ops-card ops-card--accent">
         <div class="text-muted-11-mb8">
           Clique em um valor para editar. Alterações são salvas diretamente no banco de dados.
         </div>
+        <div id="mpfmAdjustmentStatus" class="muted text-muted-11-mb8" role="status" aria-live="polite">Registro de ajustes: nenhum arquivo selecionado.</div>
         <div id="mpfmContext" class="mpfm-context-grid mb12"></div>
         <div class="tablewrap"><table class="table" id="mpfmTable">
           <thead id="mpfmThead"></thead>
@@ -2976,12 +3014,12 @@
           <div class="settings-recovery-grid cfg-recovery-mt">
             <label class="cfg-label-col">
               Excel soberano do mês
-              <input id="recoveryBaseUnicaFile" class="input" type="file" accept=".xlsx" aria-label="Selecionar workbook Excel com aba BASE_UNICA_MES para importação soberana">
-              <span class="muted cfg-hint">Substitui o mês da aplicação para refletir exatamente a aba <b>BASE_UNICA_MES</b>.</span>
+              <input id="recoveryBaseUnicaFile" class="input" type="file" accept=".xlsx" aria-label="Selecionar workbook Excel BASE_UNICA_MES ou BASE_UNICA_TOTAL para importação soberana">
+              <span class="muted cfg-hint">Aceita <b>BASE_UNICA_MES</b> ou <b>BASE_UNICA_TOTAL</b>. Use o mês selecionado acima; somente esse mês será substituído.</span>
             </label>
             <div class="settings-recovery-actions">
-              <button class="btn secondary sm" id="btnRecoveryPreviewBaseUnica" aria-label="Analisar o Excel da BASE_UNICA_MES antes de aplicar a importação">🔎 Analisar Excel</button>
-              <button class="btn danger sm" id="btnRecoveryApplyBaseUnica" aria-label="Aplicar a importação soberana do mês usando a BASE_UNICA_MES do Excel enviado" disabled>📥 Aplicar importação</button>
+              <button class="btn secondary sm" id="btnRecoveryPreviewBaseUnica" aria-label="Analisar o Excel Base Única antes de aplicar a importação">🔎 Analisar Excel</button>
+              <button class="btn danger sm" id="btnRecoveryApplyBaseUnica" aria-label="Aplicar a importação soberana do mês usando o Excel Base Única enviado" disabled>📥 Aplicar importação</button>
             </div>
             <label class="cfg-label-col">
               Backup ZIP completo
@@ -3197,10 +3235,10 @@
   </div>
 </div>
 
-<script src="/static/app.shared.js?v=20260702a11y1"></script>
-<script src="/static/app.summary.js?v=20260721summaryfix1"></script>
+<script src="/static/app.shared.js?v=20260730summaryboot1"></script>
+<script src="/static/app.summary.js?v=20260730summaryboot1"></script>
 <script src="/static/app.system.js?v=20260702recovery1"></script>
-<script src="/static/app.main.js?v=20260720pocoriser2"></script>
+<script src="/static/app.main.js?v=20260730summaryboot1"></script>
 <!-- ── Painel Operador: Ajuda Contextual ────────────────────── -->
 <!-- Overlay escuro -->
 <div id="poHelpOverlay" class="po-help-overlay" role="presentation" aria-hidden="true"></div>

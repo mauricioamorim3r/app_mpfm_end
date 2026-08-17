@@ -48,16 +48,44 @@ class DailyChecklistService:
 
     def import_workbook(self, db_conn_fn, source_path: str) -> dict[str, Any]:
         path = self._resolve_path(source_path)
-        scan = self._scan_workbook(path, include_rows=True, selected_only=True)
         file_hash = self._file_hash(path)
-        now = self._now()
-        selected = [sheet for sheet in scan["sheets"] if self._is_default_sheet(sheet["name"])]
 
         conn = db_conn_fn()
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
         self._ensure_tables(cur)
         try:
+            existing = cur.execute(
+                """
+                SELECT id, source_file, file_hash, imported_at, status, sheet_count,
+                       selected_sheet_count, row_count
+                FROM painel_operador_daily_checklist_runs
+                WHERE file_hash=? AND status='ok'
+                ORDER BY id DESC
+                LIMIT 1
+                """,
+                (file_hash,),
+            ).fetchone()
+            if existing:
+                return {
+                    "ok": True,
+                    "skipped": True,
+                    "reason": "same_content",
+                    "import_run_id": int(existing["id"]),
+                    "source_file": str(path),
+                    "file_hash": file_hash,
+                    "imported_at": existing["imported_at"],
+                    "sheet_count": int(existing["sheet_count"] or 0),
+                    "selected_sheet_count": int(existing["selected_sheet_count"] or 0),
+                    "rows_inserted": int(existing["row_count"] or 0),
+                    "message": "Conteúdo idêntico já importado; nenhuma linha foi duplicada.",
+                }
+
+            # The expensive XLSM/XML scan only happens after the cheap hash
+            # lookup establishes that this content is new.
+            scan = self._scan_workbook(path, include_rows=True, selected_only=True)
+            now = self._now()
+            selected = [sheet for sheet in scan["sheets"] if self._is_default_sheet(sheet["name"])]
             cur.execute(
                 """
                 INSERT INTO painel_operador_daily_checklist_runs(

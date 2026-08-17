@@ -127,7 +127,12 @@ function xml042RenderDocuments(rows = []) {
       <td class="mono">${xml042Escape(row.cod_cadastro_poco)}</td>
       <td class="mono">${xml042Escape(row.filename)}</td>
       <td class="mono">${xml042Escape((row.generated_at || '').replace('T',' ').slice(0,16))}</td>
-      <td><a class="btn secondary sm" href="${API}/xml042/download/${row.id}" target="_blank" rel="noopener">Baixar</a></td>
+      <td>
+        <div class="row" style="gap:6px;flex-wrap:wrap">
+          <button class="btn secondary sm" onclick="previewXml042Document(${row.id})">Visualizar</button>
+          <a class="btn secondary sm" href="${API}/xml042/download/${row.id}" target="_blank" rel="noopener">Baixar</a>
+        </div>
+      </td>
     </tr>
   `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">Nenhum XML gerado.</td></tr>';
 }
@@ -441,6 +446,24 @@ window.downloadZipXml042 = function() {
   window.open(`${API}/xml042/download-batch-zip?month=${encodeURIComponent(month)}`, '_blank');
 };
 
+window.previewXml042Document = async function(id) {
+  const meta = document.getElementById('xml042PreviewMeta');
+  const preview = document.getElementById('xml042Preview');
+  if (!meta || !preview) return;
+  try {
+    meta.textContent = 'Carregando XML gerado...';
+    preview.textContent = '';
+    const d = await j(`${API}/xml042/preview-document/${encodeURIComponent(id)}`);
+    meta.textContent = `${fmtDate(d.production_day)} · ${d.bank || '—'} · ${d.well_operator_name || '—'} · ${d.cod_cadastro_poco || '—'} · ${d.filename || ''}`;
+    preview.textContent = d.xml || 'XML vazio.';
+    xml042StatusText(`XML visualizado: ${d.filename || id}`);
+  } catch(err) {
+    meta.textContent = 'Falha ao carregar XML gerado.';
+    preview.textContent = err.message || String(err);
+    xml042StatusText(`Erro ao visualizar XML: ${err.message || err}`, true);
+  }
+};
+
 document.getElementById('btnBatchGenerateXml042')?.addEventListener('click', window.batchGenerateXml042);
 document.getElementById('btnDownloadZipXml042')?.addEventListener('click', window.downloadZipXml042);
 
@@ -452,33 +475,52 @@ document.getElementById('btnGenerateXml042')?.addEventListener('click', async ()
   }
   const cnpj8 = document.getElementById('xml042Cnpj8').value.trim() || '04028583';
   const target_dir = document.getElementById('xml042TargetDir')?.value?.trim() || '';
-  state.prefs = state.prefs || {};
-  state.prefs.xml042_cnpj8 = cnpj8;
-  await j(`${API}/user-prefs`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(state.prefs),
-  }).catch(() => null);
-  const d = await j(`${API}/xml042/generate`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      month: xml042CurrentMonth(),
-      production_day: row.production_day,
-      bank: row.bank,
-      well_operator_name: row.well_operator_name,
-      subsea_tag: row.subsea_tag,
-      cnpj8,
-      target_dir,
-    }),
-  });
-  let msg = `XML gerado: ${d.filename}`;
-  if (d.saved_to_target_dir) {
-    msg += ` (salvo em SGM 3.7)`;
+  try {
+    state.prefs = state.prefs || {};
+    state.prefs.xml042_cnpj8 = cnpj8;
+    await j(`${API}/user-prefs`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(state.prefs),
+    }).catch(() => null);
+
+    if (!row.approved) {
+      await j(`${API}/xml042/approve`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          month: xml042CurrentMonth(),
+          production_day: row.production_day,
+          bank: row.bank,
+          well_operator_name: row.well_operator_name,
+          subsea_tag: row.subsea_tag,
+        }),
+      });
+    }
+
+    const d = await j(`${API}/xml042/generate`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        month: xml042CurrentMonth(),
+        production_day: row.production_day,
+        bank: row.bank,
+        well_operator_name: row.well_operator_name,
+        subsea_tag: row.subsea_tag,
+        cnpj8,
+        target_dir,
+      }),
+    });
+    let msg = `XML gerado: ${d.filename}`;
+    if (d.saved_to_target_dir) {
+      msg += ` (salvo em SGM 3.7)`;
+    }
+    xml042StatusText(msg);
+    await loadXml042Candidates();
+    await loadXml042Documents();
+  } catch(err) {
+    xml042StatusText(`Erro ao gerar XML: ${err.message || err}`, true);
   }
-  xml042StatusText(msg);
-  await loadXml042Candidates();
-  await loadXml042Documents();
 });
 
 document.getElementById('btnSeedXml042Catalog')?.addEventListener('click', async () => {

@@ -1,0 +1,45 @@
+{
+  "cnpj8": "04028583",
+  "author": "usuario-standalone",
+  "base_unica_excel": "",
+  "sheet_name": "",
+  "output_dir": "xml042_gerados",
+  "registry_path": "",
+  "history_dirs": [],
+  "date_from": "",
+  "date_to": "",
+  "require_is_official": true,
+  "require_subsea": true,
+  "allow_zero_production": true,
+  "zero_tolerance": 1e-09,
+  "catalog": [
+    {
+      "well_operator_name": "PE_2",
+      "well_anp_name": "7-BAC-1-SPS",
+      "cod_cadastro_poco": "86316029925",
+      "subsea_tag": "18FT0506",
+      "bank": "B10",
+      "enabled_042": true,
+      "active": true
+    },
+    {
+      "well_operator_name": "PW-104DA",
+      "well_anp_name": "7-BAC-4D-SPS",
+      "cod_cadastro_poco": "86316030246",
+      "subsea_tag": "18FT1106",
+      "bank": "B15",
+      "enabled_042": true,
+      "active": true
+    },
+    {
+      "well_operator_name": "PE_4A",
+      "aliases": ["PE_4", "PE-4", "PE-04"],
+      "well_anp_name": "7-BAC-5A-SPS",
+      "cod_cadastro_poco": "86316030256",
+      "subsea_tag": "18FT1506",
+      "bank": "B05",
+      "enabled_042": true,
+      "active": true
+    }
+  ]
+}

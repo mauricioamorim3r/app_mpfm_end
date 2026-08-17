@@ -57,6 +57,11 @@ test-results/
 *.xlsx
 *.xls
 
+# Playwright automation session artifacts
+**/.playwright-cli/
+**/page-*.yml
+**/comparacao-mpfm-*.csv
+
 # Temporary / debug scripts
 tmp_*.py
 scripts/tmp_*.py

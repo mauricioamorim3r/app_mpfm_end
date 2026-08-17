@@ -181,9 +181,9 @@ def parse_metrics(block, ncols=5):
 # PDF parser — universal (Daily & Hourly, any unit)
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Matches: "Riser P5", "Riser P1-", "PE_4", "PE_EO4", "PI_2", "PW-104DA" etc.
+# Matches: "Riser P5", "Riser P1-", "PE_4", "PE_EO4", "PE-EO105", "PI_2", "PW-104DA" etc.
 TAG_RE = re.compile(
-    r'((?:Riser\s+P\d+|P[EI]_[A-Z0-9]+-?|PW[-_][A-Z0-9]+-?))\s*-\s*(\d{2}FT\d+)\s+'
+    r'((?:Riser\s+P\d+|P[EI][-_][A-Z0-9]+-?|PW[-_][A-Z0-9]+-?))\s*-\s*(\d{2}FT\d+)\s+'
     r'Production\s+Previous\s+(Day|Hour)',
     re.IGNORECASE
 )
@@ -221,6 +221,7 @@ def parse_pdf(pdf_path, report_type='daily'):
     tags = {}
     for i, h in enumerate(headers):
         tag = h.group(1).strip().replace(' ', '_').rstrip('-')
+        tag = re.sub(r'^(P[EI])[-_](EO\d+)$', r'\1_\2', tag, flags=re.IGNORECASE)
         instr = h.group(2)
         block = text[h.start(): headers[i+1].start() if i+1 < len(headers) else None]
         tags[tag] = {'instrument': instr, 'metrics': parse_metrics(block, 5)}

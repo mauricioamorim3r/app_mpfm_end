@@ -776,9 +776,15 @@ document.getElementById('btnRecoveryDeleteDay').onclick = async () => {
 
 document.getElementById('btnRecoveryPreviewBaseUnica').onclick = async () => {
   const file = getRecoveryBaseUnicaFile();
+  const month = getRecoveryMonth();
+  if (!month) {
+    const log = document.getElementById('recoveryLog');
+    if (log) log.textContent = 'Erro: selecione o mês-alvo antes de analisar o Excel.';
+    return;
+  }
   await runRecoveryFileAction(
     'btnRecoveryPreviewBaseUnica',
-    `${API}/admin/recovery/base-unica-import/preview`,
+    `${API}/admin/recovery/base-unica-import/preview?month=${encodeURIComponent(month)}`,
     file,
   );
 };
@@ -786,18 +792,24 @@ document.getElementById('btnRecoveryPreviewBaseUnica').onclick = async () => {
 document.getElementById('btnRecoveryApplyBaseUnica').onclick = async () => {
   if (!requireRecoveryDangerGate()) return;
   const file = getRecoveryBaseUnicaFile();
+  const month = getRecoveryMonth();
   if (!file) {
     const log = document.getElementById('recoveryLog');
-    if (log) log.textContent = 'Erro: selecione um workbook .xlsx com a aba BASE_UNICA_MES.';
+    if (log) log.textContent = 'Erro: selecione um workbook .xlsx com BASE_UNICA_MES ou BASE_UNICA_TOTAL.';
+    return;
+  }
+  if (!month) {
+    const log = document.getElementById('recoveryLog');
+    if (log) log.textContent = 'Erro: selecione o mês-alvo antes de aplicar o Excel.';
     return;
   }
   const firstConfirm = confirm(`Aplicar importação soberana do workbook ${file.name}?`);
   if (!firstConfirm) return;
-  const secondConfirm = confirm('Confirma substituir o mês da aplicação pelo conteúdo da BASE_UNICA_MES? Essa ação remove o estado atual do mês para refletir exatamente o Excel.');
+  const secondConfirm = confirm(`Confirma substituir ${month} pelo conteúdo do Excel? Essa ação remove o estado atual do mês para refletir exatamente o arquivo.`);
   if (!secondConfirm) return;
   await runRecoveryFileAction(
     'btnRecoveryApplyBaseUnica',
-    `${API}/admin/recovery/base-unica-import/apply`,
+    `${API}/admin/recovery/base-unica-import/apply?month=${encodeURIComponent(month)}`,
     file,
     async () => {
       await initDates();

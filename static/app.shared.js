@@ -102,6 +102,19 @@ async function j(url, opts) {
   return data;
 }
 
+async function loadPrefs() {
+  const fallback = { prefs: { selected_metrics: [] }, all_metrics: [] };
+  const d = await j(`${API}/user-prefs`).catch(() => fallback);
+  if (typeof state !== 'undefined') {
+    state.prefs = d.prefs || {};
+    state.allMetrics = d.all_metrics || [];
+    state.selectedCols = state.prefs.selected_metrics || [];
+    if (typeof applyThemePreference === 'function') applyThemePreference(state.prefs.theme_mode);
+  }
+  if (typeof buildColCheckGrid === 'function') buildColCheckGrid();
+  return d;
+}
+
 const fmt = v => v == null ? '—' : new Intl.NumberFormat('pt-BR', {maximumFractionDigits:3}).format(v);
 
 const fmtDate = d => {

@@ -1,5 +1,5 @@
 @echo off
-set "BASE_DIR=C:\Users\MAUAM\OneDrive - Equinor\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\3. Registros de Operação SGM Multifasico\3.1 Registros Diarios MPFM\3.1.4_18-FT-1506 PE 4 - Subsea B05\2026"
+set "BASE_DIR=C:\Users\MAUAM\OneDrive - Equinor\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\3.1 Registros Diarios MPFM\3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05\2026"
 
 echo === JULHO ===
 python scripts\repair_missing_mpfm_daily_from_folder.py --bank B05 --folder "%BASE_DIR%\07. Julho\Daily"

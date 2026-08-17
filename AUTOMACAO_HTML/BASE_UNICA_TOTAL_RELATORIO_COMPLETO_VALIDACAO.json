@@ -1,0 +1,109 @@
+{
+  "status": "APROVADO",
+  "validatedAt": "16/08/2026 13:03",
+  "dashboard": "C:\\MPFM\\AUTOMAÇÃO HTML\\BASE_UNICA_TOTAL_RELATORIO_COMPLETO.html",
+  "workbook": "C:\\MPFM\\AUTOMAÇÃO HTML\\BASE_UNICA_TOTAL.xlsx",
+  "rules": {
+    "html_rico_gerado": true,
+    "layout_responsivo_sem_lacuna": true,
+    "manifesto_embutido": true,
+    "arquivo_fonte_correto": true,
+    "todas_abas_representadas": true,
+    "linhas_colunas_conferem": true,
+    "conteudo_conferido_por_hash": true,
+    "localidade_pt_br": true,
+    "formato_data_hora_br": true
+  },
+  "sheets": [
+    {
+      "name": "BASE_UNICA_TOTAL",
+      "rows": 2022,
+      "columns": 125,
+      "fingerprint": "5ac5fde6647d1d9b1783a0f99e4ee55725e75a2fa7580c70d1b574fbcbbad318"
+    },
+    {
+      "name": "COMPARATIVO_MANUAL",
+      "rows": 212,
+      "columns": 45,
+      "fingerprint": "d222076b8a7750fa96ed45eba720cba1f57d023dd16d3b4089e18bd8d76d0188"
+    },
+    {
+      "name": "COMPARATIVO_TOTAL",
+      "rows": 72,
+      "columns": 45,
+      "fingerprint": "bad4164f70b81ba8563659b4f389b241104d275f34608b45c2a9097d691b2d79"
+    },
+    {
+      "name": "ALARMES_EVENTOS_TOTAL",
+      "rows": 202,
+      "columns": 15,
+      "fingerprint": "53f447d89d5fe5fabf29580b2147c731f742c67385fff5254ac6d08eaad36a62"
+    },
+    {
+      "name": "PI_EXTRACT_TOTAL",
+      "rows": 30464,
+      "columns": 22,
+      "fingerprint": "da67c689bdfd60d0478469b45bcf368ff8bbb9cdd2c5bf694192e2a07baa4291"
+    },
+    {
+      "name": "PI_EXTRACT_RESUMO",
+      "rows": 4,
+      "columns": 2,
+      "fingerprint": "85eeea48d78319f96985ee55beb6c71071f9ec27e9f12cbd716faf1bdc6582f3"
+    },
+    {
+      "name": "COMPARATIVO_PARES",
+      "rows": 609,
+      "columns": 15,
+      "fingerprint": "0987b83d47be36d986b6df0a28eefd2eb274701f2fefd9bd8e4df99e998b784b"
+    },
+    {
+      "name": "MPFM_MEDICOES",
+      "rows": 1800,
+      "columns": 52,
+      "fingerprint": "f454e1d7962204f4230127d28015d6fe9b09381395190b3eb6a0f5bb162dbc38"
+    },
+    {
+      "name": "SEP_CV_OLEO",
+      "rows": 150,
+      "columns": 25,
+      "fingerprint": "5c6a4271fa5486bc4f1ad2ff4c3e950d7b8b5cfdb89d36dd52012128f3d1fa25"
+    },
+    {
+      "name": "SEP_CV_GAS",
+      "rows": 150,
+      "columns": 22,
+      "fingerprint": "4ade1dedcf8cb3532339443cef72e7bf6255419223f55880aff24bc413b8d339"
+    },
+    {
+      "name": "SEP_CV_AGUA",
+      "rows": 150,
+      "columns": 24,
+      "fingerprint": "0f904cfacdc0d0a5525d6327f029615db4484a0b378d464b5dab5743e6652f04"
+    },
+    {
+      "name": "RECONCILIACAO",
+      "rows": 72,
+      "columns": 40,
+      "fingerprint": "95eb4eb20c47267e2e56f4486076a182f71a988611f00eeeb67d3bd1687ed8c6"
+    },
+    {
+      "name": "CADASTRO_MEDIDORES",
+      "rows": 13,
+      "columns": 8,
+      "fingerprint": "7be05a7a43eeeb441941eeee23c8eb17ff5e3c5ac3414682a80e3d54557f907d"
+    },
+    {
+      "name": "FONTES_IMPORTADAS",
+      "rows": 1,
+      "columns": 11,
+      "fingerprint": "fbf6850cc0ea13c59b22a3a36b368abe8798701f263e62fefcef16ad596099b6"
+    },
+    {
+      "name": "LOG_IMPORTACAO",
+      "rows": 1,
+      "columns": 9,
+      "fingerprint": "e9758b2c5c269232d8002f9182f5f0d107104b04f7304e5a0113c65341066a6e"
+    }
+  ]
+}

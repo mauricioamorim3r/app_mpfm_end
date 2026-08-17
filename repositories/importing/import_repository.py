@@ -356,8 +356,7 @@ class ImportRepository:
         finally:
             self._finish_write(conn, owns_conn)
 
-    def recompute_sep_source_resolution(self, production_date: str, fluid_kind: str, meter_id: str):
-        conn = self._db_conn()
+    def _recompute_sep_source_resolution_with_conn(self, conn, production_date: str, fluid_kind: str, meter_id: str):
         cur = conn.cursor()
         rows = cur.execute(
             """SELECT id, report_kind, created_at, resolution_status FROM sep_source_files
@@ -366,7 +365,6 @@ class ImportRepository:
             (production_date, fluid_kind, meter_id),
         ).fetchall()
         if not rows:
-            conn.close()
             return None
         manual = [r for r in rows if (r["resolution_status"] or "") == "manual_official"]
         if manual:
@@ -388,8 +386,14 @@ class ImportRepository:
         cur.execute(f"UPDATE measurements_curated SET is_official=0 WHERE source_record_id IN ({q})", ids)
         cur.execute("UPDATE measurements_curated SET is_official=1 WHERE source_record_id=?", (chosen,))
         conn.commit()
-        conn.close()
         return chosen
+
+    def recompute_sep_source_resolution(self, production_date: str, fluid_kind: str, meter_id: str):
+        conn = self._db_conn()
+        try:
+            return self._recompute_sep_source_resolution_with_conn(conn, production_date, fluid_kind, meter_id)
+        finally:
+            conn.close()
 
     def register_sep_source_file(
         self,
@@ -407,20 +411,66 @@ class ImportRepository:
         report_kind = self._txt_report_kind(Path(file_path).name)
         now = datetime.now().isoformat(timespec="seconds")
         conn = self._db_conn()
-        cur = conn.cursor()
-        row = cur.execute(
-            "SELECT id, is_active, identity_key FROM sep_source_files WHERE source_hash=? ORDER BY id DESC LIMIT 1",
-            (source_hash,),
-        ).fetchone()
-        if row:
-            source_id = row["id"]
-            if int(row["is_active"] or 0) == 1 and (not identity_key or (row["identity_key"] or "") == (identity_key or "")):
-                conn.close()
-                chosen = self.recompute_sep_source_resolution(production_date, fluid_kind, meter_id or "")
-                conn = self._db_conn()
-                row = conn.execute("SELECT is_official FROM sep_source_files WHERE id=?", (source_id,)).fetchone()
-                conn.close()
-                return source_id, bool(row and row["is_official"]), chosen, "same_content"
+        try:
+            cur = conn.cursor()
+            row = cur.execute(
+                "SELECT id, is_active, identity_key FROM sep_source_files WHERE source_hash=? ORDER BY id DESC LIMIT 1",
+                (source_hash,),
+            ).fetchone()
+            if row:
+                source_id = row["id"]
+                if int(row["is_active"] or 0) == 1 and (not identity_key or (row["identity_key"] or "") == (identity_key or "")):
+                    chosen = self._recompute_sep_source_resolution_with_conn(conn, production_date, fluid_kind, meter_id or "")
+                    row = cur.execute("SELECT is_official FROM sep_source_files WHERE id=?", (source_id,)).fetchone()
+                    return source_id, bool(row and row["is_official"]), chosen, "same_content"
+                superseded_ids = []
+                if identity_key:
+                    superseded_ids = [
+                        int(r["id"])
+                        for r in cur.execute(
+                            """
+                            SELECT id FROM sep_source_files
+                            WHERE identity_key=? AND is_active=1
+                            ORDER BY id DESC
+                            """,
+                            (identity_key,),
+                        ).fetchall()
+                    ]
+                    if superseded_ids:
+                        q = ",".join("?" * len(superseded_ids))
+                        cur.execute(
+                            f"UPDATE sep_source_files SET is_active=0, is_official=0, resolution_status='superseded', updated_at=? WHERE id IN ({q})",
+                            [now] + superseded_ids,
+                        )
+                        cur.execute(
+                            f"UPDATE measurements_curated SET is_official=0 WHERE source_record_id IN ({q})",
+                            superseded_ids,
+                        )
+                cur.execute(
+                    """
+                    UPDATE sep_source_files
+                    SET production_date=?, fluid_kind=?, meter_id=?, location=?, report_kind=?, report_start=?, report_end=?,
+                        identity_key=?, time_source=?, is_active=1, is_official=0, resolution_status='pending', updated_at=?
+                    WHERE id=?
+                    """,
+                    (
+                        production_date,
+                        fluid_kind,
+                        meter_id or "",
+                        location or "",
+                        report_kind,
+                        report_start or "",
+                        report_end or "",
+                        identity_key or "",
+                        time_source or "content",
+                        now,
+                        source_id,
+                    ),
+                )
+                conn.commit()
+                chosen = self._recompute_sep_source_resolution_with_conn(conn, production_date, fluid_kind, meter_id or "")
+                row = cur.execute("SELECT is_official FROM sep_source_files WHERE id=?", (source_id,)).fetchone()
+                return source_id, bool(row and row["is_official"]), chosen, "reactivated"
             superseded_ids = []
             if identity_key:
                 superseded_ids = [
@@ -444,13 +494,14 @@ class ImportRepository:
                         f"UPDATE measurements_curated SET is_official=0 WHERE source_record_id IN ({q})",
                         superseded_ids,
                     )
+                    conn.commit()
             cur.execute(
-                """
-                UPDATE sep_source_files
-                SET production_date=?, fluid_kind=?, meter_id=?, location=?, report_kind=?, report_start=?, report_end=?,
-                    identity_key=?, time_source=?, is_active=1, is_official=0, resolution_status='pending', updated_at=?
-                WHERE id=?
-                """,
+                """INSERT INTO sep_source_files(
+                       production_date, fluid_kind, meter_id, location, report_kind, report_start, report_end,
+                       identity_key, time_source, source_file, source_hash, is_active, is_official,
+                       resolution_status, created_at, updated_at
+                   )
+                   VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (
                     production_date,
                     fluid_kind,
@@ -461,74 +512,22 @@ class ImportRepository:
                     report_end or "",
                     identity_key or "",
                     time_source or "content",
+                    Path(file_path).name,
+                    source_hash,
+                    1,
+                    0,
+                    "pending",
                     now,
-                    source_id,
+                    now,
                 ),
             )
+            source_id = cur.lastrowid
             conn.commit()
-            chosen = self.recompute_sep_source_resolution(production_date, fluid_kind, meter_id or "")
-            conn = self._db_conn()
-            row = conn.execute("SELECT is_official FROM sep_source_files WHERE id=?", (source_id,)).fetchone()
+            chosen = self._recompute_sep_source_resolution_with_conn(conn, production_date, fluid_kind, meter_id or "")
+            row = cur.execute("SELECT is_official FROM sep_source_files WHERE id=?", (source_id,)).fetchone()
+            return source_id, bool(row and row["is_official"]), chosen, ("superseded" if superseded_ids else "new")
+        finally:
             conn.close()
-            return source_id, bool(row and row["is_official"]), chosen, "reactivated"
-        superseded_ids = []
-        if identity_key:
-            superseded_ids = [
-                int(r["id"])
-                for r in cur.execute(
-                    """
-                    SELECT id FROM sep_source_files
-                    WHERE identity_key=? AND is_active=1
-                    ORDER BY id DESC
-                    """,
-                    (identity_key,),
-                ).fetchall()
-            ]
-            if superseded_ids:
-                q = ",".join("?" * len(superseded_ids))
-                cur.execute(
-                    f"UPDATE sep_source_files SET is_active=0, is_official=0, resolution_status='superseded', updated_at=? WHERE id IN ({q})",
-                    [now] + superseded_ids,
-                )
-                cur.execute(
-                    f"UPDATE measurements_curated SET is_official=0 WHERE source_record_id IN ({q})",
-                    superseded_ids,
-                )
-                conn.commit()
-        cur.execute(
-            """INSERT INTO sep_source_files(
-                   production_date, fluid_kind, meter_id, location, report_kind, report_start, report_end,
-                   identity_key, time_source, source_file, source_hash, is_active, is_official,
-                   resolution_status, created_at, updated_at
-               )
-               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-            (
-                production_date,
-                fluid_kind,
-                meter_id or "",
-                location or "",
-                report_kind,
-                report_start or "",
-                report_end or "",
-                identity_key or "",
-                time_source or "content",
-                Path(file_path).name,
-                source_hash,
-                1,
-                0,
-                "pending",
-                now,
-                now,
-            ),
-        )
-        source_id = cur.lastrowid
-        conn.commit()
-        conn.close()
-        chosen = self.recompute_sep_source_resolution(production_date, fluid_kind, meter_id or "")
-        conn = self._db_conn()
-        row = conn.execute("SELECT is_official FROM sep_source_files WHERE id=?", (source_id,)).fetchone()
-        conn.close()
-        return source_id, bool(row and row["is_official"]), chosen, ("superseded" if superseded_ids else "new")
 
     @staticmethod
     def _txt_report_kind(name: str) -> str:
