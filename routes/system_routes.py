@@ -852,7 +852,7 @@ def register_system_routes(app, ctx: dict) -> None:
         if not path.exists():
             raise HTTPException(404, "Arquivo estático não encontrado")
         media_type = "application/javascript" if str(path).endswith(".js") else None
-        return FileResponse(str(path), media_type=media_type)
+        return FileResponse(str(path), media_type=media_type, headers={"Cache-Control": "no-cache, must-revalidate"})
 
     @app.get("/twin/{filename:path}")
     def api_twin_static(filename: str):

@@ -6321,7 +6321,10 @@ def write_dashboard(
     html {{ scroll-behavior: smooth; }}
     body {{ margin: 0; font-family: Inter, "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; }}
     button, select, input {{ font: inherit; }}
-    header {{ position:fixed; inset:0 0 auto 0; z-index:30; background:linear-gradient(110deg,#062b59 0%,#0b477d 55%,#12639a 100%); color:#fff; height:auto; min-height:96px; padding:12px 28px; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #d7263d; box-shadow:0 3px 12px rgba(16,34,56,.16); }}
+    header {{ position:fixed; inset:0 0 auto 0; z-index:30; background:linear-gradient(110deg,#062b59 0%,#0b477d 55%,#12639a 100%); color:#fff; height:auto; min-height:96px; padding:12px 28px; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #d7263d; box-shadow:0 3px 12px rgba(16,34,56,.16); transition:min-height .2s ease,padding .2s ease; }}
+    header.header--compact {{ min-height:48px !important; padding-top:6px !important; padding-bottom:6px !important; }}
+    header.header--compact .meta, header.header--compact .eyebrow {{ display:none !important; }}
+    header.header--compact h1 {{ font-size:15px; margin:0; }}
     header h1 {{ font-size:21px; font-weight:780; letter-spacing:-.03em; margin:2px 0 4px; }}
     header .meta {{ color:#dbeafe; font-size:11px; line-height:1.4; }}
     .eyebrow {{ color:#bfdbfe; }}
@@ -6472,7 +6475,7 @@ def write_dashboard(
         @media(max-width:1400px) {{ .lineage-grid {{ grid-template-columns:repeat(3,minmax(0,1fr)); }} .lineage-stage:not(:last-child):after {{ display:none; }} }}
         @media(max-width:1100px) {{ main {{ padding:92px 16px 30px; }} .metric-grid {{ grid-template-columns:repeat(2,minmax(0,1fr)); }} .chart-grid {{ grid-template-columns:1fr; }} .alarm-category-row {{ grid-template-columns:1fr; }} .overview-kpis {{ grid-template-columns:repeat(3,minmax(0,1fr)); }} .integrated-controls {{ grid-template-columns:repeat(3,minmax(0,1fr)); }} .measurement-flow {{ grid-template-columns:repeat(2,minmax(0,1fr)); }} .flow-link {{ display:none; }} .lineage-grid {{ grid-template-columns:repeat(2,minmax(0,1fr)); }} }}
         @media(max-width:720px) {{
-            header {{ position:fixed; height:auto; min-height:72px; padding:12px 14px; }} header h1 {{ font-size:18px; }} header .meta {{ display:block; font-size:10px; line-height:1.45; }} .header-status {{ margin-left:0; text-align:left; width:100%; font-size:10px; }} .brand-row > div:nth-child(2) {{ flex-basis:calc(100% - 52px); }} .brand-mark {{ width:38px; height:38px; flex:0 0 38px; }} .brand-mark img {{ width:36px; height:36px; }} main {{ padding-top:300px !important; }}
+            header {{ position:fixed; height:auto; min-height:72px; padding:12px 14px; }} header h1 {{ font-size:18px; }} header .meta {{ display:block; font-size:10px; line-height:1.45; }} .header-status {{ margin-left:0; text-align:left; width:100%; font-size:10px; }} .brand-row > div:nth-child(2) {{ flex-basis:calc(100% - 52px); }} .brand-mark {{ width:38px; height:38px; flex:0 0 38px; }} .brand-mark img {{ width:36px; height:36px; }} main {{ padding-top:calc(var(--header-height,160px) + 10px) !important; }}
             .tab-nav {{ position:sticky; left:auto; top:0; bottom:auto; width:auto; height:auto; padding:9px 12px; border-right:0; border-bottom:1px solid var(--line); }} .tab-nav:before,.tab-button {{ display:none; }} .mobile-tab-select {{ display:block; }}
             main {{ margin:0; padding:12px 10px 28px; }} .metric-grid,.formula-grid {{ grid-template-columns:1fr; gap:9px; }} .metric-card {{ min-height:104px; }} .metric-card span,.metric-card small {{ min-height:0; }}
             .tab-panel > h2 {{ font-size:17px; margin:14px 0 9px; padding:10px 11px; }}
@@ -6538,6 +6541,13 @@ def write_dashboard(
       syncLayout();
       window.addEventListener('resize', syncLayout, {{ passive: true }});
       if (window.ResizeObserver && header) new ResizeObserver(syncLayout).observe(header);
+      window.addEventListener('scroll', () => {{
+        const compact = window.scrollY > 80;
+        if (header.classList.contains('header--compact') !== compact) {{
+          header.classList.toggle('header--compact', compact);
+          requestAnimationFrame(syncLayout);
+        }}
+      }}, {{ passive: true }});
     }})();
     document.querySelectorAll('.controls').forEach((controls, index) => {{
         if (controls.classList.contains('integrated-controls')) return;

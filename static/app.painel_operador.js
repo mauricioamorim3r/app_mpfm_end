@@ -150,6 +150,8 @@ async function loadPainelOperador(silent = false) {
     if (!painelOperadorState.technicalSummary) painelOperadorState.technicalSummary = {summary: {}, cv_diagnostics: {}};
     painelOperadorState.loaded = true;
     await renderPainelOperadorOverview();
+    const fileSummary = painelOperadorState.fileSummary || {};
+    const anpSummary = painelOperadorState.anpSummary || {};
     poFillSelectFromGroups('poFileCategory', (fileSummary.categories || []).map((row) => row.category));
     poFillSelectFromGroups('poFileKind', (fileSummary.categories || []).map((row) => row.document_kind));
     poFillSelectFromGroups('poAnpFamily', (anpSummary.groups || []).map((row) => row.family));
