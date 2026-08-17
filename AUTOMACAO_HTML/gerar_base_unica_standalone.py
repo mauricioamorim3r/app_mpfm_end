@@ -6787,6 +6787,7 @@ def _resolve_config():
     parser.add_argument("--pi-period-output", default=PI_PERIOD_OUTPUT, help="JSON do período aplicado pelo coletor PI Vision")
     parser.add_argument("--continue-without-pi", action="store_true", help="Continua o processamento se a coleta PI falhar")
     parser.add_argument("--pi-retries", type=int, default=PI_RETRIES, help="Tentativas adicionais para cada dia PI quando a captura vier incompleta")
+    parser.add_argument("--pi-from-excel", default="", help="Lê aba PI_EXTRACT de um Excel gerado anteriormente, evitando nova coleta (ex: BASE_UNICA_STANDALONE_20260816_221423.xlsx)")
     parser.add_argument("--continue-without-email", action="store_true", help="Continua o processamento se a automação de e-mail falhar")
     parser.add_argument("--days", type=int, default=DAYS_COUNT, help="Quantidade de dias mais recentes a exportar")
     parser.add_argument("--aligned-bank", default=SEP_ALIGNED_BANK, help=argparse.SUPPRESS)
@@ -6861,7 +6862,7 @@ def _resolve_config():
         Path(args.total_dashboard_output.strip()) if args.total_dashboard_output.strip() else None,
         Path(args.pi_root.strip()), args.pi_config.strip(),
         Path(args.pi_output.strip()), Path(args.pi_period_output.strip()), args.continue_without_pi,
-        max(0, args.pi_retries), args.continue_without_email,
+        max(0, args.pi_retries), args.continue_without_email, args.pi_from_excel.strip(),
     )
 
 
@@ -6880,7 +6881,7 @@ def main() -> int | None:
         approve_missing, preflight_only, generate_dashboard, dashboard_output_path, open_dashboard,
         standalone_dashboard_output_path, total_dashboard_output_path,
         pi_root, pi_config, pi_output_path, pi_period_output_path, continue_without_pi,
-        pi_retries, continue_without_email,
+        pi_retries, continue_without_email, pi_from_excel_path,
     ) = _resolve_config()
 
     standalone_dashboard_path = (
@@ -6944,6 +6945,12 @@ def main() -> int | None:
 
     df_pi_extract = pd.DataFrame()
     pi_attempted = False
+    if pi_from_excel_path and Path(pi_from_excel_path).exists():
+        try:
+            df_pi_extract = pd.read_excel(pi_from_excel_path, sheet_name=PI_SHEET_NAME)
+            print(f"[OK] PI_EXTRACT carregada de Excel existente ({len(df_pi_extract)} linha(s)): {pi_from_excel_path}")
+        except Exception as exc:
+            print(f"[WARN] Falha ao ler PI_EXTRACT de {pi_from_excel_path}: {exc}")
     if run_pi and date_from and date_to and not preflight_only:
         pi_attempted = True
         try:

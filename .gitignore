@@ -59,6 +59,7 @@ test-results/
 
 # Playwright automation session artifacts
 **/.playwright-cli/
+**/.playwright-mcp/
 **/page-*.yml
 **/comparacao-mpfm-*.csv
 
