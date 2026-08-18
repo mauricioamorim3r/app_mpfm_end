@@ -1,0 +1,61 @@
+{
+  "status": "APROVADO",
+  "validatedAt": "17/08/2026 13:14",
+  "dashboard": "C:\\Users\\MAUAM\\OneDrive - Equinor\\Desktop\\app_mpfm_end-main\\AUTOMACAO_HTML\\HTML_GERADOS\\BASE_UNICA_TOTAL_RELATORIO_COMPLETO.html",
+  "workbook": "C:\\Users\\MAUAM\\OneDrive - Equinor\\Desktop\\app_mpfm_end-main\\AUTOMACAO_HTML\\EXCEL_GERADOS\\BASE_UNICA_TOTAL.xlsx",
+  "rules": {
+    "html_rico_gerado": true,
+    "layout_responsivo_sem_lacuna": true,
+    "manifesto_embutido": true,
+    "arquivo_fonte_correto": true,
+    "todas_abas_representadas": true,
+    "linhas_colunas_conferem": true,
+    "conteudo_conferido_por_hash": true,
+    "localidade_pt_br": true,
+    "formato_data_hora_br": true
+  },
+  "sheets": [
+    {
+      "name": "BASE_UNICA_TOTAL",
+      "rows": 1698,
+      "columns": 125,
+      "fingerprint": "4abe654643eb804b1f901099789c3954755dd08f5bf73e3a88a629494bccf8ff"
+    },
+    {
+      "name": "COMPARATIVO_MANUAL",
+      "rows": 212,
+      "columns": 45,
+      "fingerprint": "bf7f53dd7ddfe0d886719ba37458584ae5287f9dce209a3bc1ba2e1e1449fb02"
+    },
+    {
+      "name": "COMPARATIVO_TOTAL",
+      "rows": 60,
+      "columns": 45,
+      "fingerprint": "138ebc79c8cd3db4476feeab8d318da846a1d0296ee89a1c59dbef0bf9f4df4d"
+    },
+    {
+      "name": "ALARMES_EVENTOS_TOTAL",
+      "rows": 152,
+      "columns": 15,
+      "fingerprint": "ee53a51c0a544fcd53bf911d7e3dc08a3defac203d4c7d2df454d99ceddb3f35"
+    },
+    {
+      "name": "PI_EXTRACT_TOTAL",
+      "rows": 43440,
+      "columns": 22,
+      "fingerprint": "1ef05c600877cd3a1ec785e20ee58f2e013f40ea70f8c7de4d7fdc6798bcabfa"
+    },
+    {
+      "name": "PI_EXTRACT_RESUMO",
+      "rows": 4,
+      "columns": 2,
+      "fingerprint": "763d9d193c8e9a118a3a284cec10a51714d14967caa9e76d547cecddb460e6bb"
+    },
+    {
+      "name": "COMPARATIVO_PARES",
+      "rows": 1494,
+      "columns": 17,
+      "fingerprint": "8a92fb517e806be716ed15cc82fc0f07ec2717221a3cd25af351c3b31105f924"
+    }
+  ]
+}

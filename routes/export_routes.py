@@ -790,18 +790,20 @@ def register_export_routes(app, ctx: dict) -> None:
             start_row = 5
             style_even_row = start_row
             style_odd_row = min(start_row + 1, max(ws.max_row, start_row))
-            # Pré-cache dos estilos de estilo even/odd uma única vez por planilha
             _build_prod_cache(ws, [style_even_row, style_odd_row])
+            # For large datasets skip per-row style cloning and per-cell alignment —
+            # openpyxl style object assignment is O(n*cols) and becomes the bottleneck.
+            _STYLE_ROW_LIMIT = 50
+            _apply_style = len(row_dicts) <= _STYLE_ROW_LIMIT
             for row_idx, row_dict in enumerate(row_dicts, start=start_row):
-                if row_idx > ws.max_row:
+                if _apply_style and row_idx > ws.max_row:
                     style_row = style_even_row if (row_idx - start_row) % 2 == 0 else style_odd_row
                     clone_template_row(ws, style_row, row_idx)
                 for col_idx, header in enumerate(headers, start=1):
                     value = row_dict.get(header, "") if header else ""
-                    cell = ws.cell(row_idx, col_idx, value)
-                    if value not in (None, ""):
-                        center_cell_content(cell)
-            center_filled_cells(ws)
+                    ws.cell(row_idx, col_idx, value)
+            if _apply_style:
+                center_filled_cells(ws)
 
         def pivot_rows(piv, include_hour: bool):
             items = []
@@ -955,8 +957,6 @@ def register_export_routes(app, ctx: dict) -> None:
             ws_sheet = wb["Sheet"]
             if not any(cell.value not in (None, "") for row in ws_sheet.iter_rows() for cell in row):
                 del wb["Sheet"]
-        for ws in wb.worksheets:
-            center_filled_cells(ws)
         conn.close()
 
         filename = f"dados_producao_{date_from}_{date_to}.xlsx"
