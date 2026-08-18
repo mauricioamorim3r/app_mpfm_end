@@ -1429,15 +1429,22 @@ CREATE TABLE IF NOT EXISTS pi_vision_readings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     run_id INTEGER,
     tag TEXT NOT NULL,
+    variable_name TEXT NOT NULL DEFAULT '',
+    channel TEXT NOT NULL DEFAULT '',
+    group_name TEXT NOT NULL DEFAULT '',
     timestamp TEXT NOT NULL,
+    day_ref TEXT NOT NULL DEFAULT '',
     value REAL,
     quality TEXT DEFAULT 'Good',
     source TEXT DEFAULT 'pi_vision',
+    source_file TEXT DEFAULT '',
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY(run_id) REFERENCES processing_runs(id)
 );
-CREATE INDEX IF NOT EXISTS idx_pi_vision_readings_tag_ts
-    ON pi_vision_readings(tag, timestamp);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_pi_vision_readings_uq
+    ON pi_vision_readings(tag, variable_name, channel, timestamp);
+CREATE INDEX IF NOT EXISTS idx_pi_vision_readings_tag_day
+    ON pi_vision_readings(tag, day_ref);
 CREATE INDEX IF NOT EXISTS idx_pi_vision_readings_run
     ON pi_vision_readings(run_id, tag);
 
@@ -1895,3 +1902,36 @@ CREATE INDEX IF NOT EXISTS idx_files_imported_identity
             cur.execute(
                 f"CREATE INDEX IF NOT EXISTS idx_{tbl}_day_ref ON {tbl}(day_ref)"
             )
+
+    # Amplia pi_vision_readings com colunas de variável/canal/grupo (adicionadas 2026-08-18)
+    # Se a tabela existe sem as novas colunas e está vazia, drop e recria com o schema completo.
+    pi_cols = [r[1] for r in cur.execute("PRAGMA table_info(pi_vision_readings)").fetchall()]
+    if pi_cols and "variable_name" not in pi_cols:
+        pi_count = cur.execute("SELECT COUNT(*) FROM pi_vision_readings").fetchone()[0]
+        if pi_count == 0:
+            cur.executescript(
+                "DROP TABLE IF EXISTS pi_vision_readings;\n"
+                "DROP INDEX IF EXISTS idx_pi_vision_readings_uq;\n"
+                "DROP INDEX IF EXISTS idx_pi_vision_readings_tag_ts;\n"
+                "DROP INDEX IF EXISTS idx_pi_vision_readings_run;\n"
+            )
+            # A tabela será recriada pelo SCHEMA_SQL na próxima chamada a apply_schema
+        else:
+            # Tabela tem dados, adiciona colunas individualmente
+            for col, defval in [
+                ("variable_name", "''"),
+                ("channel",       "''"),
+                ("group_name",    "''"),
+                ("day_ref",       "''"),
+                ("source_file",   "''"),
+            ]:
+                if col not in pi_cols:
+                    cur.execute(f"ALTER TABLE pi_vision_readings ADD COLUMN {col} TEXT DEFAULT {defval}")
+    cur.execute(
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_pi_vision_readings_uq "
+        "ON pi_vision_readings(tag, variable_name, channel, timestamp)"
+    )
+    cur.execute(
+        "CREATE INDEX IF NOT EXISTS idx_pi_vision_readings_tag_day "
+        "ON pi_vision_readings(tag, day_ref)"
+    )

@@ -3473,3 +3473,34 @@ def register_ops_routes(app, ctx: dict) -> None:
                 os.unlink(temp_path)
             except OSError:
                 pass
+
+    @app.post("/api/admin/pi-vision/import")
+    async def api_admin_pi_vision_import(request: Request):
+        """
+        Importa leituras PI Vision do Excel gerado pelo coletor para pi_vision_readings.
+        Body JSON opcional: { "excel_path": "...", "only_authorized_variables": true }
+        """
+        from services.importing.pi_vision_import_service import import_pi_excel
+        body: dict = {}
+        try:
+            body = await request.json()
+        except Exception:
+            pass
+        excel_path = body.get("excel_path") or None
+        only_auth = bool(body.get("only_authorized_variables", True))
+        conn = db_conn()
+        try:
+            result = import_pi_excel(conn, excel_path=excel_path, only_authorized_variables=only_auth)
+        finally:
+            conn.close()
+        return result
+
+    @app.get("/api/admin/pi-vision/summary")
+    def api_admin_pi_vision_summary():
+        """Resumo das leituras PI armazenadas em pi_vision_readings."""
+        from services.importing.pi_vision_import_service import pi_readings_summary
+        conn = db_conn()
+        try:
+            return pi_readings_summary(conn)
+        finally:
+            conn.close()
