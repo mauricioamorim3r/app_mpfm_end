@@ -3504,3 +3504,38 @@ def register_ops_routes(app, ctx: dict) -> None:
             return pi_readings_summary(conn)
         finally:
             conn.close()
+
+    @app.post("/api/admin/choke-history/import-excel")
+    async def api_admin_choke_history_import_excel(file: UploadFile = File(...)):
+        """
+        Recebe um Excel de produção com Choke % já resolvido pelo PI DataLink
+        e persiste os valores em well_choke_history.
+        """
+        from services.importing.choke_history_import_service import import_choke_from_excel
+        import tempfile
+        suffix = Path(file.filename or "upload.xlsx").suffix or ".xlsx"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            tmp.write(await file.read())
+            tmp_path = tmp.name
+        try:
+            conn = db_conn()
+            try:
+                result = import_choke_from_excel(conn, tmp_path, source_label="excel_upload")
+            finally:
+                conn.close()
+            return result
+        finally:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+
+    @app.get("/api/admin/choke-history/summary")
+    def api_admin_choke_history_summary():
+        """Resumo do histórico de Choke % armazenado em well_choke_history."""
+        from services.importing.choke_history_import_service import choke_history_summary
+        conn = db_conn()
+        try:
+            return choke_history_summary(conn)
+        finally:
+            conn.close()
