@@ -7406,6 +7406,32 @@ def main() -> int | None:
             except Exception as exc:
                 print(f"[WARN] Dashboards gerados, mas não foi possível abrir o relatório completo no navegador: {exc}")
 
+    # ── Persistência PI Vision no banco local ────────────────────────────────
+    if not df_pi_extract.empty:
+        try:
+            import sqlite3 as _sqlite3
+            _db_path = Path(__file__).parents[1] / "data" / "mpfm_local.db"
+            if _db_path.exists():
+                import sys as _sys
+                _proj_root = str(Path(__file__).parents[1])
+                if _proj_root not in _sys.path:
+                    _sys.path.insert(0, _proj_root)
+                from services.importing.pi_vision_import_service import import_pi_excel as _import_pi_excel
+                _conn = _sqlite3.connect(_db_path)
+                try:
+                    _pi_res = _import_pi_excel(_conn, excel_path=pi_output_path)
+                    print(
+                        f"[PI→DB] {_pi_res.get('inserted', 0)} leituras inseridas, "
+                        f"{_pi_res.get('skipped', 0)} ignoradas "
+                        f"({_pi_res.get('elapsed_s', 0):.1f}s) — {pi_output_path}"
+                    )
+                finally:
+                    _conn.close()
+            else:
+                print(f"[PI→DB] Banco não encontrado em {_db_path} — dados PI não persistidos.")
+        except Exception as _exc:
+            print(f"[PI→DB] Falha ao persistir leituras PI no banco (não crítico): {_exc}")
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
