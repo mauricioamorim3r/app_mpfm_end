@@ -29,35 +29,40 @@ DEFAULT_OUT = _HERE / "HTML_GERADOS" / f"RELATORIO_DB_{datetime.now().strftime('
 DADOS_RESOLVIDOS = [
     {
         "dado": "Extração PI Vision (séries temporais)",
-        "resolucao": "Tabela pi_vision_readings criada (tag, timestamp, value, quality, run_id, source). "
-                     "Aguarda integração com o parser PI para popular os valores.",
+        "resolucao": "Tabela pi_vision_readings criada com colunas: tag, variable_name, channel, "
+                     "group_name, timestamp, day_ref, value, quality, source, source_file, run_id. "
+                     "Serviço services/importing/pi_vision_import_service.py criado. "
+                     "Endpoint: POST /api/admin/pi-vision/import (body: {excel_path, only_authorized_variables}).",
     },
     {
         "dado": "Choke % dos poços (PITimeDat)",
         "resolucao": "Tabela well_choke_history criada (tag, day_ref, choke_pct, source). "
-                     "Aguarda integração com leitura PI ou export confirmado para popular.",
+                     "Serviço services/importing/choke_history_import_service.py criado. "
+                     "Endpoint: POST /api/admin/choke-history/import-excel (upload do Excel com valores resolvidos).",
     },
     {
         "dado": "Dados do Painel do Operador (balanços sem referência temporal explícita)",
-        "resolucao": "Coluna day_ref adicionada em painel_operador_tank_balance, "
-                     "painel_operador_gas_balance e painel_operador_offspec_tank. "
-                     "Linhas existentes foram retroativamente preenchidas.",
+        "resolucao": "Coluna day_ref adicionada em painel_operador_tank_balance (778 linhas), "
+                     "painel_operador_gas_balance (640 linhas) e painel_operador_offspec_tank (754 linhas). "
+                     "Retroativamente preenchida a partir do campo de data existente em cada tabela.",
     },
 ]
 
 # ── Dados que ainda NÃO estão em uma tabela dedicada no banco ─────────────────
 DADOS_FORA_DO_BANCO = [
     {
-        "dado": "Valores PI Vision — tabela criada, sem dados ainda",
-        "situacao": "A tabela pi_vision_readings existe mas está vazia. "
-                    "O parser PI ainda não persiste os valores lidos (tag, timestamp, value, quality).",
-        "sugestao": "Integrar o serviço de parsing PI para gravar em pi_vision_readings a cada leitura.",
+        "dado": "Valores PI Vision — tabela criada, aguarda ingestão",
+        "situacao": "A tabela pi_vision_readings existe e o serviço de importação está pronto. "
+                    "O Excel do coletor PI (PI_EXTRACT_TOTAL) ainda não foi importado.",
+        "sugestao": "Executar: POST /api/admin/pi-vision/import com {\"excel_path\": \"C:\\\\PI_Vision_Collector\\\\saida_v4\\\\Historico_V49_Geometrico.xlsx\"} "
+                    "ou configurar a variável de ambiente BASE_UNICA_PI_OUTPUT.",
     },
     {
-        "dado": "Choke % dos poços — tabela criada, sem dados ainda",
-        "situacao": "A tabela well_choke_history existe mas está vazia. "
-                    "O Choke % ainda é calculado só no export Excel e não é persistido.",
-        "sugestao": "Popular well_choke_history via leitura PI (PITimeDat) ou a partir do export confirmado.",
+        "dado": "Choke % dos poços — tabela criada, aguarda ingestão",
+        "situacao": "A tabela well_choke_history existe e o serviço de captura está pronto. "
+                    "O Choke % resolve via fórmula PITimeDat no Excel com PI DataLink.",
+        "sugestao": "Gerar Excel de produção → abrir no Excel com PI DataLink instalado → salvar → "
+                    "fazer upload em POST /api/admin/choke-history/import-excel (multipart/form-data, campo 'file').",
     },
 ]
 
