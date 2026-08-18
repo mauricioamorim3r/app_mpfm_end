@@ -1423,6 +1423,37 @@ CREATE TABLE IF NOT EXISTS sgmfm_visibility_prefs (
     visible_keys_json TEXT DEFAULT '[]',
     updated_at TEXT NOT NULL
 );
+
+-- Leituras estruturadas do PI Vision (tag, valor, qualidade por timestamp)
+CREATE TABLE IF NOT EXISTS pi_vision_readings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_id INTEGER,
+    tag TEXT NOT NULL,
+    timestamp TEXT NOT NULL,
+    value REAL,
+    quality TEXT DEFAULT 'Good',
+    source TEXT DEFAULT 'pi_vision',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY(run_id) REFERENCES processing_runs(id)
+);
+CREATE INDEX IF NOT EXISTS idx_pi_vision_readings_tag_ts
+    ON pi_vision_readings(tag, timestamp);
+CREATE INDEX IF NOT EXISTS idx_pi_vision_readings_run
+    ON pi_vision_readings(run_id, tag);
+
+-- Histórico de Choke % dos poços (calculado via PI ou export confirmado)
+CREATE TABLE IF NOT EXISTS well_choke_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tag TEXT NOT NULL,
+    day_ref TEXT NOT NULL,
+    choke_pct REAL,
+    source TEXT DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_well_choke_history_uq
+    ON well_choke_history(tag, day_ref, source);
+CREATE INDEX IF NOT EXISTS idx_well_choke_history_tag
+    ON well_choke_history(tag, day_ref);
 """
 
 
@@ -1849,3 +1880,18 @@ CREATE INDEX IF NOT EXISTS idx_files_imported_identity
         if "status" not in campaign_cols:
             cur.execute("ALTER TABLE recon_campaigns ADD COLUMN status TEXT DEFAULT 'baseline'")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_recon_campaigns_lookup ON recon_campaigns(bank, tag, baseline_day_ref, status)")
+
+    # Adiciona day_ref nas tabelas de balanço para cruzamento com measurements_active
+    for tbl, date_col in [
+        ("painel_operador_tank_balance", "tank_date"),
+        ("painel_operador_gas_balance", "gas_date"),
+        ("painel_operador_offspec_tank", "offspec_date"),
+    ]:
+        cols = [r[1] for r in cur.execute(f"PRAGMA table_info({tbl})").fetchall()]
+        if cols and "day_ref" not in cols:
+            # Copia o campo de data já existente para day_ref (normalizado como TEXT YYYY-MM-DD)
+            cur.execute(f"ALTER TABLE {tbl} ADD COLUMN day_ref TEXT DEFAULT ''")
+            cur.execute(f"UPDATE {tbl} SET day_ref = substr({date_col}, 1, 10) WHERE day_ref = ''")
+            cur.execute(
+                f"CREATE INDEX IF NOT EXISTS idx_{tbl}_day_ref ON {tbl}(day_ref)"
+            )

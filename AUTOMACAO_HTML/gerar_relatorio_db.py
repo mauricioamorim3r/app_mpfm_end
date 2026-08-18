@@ -25,26 +25,39 @@ _HERE = Path(__file__).resolve().parent
 DEFAULT_DB = _HERE.parent / "data" / "mpfm_local.db"
 DEFAULT_OUT = _HERE / "HTML_GERADOS" / f"RELATORIO_DB_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
 
-# ── Dados que ainda NÃO estão em uma tabela dedicada no banco ─────────────────
-# Indicamos aqui para que o usuário saiba onde persistir futuramente.
-DADOS_FORA_DO_BANCO = [
+# ── Dados resolvidos (tabelas criadas em 2026-08-18) ─────────────────────────
+DADOS_RESOLVIDOS = [
     {
         "dado": "Extração PI Vision (séries temporais)",
-        "situacao": "Eventos de parsing registrados em parsing_events_raw, mas os valores "
-                    "extraídos (qualidade, timestamp, valor) não são persistidos em uma tabela estruturada.",
-        "sugestao": "Criar tabela pi_vision_readings (tag, timestamp, value, quality, run_id) "
-                    "e popular durante o parsing PI.",
+        "resolucao": "Tabela pi_vision_readings criada (tag, timestamp, value, quality, run_id, source). "
+                     "Aguarda integração com o parser PI para popular os valores.",
     },
     {
         "dado": "Choke % dos poços (PITimeDat)",
-        "situacao": "Calculado como fórmula Excel no export; não armazenado historicamente no banco.",
-        "sugestao": "Criar tabela well_choke_history (tag, day_ref, choke_pct, source) e "
-                    "popular via leitura de PI ou do export confirmado.",
+        "resolucao": "Tabela well_choke_history criada (tag, day_ref, choke_pct, source). "
+                     "Aguarda integração com leitura PI ou export confirmado para popular.",
     },
     {
-        "dado": "Dados do Painel do Operador (checklist, tank, gas balance)",
-        "situacao": "Armazenados em painel_operador_* mas sem foreign-key formal com measurements_active.",
-        "sugestao": "Adicionar coluna day_ref e tag nas tabelas de balanço para cruzamento direto.",
+        "dado": "Dados do Painel do Operador (balanços sem referência temporal explícita)",
+        "resolucao": "Coluna day_ref adicionada em painel_operador_tank_balance, "
+                     "painel_operador_gas_balance e painel_operador_offspec_tank. "
+                     "Linhas existentes foram retroativamente preenchidas.",
+    },
+]
+
+# ── Dados que ainda NÃO estão em uma tabela dedicada no banco ─────────────────
+DADOS_FORA_DO_BANCO = [
+    {
+        "dado": "Valores PI Vision — tabela criada, sem dados ainda",
+        "situacao": "A tabela pi_vision_readings existe mas está vazia. "
+                    "O parser PI ainda não persiste os valores lidos (tag, timestamp, value, quality).",
+        "sugestao": "Integrar o serviço de parsing PI para gravar em pi_vision_readings a cada leitura.",
+    },
+    {
+        "dado": "Choke % dos poços — tabela criada, sem dados ainda",
+        "situacao": "A tabela well_choke_history existe mas está vazia. "
+                    "O Choke % ainda é calculado só no export Excel e não é persistido.",
+        "sugestao": "Popular well_choke_history via leitura PI (PITimeDat) ou a partir do export confirmado.",
     },
 ]
 
@@ -190,7 +203,16 @@ def q_cobertura(cur, date_from, date_to):
 
 
 def q_pi_vision(cur):
-    # PI Vision data is not stored structured — parsing_events_raw is the closest proxy
+    # Tenta ler de pi_vision_readings (tabela estruturada criada em 2026-08-18)
+    pi_count = cur.execute("SELECT COUNT(*) FROM pi_vision_readings").fetchone()[0]
+    pi_rows = []
+    if pi_count > 0:
+        pi_rows = [dict(r) for r in cur.execute(
+            "SELECT tag, timestamp, value, quality, source, created_at "
+            "FROM pi_vision_readings ORDER BY timestamp DESC LIMIT 500"
+        ).fetchall()]
+
+    # Log de parsing como contexto complementar
     events = cur.execute(
         "SELECT pe.id, pe.parser_name, pe.parser_stage, pe.status, pe.created_at, "
         "sf.filename "
@@ -200,7 +222,8 @@ def q_pi_vision(cur):
     ).fetchall()
     total = cur.execute("SELECT COUNT(*) FROM parsing_events_raw").fetchone()[0]
     ok = cur.execute("SELECT COUNT(*) FROM parsing_events_raw WHERE status='ok'").fetchone()[0]
-    return {"total": total, "ok": ok, "events": [dict(r) for r in events]}
+    return {"pi_count": pi_count, "pi_rows": pi_rows,
+            "total": total, "ok": ok, "events": [dict(r) for r in events]}
 
 
 def q_alarmes(cur, date_from, date_to):
@@ -536,18 +559,25 @@ def section_cobertura(d):
 
 
 def section_pi(d):
-    table_html = make_table(d["events"], table_id="piTable")
+    if d["pi_count"] > 0:
+        pi_table = make_table(d["pi_rows"], table_id="piValTable")
+        pi_section = f"""
+        <div class="info-box">Fonte: <b>pi_vision_readings</b> — {d['pi_count']:,} leituras estruturadas. Últimas 500 exibidas.</div>
+        {pi_table}
+        <script>setupTable('piValTable',null);</script>"""
+    else:
+        pi_section = """
+        <div class="warn-box">
+          <b>Tabela pi_vision_readings criada mas ainda sem dados.</b><br>
+          Aguardando integração do parser PI para persistir os valores extraídos (tag, timestamp, value, quality).
+        </div>"""
+
+    events_table = make_table(d["events"], table_id="piTable")
     return f"""
     <h2>Extração PI Vision</h2>
-    <div class="warn-box">
-      <b>Dados PI Vision não estão armazenados de forma estruturada no banco.</b><br>
-      O que existe é apenas o log de parsing em <code>parsing_events_raw</code>
-      ({d['total']:,} eventos, {d['ok']:,} com status OK).<br>
-      <b>Sugestão:</b> criar tabela <code>pi_vision_readings(tag, timestamp, value, quality, run_id)</code>
-      e popular durante o processo de extração PI.
-    </div>
-    <h3>Log de parsing (proxy — últimos 200 eventos)</h3>
-    {table_html}
+    {pi_section}
+    <h3>Log de parsing — parsing_events_raw ({d['total']:,} eventos, {d['ok']:,} OK)</h3>
+    {events_table}
     <script>setupTable('piTable',null);</script>
     """
 
@@ -680,18 +710,28 @@ def section_xml042(d):
 
 
 def section_dados_fora(items):
-    rows_html = "".join(
+    resolved_html = "".join(
+        f'<div style="margin:8px 0;padding:10px 14px;border-left:4px solid var(--green);background:var(--card)">'
+        f'<b>&#10003; {esc(it["dado"])}</b><br>'
+        f'<span style="color:var(--muted)">{esc(it["resolucao"])}</span>'
+        f'</div>'
+        for it in DADOS_RESOLVIDOS
+    )
+    pending_html = "".join(
         f'<div class="warn-box" style="margin:8px 0">'
         f'<b>{esc(it["dado"])}</b><br>'
         f'<span style="color:var(--muted)">{esc(it["situacao"])}</span><br>'
-        f'<span style="color:var(--green)">💡 {esc(it["sugestao"])}</span>'
+        f'<span style="color:var(--green)">&#128161; {esc(it["sugestao"])}</span>'
         f'</div>'
         for it in items
     )
     return f"""
     <h2>Dados registrados fora do banco</h2>
-    <div class="info-box">Itens identificados que existem no fluxo de trabalho mas ainda não têm uma tabela estruturada dedicada no <code>mpfm_local.db</code>.</div>
-    {rows_html}
+    <div class="info-box">Itens identificados que existem no fluxo de trabalho mas ainda requerem integração com o banco.</div>
+    <h3 style="color:var(--green)">Resolvidos (2026-08-18)</h3>
+    {resolved_html}
+    <h3>Pendentes — aguardam integração</h3>
+    {pending_html if items else '<div class="info-box">Nenhum item pendente.</div>'}
     """
 
 
