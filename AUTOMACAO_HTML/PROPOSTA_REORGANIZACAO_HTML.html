@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proposta de Reorganização — Relatório HTML Multifásico</title>
+<style>
+:root{
+  --navy:#071e41;--teal:#007d8a;--cyan:#11a8b7;
+  --ink:#102238;--muted:#627287;--line:#d9e1e8;--bg:#f5f8fb;--card:#ffffff;
+  --green:#1b8e47;--amber:#e98a00;--red:#d73535;--blue:#1565c0;
+  --shadow:0 8px 22px rgba(16,34,56,.07);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.65;}
+
+/* header */
+header{position:fixed;inset:0 0 auto 0;z-index:30;
+  background:linear-gradient(110deg,#062b59 0%,#0b477d 55%,#12639a 100%);
+  color:#fff;min-height:72px;padding:12px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:3px solid var(--cyan);box-shadow:0 3px 12px rgba(16,34,56,.16);}
+header h1{font-size:18px;font-weight:800;letter-spacing:-.03em;margin:2px 0 3px;}
+header .meta{color:#dbeafe;font-size:11px;line-height:1.4;}
+.eyebrow{color:#bfdbfe;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;}
+.brand-row{display:flex;gap:14px;align-items:center;min-width:0;}
+.brand-mark{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.3);border-radius:8px;background:#f4f8fc;}
+.header-badge{margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  border-radius:6px;padding:5px 12px;color:#e0f2fe;font-size:11px;white-space:nowrap;}
+
+/* sidebar */
+.tab-nav{position:fixed;left:0;top:72px;width:224px;height:calc(100vh - 72px);
+  background:#fff;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;gap:3px;padding:16px 10px;overflow-y:auto;z-index:20;}
+.tab-button{display:block;border:0;background:transparent;color:#53667a;font-weight:600;
+  font-size:12px;border-radius:7px;padding:8px 11px;cursor:pointer;
+  white-space:normal;text-align:left;text-decoration:none;line-height:1.35;
+  transition:background .15s,color .15s;}
+.tab-button:hover{color:var(--navy);background:#f0f5fa;}
+.tab-button.active{color:#fff;background:var(--blue);box-shadow:0 5px 12px rgba(21,101,192,.18);}
+.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  font-weight:700;padding:10px 11px 4px;margin-top:6px;}
+
+/* main */
+main{margin-left:224px;padding:calc(72px + 24px) 32px 56px;max-width:900px;}
+
+/* sections */
+.doc-section{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow);scroll-margin-top:88px;}
+.section-title{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.02em;
+  border-left:4px solid var(--teal);padding-left:12px;margin:0 0 18px;}
+.sub-title{font-size:15px;font-weight:700;color:var(--navy);margin:22px 0 10px;
+  border-left:3px solid var(--cyan);padding-left:9px;}
+.sub-sub-title{font-size:13px;font-weight:700;color:var(--teal);margin:16px 0 8px;
+  text-transform:uppercase;letter-spacing:.04em;}
+p{margin:0 0 12px;color:#2e3f50;line-height:1.7;}
+.doc-list{margin:6px 0 14px 0;padding-left:22px;color:#2e3f50;}
+.doc-list li{margin-bottom:6px;line-height:1.55;}
+
+/* mockup boxes */
+.mockup-box{
+  background:#f8fafc;border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:8px;padding:14px 18px;margin:12px 0 18px;
+  font-family:Consolas,"Courier New",monospace;font-size:12px;
+  line-height:1.6;color:#334155;white-space:pre-wrap;overflow-x:auto;}
+
+/* intro box */
+.intro-box{background:#eef6ff;border:1px solid #bfdbfe;border-left:4px solid var(--blue);border-radius:10px;
+  padding:22px 26px;margin-bottom:24px;box-shadow:var(--shadow);}
+.intro-box h2{font-size:16px;font-weight:700;color:var(--blue);margin:0 0 10px;}
+.intro-box p{color:#344b66;}
+.flow-items{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+.flow-item{display:flex;align-items:flex-start;gap:11px;padding:9px 13px;
+  background:#fff;border:1px solid #dbeafe;border-radius:7px;color:#1e3a52;}
+.flow-num{flex:0 0 22px;height:22px;border-radius:50%;background:var(--blue);
+  color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;}
+
+@media(max-width:860px){
+  .tab-nav{display:none;}
+  main{margin-left:0;padding-left:16px;padding-right:16px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <div class="brand-mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#0b3a4a"/>
+        <text x="16" y="22" text-anchor="middle" font-size="14" font-weight="800" fill="#7cbac1" font-family="sans-serif">EQ</text>
+      </svg>
+    </div>
+    <div>
+      <div class="eyebrow">Monitoramento Multifásico · MPFM</div>
+      <h1>Proposta de Reorganização do Relatório HTML</h1>
+      <div class="meta">Versão simplificada — painel técnico de exceção e decisão</div>
+    </div>
+  </div>
+  <div class="header-badge">Documento de referência · 2026</div>
+</header>
+
+<nav class="tab-nav">
+  <span class="nav-label">Sumário</span>
+  <a class="tab-button" href="#proposta-de-reorganizao--verso-simplificada-do-rel">Proposta de reorganização — versão simplificada do relatório HTML</a>
+  <a class="tab-button" href="#1-princpios-para-a-nova-organizao">1. Princípios para a nova organização</a>
+  <a class="tab-button" href="#2-estrutura-geral-proposta">2. Estrutura geral proposta</a>
+  <a class="tab-button" href="#3-cabealho">3. Cabeçalho</a>
+  <a class="tab-button" href="#4-filtros-organizados-em-uma-nica-faixa">4. Filtros organizados em uma única faixa</a>
+  <a class="tab-button" href="#5-bloco-principal-status-e-qualidade">5. Bloco principal: status e qualidade</a>
+  <a class="tab-button" href="#6-produo-consolidada">6. Produção consolidada</a>
+  <a class="tab-button" href="#7-comparaes-fsicas-orientadas-por-exceo">7. Comparações físicas orientadas por exceção</a>
+  <a class="tab-button" href="#8-evoluo-temporal-e-ranking">8. Evolução temporal e ranking</a>
+  <a class="tab-button" href="#9-tabela-tcnica-simplificada">9. Tabela técnica simplificada</a>
+  <a class="tab-button" href="#10-rea-de-alertas-e-eventos">10. Área de alertas e eventos</a>
+  <a class="tab-button" href="#11-xml-042-e-auditoria-no-final">11. XML 042 e auditoria no final</a>
+  <a class="tab-button" href="#12-hierarquia-visual-sugerida">12. Hierarquia visual sugerida</a>
+  <a class="tab-button" href="#13-navegao-simplificada">13. Navegação simplificada</a>
+  <a class="tab-button" href="#14-regras-gerais-indispensveis">14. Regras gerais indispensáveis</a>
+  <a class="tab-button" href="#15-resultado-final-esperado">15. Resultado final esperado</a>
+  <a class="tab-button" href="#concluso">Conclusão</a>
+</nav>
+
+<main>
+
+<div class="intro-box">
+  <h2>Objetivo da proposta</h2>
+  <p>Transformar a página em um painel técnico de exceção e decisão, em vez de apresentar simultaneamente todos os dados disponíveis. A proposta utiliza somente elementos já existentes, sem exigir novas fontes.</p>
+  <p>O relatório deve responder, nessa ordem:</p>
+  <div class="flow-items">
+    <div class="flow-item"><span class="flow-num">1</span><span>Qual período e escopo estou analisando?</span></div>
+    <div class="flow-item"><span class="flow-num">2</span><span>Os dados são confiáveis e suficientemente completos?</span></div>
+    <div class="flow-item"><span class="flow-num">3</span><span>Quanto foi medido?</span></div>
+    <div class="flow-item"><span class="flow-num">4</span><span>Há desvios que exigem atenção?</span></div>
+    <div class="flow-item"><span class="flow-num">5</span><span>Quais pontos explicam o resultado?</span></div>
+    <div class="flow-item"><span class="flow-num">6</span><span>Onde consulto a evidência detalhada?</span></div>
+  </div>
+</div>
+
+<p>Para a versão simplificada, a melhor abordagem é transformar a página em um painel técnico de exceção e decisão, em vez de tentar apresentar simultaneamente todos os dados disponíveis.</p>
+<p>O objetivo seria responder, nessa ordem:</p>
+<ul class="doc-list">
+<li>Qual período e escopo estou analisando?</li>
+<li>Os dados são confiáveis e suficientemente completos?</li>
+<li>Quanto foi medido?</li>
+<li>Há desvios que exigem atenção?</li>
+<li>Quais pontos explicam o resultado?</li>
+<li>Onde consulto a evidência detalhada?</li>
+</ul>
+<p>A proposta abaixo utiliza somente elementos e informações que a página já possui, sem exigir novas fontes.</p>
+<section class="doc-section" id="1-princpios-para-a-nova-organizao">
+<h2 class="section-title">1. Princípios para a nova organização</h2>
+<h3 class="sub-title">1.1. Uma página, três níveis</h3>
+<p>A página deve ter apenas três níveis de informação:</p>
+<h4 class="sub-sub-title">Nível 1 — Situação geral</h4>
+<p>Resposta rápida para decisão:</p>
+<ul class="doc-list">
+<li>período analisado;</li>
+<li>escopo;</li>
+<li>qualidade do conjunto de dados;</li>
+<li>produção consolidada;</li>
+<li>quantidade de desvios;</li>
+<li>situação executiva.</li>
+</ul>
+<h4 class="sub-sub-title">Nível 2 — Diagnóstico técnico</h4>
+<p>Resposta para engenharia:</p>
+<ul class="doc-list">
+<li>valores por fase;</li>
+<li>cobertura;</li>
+<li>comparações físicas;</li>
+<li>desvios mais relevantes;</li>
+<li>evolução temporal;</li>
+<li>contribuição por ponto.</li>
+</ul>
+<h4 class="sub-sub-title">Nível 3 — Evidência</h4>
+<p>Resposta para investigação:</p>
+<ul class="doc-list">
+<li>tabela detalhada filtrável;</li>
+<li>registros usados no consolidado;</li>
+<li>campos para XML;</li>
+<li>auditoria e rastreabilidade.</li>
+</ul>
+<p>A simplificação não deve remover os dados técnicos, mas alterar sua prioridade visual.</p>
+</section>
+<section class="doc-section" id="2-estrutura-geral-proposta">
+<h2 class="section-title">2. Estrutura geral proposta</h2>
+<pre class="mockup-box">┌───────────────────────────────────────────────────────────────┐
+│ CABEÇALHO DO RELATÓRIO                                        │
+│ Relatório de Monitoramento Multifásico · última atualização   │
+├───────────────────────────────────────────────────────────────┤
+│ CONTEXTO ATIVO                                                │
+│ Período | granularidade | tipo | ponto | par físico           │
+├───────────────────────────────────────────────────────────────┤
+│ STATUS GERAL                                                  │
+│ Qualidade | produção | cobertura | desvios | pontos ativos    │
+├───────────────────────────────────────────────────────────────┤
+│ PRODUÇÃO CONSOLIDADA                                          │
+│ HC | Total | Óleo | Gás | Água                                │
+├───────────────────────────────────────────────────────────────┤
+│ COMPARAÇÕES E EXCEÇÕES                                        │
+│ Pares conforme, em alerta e críticos                          │
+├───────────────────────────────────────────────────────────────┤
+│ COMPORTAMENTO NO PERÍODO                                      │
+│ Tendência temporal + ranking por ponto                        │
+├───────────────────────────────────────────────────────────────┤
+│ DETALHAMENTO                                                  │
+│ Tabela técnica reduzida                                       │
+├───────────────────────────────────────────────────────────────┤
+│ EVIDÊNCIAS COMPLEMENTARES                                     │
+│ Auditoria | registros usados | XML 042                        │
+└───────────────────────────────────────────────────────────────┘</pre>
+</section>
+<section class="doc-section" id="3-cabealho">
+<h2 class="section-title">3. Cabeçalho</h2>
+<p>O cabeçalho deve ser curto e permanecer visível durante a rolagem.</p>
+<h3 class="sub-title">Conteúdo recomendado</h3>
+<pre class="mockup-box">Relatório de Monitoramento Multifásico
+Período analisado: 12/08/2026 00:00 a 13/08/2026 23:00
+Última geração do relatório: DD/MM/AAAA HH:MM</pre>
+<p>À direita:</p>
+<pre class="mockup-box">[Atualizar] [Exportar] [Auditoria]</pre>
+<h3 class="sub-title">Ajuste importante</h3>
+<p>O relatório deve distinguir claramente:</p>
+<ul class="doc-list">
+<li>período analisado;</li>
+<li>último registro disponível;</li>
+<li>data de geração do HTML.</li>
+</ul>
+<p>Essas três datas não devem ser apresentadas como se fossem equivalentes.</p>
+</section>
+<section class="doc-section" id="4-filtros-organizados-em-uma-nica-faixa">
+<h2 class="section-title">4. Filtros organizados em uma única faixa</h2>
+<p>Atualmente, os filtros ocupam um papel importante, mas podem ser consolidados em uma faixa horizontal e recolhível.</p>
+<h3 class="sub-title">Linha principal</h3>
+<pre class="mockup-box">De [12/08/2026] até [13/08/2026]  Granularidade [Horária]
+Tipo [Topside]  Ponto [Todos]  Par físico [Todos]</pre>
+<h3 class="sub-title">Linha secundária</h3>
+<pre class="mockup-box">Variável principal [Massa total corrigida]
+Comparação [HC corrigida]
+Busca [________________]</pre>
+<h3 class="sub-title">Ações</h3>
+<pre class="mockup-box">[Aplicar filtros] [Limpar] [Mostrar somente exceções]</pre>
+<h4 class="sub-sub-title">Regras de usabilidade</h4>
+<ul class="doc-list">
+<li>exibir filtros ativos como etiquetas;</li>
+<li>manter o período sempre visível;</li>
+<li>indicar quantos registros permanecem após o filtro;</li>
+<li>aplicar o mesmo filtro a todos os componentes;</li>
+<li>impedir que uma seção use outro período silenciosamente.</li>
+</ul>
+<p>Exemplo de contexto ativo:</p>
+<pre class="mockup-box">Período: 12–13/08/2026 · Horário · Topside · 214 registros · 5 pontos</pre>
+</section>
+<section class="doc-section" id="5-bloco-principal-status-e-qualidade">
+<h2 class="section-title">5. Bloco principal: status e qualidade</h2>
+<p>A primeira leitura da página deve informar se o relatório é confiável.</p>
+<h3 class="sub-title">Estrutura sugerida</h3>
+<pre class="mockup-box">STATUS GERAL: ATENÇÃO
+2
+Produção disponível, porém existem ocorrências que exigem avaliação.</pre>
+<p>Abaixo, cinco cards:</p>
+<h4 class="sub-sub-title">Card 1 — Qualidade dos dados</h4>
+<pre class="mockup-box">QUALIDADE
+Atenção
+3
+214 registros temporais
+Campos ausentes identificados</pre>
+<h4 class="sub-sub-title">Card 2 — Cobertura</h4>
+<pre class="mockup-box">COBERTURA
+214/214 registros
+3
+Cobertura temporal do período</pre>
+<h4 class="sub-sub-title">Card 3 — Produção total</h4>
+<pre class="mockup-box">TOTAL CORRIGIDO
+41.895,9 t
+3
+Topside no período filtrado</pre>
+<h4 class="sub-sub-title">Card 4 — Pontos ativos</h4>
+<pre class="mockup-box">PONTOS
+5 com produção
+3
+Topside</pre>
+<h4 class="sub-sub-title">Card 5 — Desvios</h4>
+<pre class="mockup-box">DESVIOS
+1 crítico
+3
+3 pares avaliados</pre>
+<h3 class="sub-title">Rigor técnico necessário</h3>
+<p>O card de cobertura deve dizer exatamente o que representa.</p>
+<p>Em vez de:</p>
+<pre class="mockup-box">Cobertura OK</pre>
+<p>usar:</p>
+<pre class="mockup-box">Cobertura temporal: 214/214 registros</pre>
+<p>A classificação de qualidade deve ser separada:</p>
+<pre class="mockup-box">Qualidade dos dados: Atenção</pre>
+<p>Assim, o usuário não confunde existência do registro com validade técnica da medição.</p>
+</section>
+<section class="doc-section" id="6-produo-consolidada">
+<h2 class="section-title">6. Produção consolidada</h2>
+<p>A produção deve ser apresentada em um bloco único, evitando repetir estruturas completas para Topside, Subsea e Separador quando não houver dados.</p>
+<h3 class="sub-title">Estrutura principal</h3>
+<pre class="mockup-box">PRODUÇÃO CONSOLIDADA — TOPSIDE
+2
+HC corrigido        41.830,4 t
+Total corrigido     41.895,9 t
+5
+Óleo                34.581,6 t
+Gás                  7.244,2 t
+Água                    70,16 t</pre>
+<p>Abaixo:</p>
+<pre class="mockup-box">HC = óleo + gás
+Total = óleo + gás + água</pre>
+<p>Volumes ficam em uma linha secundária:</p>
+<pre class="mockup-box">Óleo padrão: 38.165,9 m³
+Gás padrão: 11.673.497 Sm³
+Água padrão: 56,36 m³
+Condições de referência: 20 °C e 1 atm</pre>
+<h3 class="sub-title">Subsea sem registros</h3>
+<p>Em vez de vários cards com “Sem dado”:</p>
+<pre class="mockup-box">SUBSEA
+2
+Nenhum registro encontrado para o período e os filtros selecionados.</pre>
+<p>Ações possíveis:</p>
+<pre class="mockup-box">[Ver último período disponível] [Remover filtro de tipo]</pre>
+<h3 class="sub-title">Separador de Testes</h3>
+<p>Apresentar em um card visualmente diferente:</p>
+<pre class="mockup-box">REFERÊNCIA INDEPENDENTE — SEPARADOR DE TESTES
+2
+Total corrigido: 9.052,6 t
+HC corrigido: 8.940,4 t
+5
+Não incluído na consolidação dos MPFMs.</pre>
+<p>Isso mantém o rigor metodológico sem dar o mesmo peso visual de um resultado contabilizado.</p>
+</section>
+<section class="doc-section" id="7-comparaes-fsicas-orientadas-por-exceo">
+<h2 class="section-title">7. Comparações físicas orientadas por exceção</h2>
+<p>A seção mais importante para diagnóstico deve priorizar os desvios.</p>
+<h3 class="sub-title">Resumo no topo</h3>
+<pre class="mockup-box">COMPARAÇÕES FÍSICAS
+2
+3 pares avaliados
+2 conformes
+0 em alerta
+1 crítico</pre>
+<h3 class="sub-title">Ordenação</h3>
+<p>Os pares devem ser ordenados por gravidade:</p>
+<ul class="doc-list">
+<li>crítico;</li>
+<li>alerta;</li>
+<li>conforme;</li>
+<li>sem dado.</li>
+</ul>
+<h3 class="sub-title">Modelo de card</h3>
+<pre class="mockup-box">CRÍTICO
+PW-104 × Riser P4
+3
+HC:      +52,43%    Limite: ±10%
+Total:   +52,34%    Limite: ±7%
+6
+Referência: 13/08/2026 23:00
+[Ver evolução] [Ver registros]</pre>
+<p>Para os demais:</p>
+<pre class="mockup-box">CONFORME
+PE-04 × Riser P5
+3
+HC:       +0,16%    Limite: ±10%
+Total:    +0,25%    Limite: ±7%</pre>
+<h3 class="sub-title">Regra visual</h3>
+<p>Não depender somente de cor:</p>
+<ul class="doc-list">
+<li>CONFORME;</li>
+<li>ALERTA;</li>
+<li>CRÍTICO;</li>
+<li>SEM DADO.</li>
+</ul>
+<p>A cor serve apenas como reforço visual.</p>
+</section>
+<section class="doc-section" id="8-evoluo-temporal-e-ranking">
+<h2 class="section-title">8. Evolução temporal e ranking</h2>
+<p>Esses dois componentes são complementares e podem ocupar a mesma seção.</p>
+<h3 class="sub-title">Layout sugerido</h3>
+<pre class="mockup-box">┌────────────────────────────────────┬───────────────────────────┐
+│ Evolução no período                │ Contribuição por ponto    │
+│ gráfico temporal                   │ ranking horizontal        │
+└────────────────────────────────────┴───────────────────────────┘</pre>
+<h3 class="sub-title">Evolução temporal</h3>
+<p>Manter inicialmente:</p>
+<ul class="doc-list">
+<li>uma variável principal;</li>
+<li>uma variável comparativa;</li>
+<li>até três pontos selecionados.</li>
+</ul>
+<p>Controles:</p>
+<pre class="mockup-box">Variável 1 [Total corrigido]
+Variável 2 [HC corrigido]
+Pontos [P2] [P4] [P5]</pre>
+<h3 class="sub-title">Elementos visuais recomendados</h3>
+<ul class="doc-list">
+<li>linha contínua para total;</li>
+<li>linha tracejada para HC;</li>
+<li>cor fixa por ponto;</li>
+<li>lacunas reais quando não houver dados;</li>
+<li>marcadores para eventos relevantes;</li>
+<li>tooltip com data, hora, valor, unidade e qualidade;</li>
+<li>zoom temporal.</li>
+</ul>
+<p>Valores ausentes não devem ser conectados por uma linha contínua, pois isso sugere existência de medição.</p>
+<h3 class="sub-title">Ranking</h3>
+<p>Manter apenas uma variável por vez:</p>
+<pre class="mockup-box">Ranking por massa total corrigida — último dia do filtro</pre>
+<p>Antes dos valores, mostrar claramente a referência:</p>
+<pre class="mockup-box">Data de referência: 13/08/2026</pre>
+</section>
+<section class="doc-section" id="9-tabela-tcnica-simplificada">
+<h2 class="section-title">9. Tabela técnica simplificada</h2>
+<p>A tabela atual é ampla demais para a leitura inicial. A proposta é reduzir as colunas visíveis e disponibilizar as demais por expansão.</p>
+<h3 class="sub-title">Colunas principais</h3>
+<pre class="mockup-box">Data/hora
+Ponto
+Tipo
+Pressão
+Temperatura
+HC corrigido
+Total corrigido
+Qualidade
+Status</pre>
+<h3 class="sub-title">Detalhes expansíveis por linha</h3>
+<p>Ao clicar em uma linha:</p>
+<pre class="mockup-box">IDENTIFICAÇÃO
+TAG, banco, fonte e modo de cálculo
+3
+MASSAS
+Óleo, gás, água, HC e total
+6
+VOLUMES PADRÃO
+Óleo, gás e água
+9
+INDICADORES
+GVF, WLR e GOR
+12
+RASTREABILIDADE
+Qualidade PI, cobertura, regra aplicada e observações</pre>
+<p>Essa estrutura preserva todas as informações, mas evita uma tabela com cerca de 20 colunas simultâneas.</p>
+<h3 class="sub-title">Barra da tabela</h3>
+<pre class="mockup-box">Pesquisar [________________]
+Status [Todos]
+Ponto [Todos]
+Qualidade [Todas]
+5
+Exibindo 1–24 de 214 registros</pre>
+<h3 class="sub-title">Ordenação padrão</h3>
+<pre class="mockup-box">Data/hora crescente → ponto de medição</pre>
+<p>Deve haver opção de ordenação decrescente, mas nunca ordenação textual da hora.</p>
+</section>
+<section class="doc-section" id="10-rea-de-alertas-e-eventos">
+<h2 class="section-title">10. Área de alertas e eventos</h2>
+<p>O Pareto é útil, mas deve ficar depois das exceções de medição.</p>
+<h3 class="sub-title">Estrutura</h3>
+<pre class="mockup-box">ALARMES E EVENTOS
+2
+Total: 525 ocorrências
+Críticos: 141
+Falhas: 143
+Comunicação: 61
+Desvios: 39</pre>
+<p>Abaixo, o Pareto.</p>
+<h3 class="sub-title">Melhoria conceitual</h3>
+<p>A página deve diferenciar:</p>
+<ul class="doc-list">
+<li>ocorrência;</li>
+<li>registro afetado;</li>
+<li>evento único;</li>
+<li>flag;</li>
+<li>categoria.</li>
+</ul>
+<p>Como flags múltiplas podem aparecer no mesmo registro, incluir uma observação fixa:</p>
+<pre class="mockup-box">Um registro pode contribuir para mais de uma categoria.
+O total de ocorrências não representa necessariamente o total de registros afetados.</pre>
+</section>
+<section class="doc-section" id="11-xml-042-e-auditoria-no-final">
+<h2 class="section-title">11. XML 042 e auditoria no final</h2>
+<p>Esses conteúdos devem continuar disponíveis, mas não precisam ocupar a visão principal.</p>
+<h3 class="sub-title">Estrutura recolhível</h3>
+<pre class="mockup-box">▶ Dados para XML 042
+▶ Registros utilizados nos consolidados
+▶ Memória de cálculo
+▶ Auditoria e rastreabilidade</pre>
+<p>Ao abrir Dados para XML 042:</p>
+<ul class="doc-list">
+<li>ponto/local;</li>
+<li>banco;</li>
+<li>TAG;</li>
+<li>volume de óleo;</li>
+<li>volume de gás;</li>
+<li>volume de água;</li>
+<li>massa HC;</li>
+<li>massa total;</li>
+<li>status da validação.</li>
+</ul>
+<h3 class="sub-title">Ações</h3>
+<pre class="mockup-box">[Exportar CSV] [Copiar dados] [Validar registros]</pre>
+<p>O HTML deve deixar claro que se trata de:</p>
+<pre class="mockup-box">Dados para conferência e preparação do reporte.</pre>
+<p>Evitaria declarar automaticamente que o XML está aprovado sem validação formal.</p>
+</section>
+<section class="doc-section" id="12-hierarquia-visual-sugerida">
+<h2 class="section-title">12. Hierarquia visual sugerida</h2>
+<h3 class="sub-title">Cores</h3>
+<p>Utilizar cores com significado fixo:</p>
+<ul class="doc-list">
+<li>verde: conforme;</li>
+<li>amarelo: atenção;</li>
+<li>vermelho: crítico;</li>
+<li>cinza: sem dado ou não aplicável;</li>
+<li>azul: informação ou navegação.</li>
+</ul>
+<p>Não usar cores diferentes apenas como decoração.</p>
+<h3 class="sub-title">Tipografia</h3>
+<p>Três níveis principais:</p>
+<pre class="mockup-box">Título da página
+Título de seção
+Valor/KPI e texto auxiliar</pre>
+<p>Evitar muitos tamanhos de fonte e excesso de texto em caixa alta.</p>
+<h3 class="sub-title">Espaçamento</h3>
+<ul class="doc-list">
+<li>maior distância entre seções;</li>
+<li>menor distância entre elementos pertencentes ao mesmo card;</li>
+<li>alinhamento consistente dos números;</li>
+<li>unidades visualmente secundárias;</li>
+<li>números tabulares para facilitar comparação.</li>
+</ul>
+</section>
+<section class="doc-section" id="13-navegao-simplificada">
+<h2 class="section-title">13. Navegação simplificada</h2>
+<p>A navegação atual pode ser reduzida para cinco áreas:</p>
+<pre class="mockup-box">Visão geral
+Comparações
+Tendências
+Registros
+Auditoria/XML</pre>
+<p>Correspondência proposta:</p>
+<ul class="doc-list">
+<li>Visão geral: filtros, status, produção e qualidade;</li>
+<li>Comparações: Subsea × Topside e separador;</li>
+<li>Tendências: gráficos, ranking, alarmes e eventos;</li>
+<li>Registros: tabela detalhada;</li>
+<li>Auditoria/XML: evidências, validação final e reporte.</li>
+</ul>
+<p>A separação por conteúdo técnico continua existindo, mas com menos opções concorrentes no topo.</p>
+</section>
+<section class="doc-section" id="14-regras-gerais-indispensveis">
+<h2 class="section-title">14. Regras gerais indispensáveis</h2>
+<p>Mesmo em uma versão simplificada, estas regras devem ser preservadas.</p>
+<h3 class="sub-title">Regra 1 — Um filtro global</h3>
+<p>Todos os componentes devem usar o mesmo contexto:</p>
+<pre class="mockup-box">período
+granularidade
+tipo
+ponto
+par físico</pre>
+<p>Se algum bloco não respeitar o filtro, deve declarar isso explicitamente.</p>
+<h3 class="sub-title">Regra 2 — Ausência não é zero</h3>
+<p>Usar estados distintos:</p>
+<pre class="mockup-box">Sem dado
+Zero medido
+Não aplicável
+Dado inválido
+Dado excluído</pre>
+<h3 class="sub-title">Regra 3 — Cobertura não é qualidade</h3>
+<p>Manter indicadores separados:</p>
+<pre class="mockup-box">Cobertura temporal
+Completude
+Qualidade PI
+Validade técnica</pre>
+<h3 class="sub-title">Regra 4 — Fórmulas visíveis e verificáveis</h3>
+<p>Sempre apresentar:</p>
+<pre class="mockup-box">HC = óleo + gás
+Total = óleo + gás + água
+GOR = gás padrão / óleo padrão</pre>
+<p>Se o valor for proveniente diretamente de uma tag e não calculado, indicar:</p>
+<pre class="mockup-box">Valor reportado pela fonte</pre>
+<h3 class="sub-title">Regra 5 — Exceções antes dos detalhes</h3>
+<p>A ordem deve ser:</p>
+<pre class="mockup-box">status → desvio → impacto → tendência → evidência</pre>
+<h3 class="sub-title">Regra 6 — Contexto em todos os resultados</h3>
+<p>Todo KPI ou comparação deve carregar:</p>
+<ul class="doc-list">
+<li>período;</li>
+<li>origem;</li>
+<li>unidade;</li>
+<li>condição de referência;</li>
+<li>método;</li>
+<li>status.</li>
+</ul>
+</section>
+<section class="doc-section" id="15-resultado-final-esperado">
+<h2 class="section-title">15. Resultado final esperado</h2>
+<p>A versão simplificada deve permitir que o usuário compreenda a situação em três etapas.</p>
+<h3 class="sub-title">Em poucos segundos</h3>
+<pre class="mockup-box">Qual é o período?
+Qual é o status?
+Quanto foi medido?
+Existe algum desvio crítico?</pre>
+<h3 class="sub-title">Em aproximadamente um minuto</h3>
+<pre class="mockup-box">Qual ponto causou o desvio?
+A cobertura é adequada?
+Quais fases contribuíram?
+O comportamento é pontual ou persistente?</pre>
+<h3 class="sub-title">Na investigação técnica</h3>
+<pre class="mockup-box">Quais registros compõem o valor?
+Quais tags e bancos foram utilizados?
+Qual fórmula foi aplicada?
+Qual dado foi ausente ou excluído?
+Quais valores serão utilizados no reporte?</pre>
+</section>
+<section class="doc-section" id="concluso">
+<h2 class="section-title">Conclusão</h2>
+<p>A proposta não reduz a profundidade técnica do relatório. Ela reorganiza a informação para que o usuário veja primeiro:</p>
+<p>contexto → confiabilidade → produção → exceções → tendências → evidências</p>
+<p>Os dados completos continuam disponíveis, mas deixam de competir visualmente com os indicadores necessários à tomada de decisão.</p>
+<p>A principal mudança seria transformar o HTML de uma página extensa de exposição de dados em uma interface técnica progressiva, na qual o detalhe aparece conforme a necessidade. Isso preserva o rigor metrológico, melhora a leitura operacional e reduz o risco de conclusões baseadas em blocos fora de contexto.</p>
+</section>
+
+</main>
+
+<script>
+(function(){
+  const btns = document.querySelectorAll('.tab-button[href^="#"]');
+  const ids = Array.from(btns).map(b => b.getAttribute('href').slice(1));
+  const secs = ids.map(id => document.getElementById(id)).filter(Boolean);
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        btns.forEach(b => b.classList.remove('active'));
+        const btn = document.querySelector(`.tab-button[href="#${e.target.id}"]`);
+        if(btn){ btn.classList.add('active'); btn.scrollIntoView({block:'nearest'}); }
+      }
+    });
+  }, {rootMargin:"-72px 0px -60% 0px", threshold:0});
+  secs.forEach(s => obs.observe(s));
+})();
+</script>
+
+</body>
+</html>
