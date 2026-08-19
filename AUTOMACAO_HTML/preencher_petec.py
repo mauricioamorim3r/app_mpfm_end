@@ -80,6 +80,67 @@ def load_window(path: Path, first: datetime, last: datetime) -> pd.DataFrame:
     book.close()
     return pd.DataFrame(records, columns=names)
 
+def load_window_from_db(db_path: Path, first: datetime, last: datetime) -> pd.DataFrame:
+    """Lê a janela de medições do banco SQLite (measurements_curated) em vez do Excel."""
+    import sqlite3
+
+    day_from = first.date().isoformat()
+    day_to = last.date().isoformat()
+
+    conn = sqlite3.connect(db_path)
+    try:
+        df_long = pd.read_sql_query(
+            """
+            SELECT day_ref, hour_ref, bank, loop, tipo, tag, instrument,
+                   metric_name, metric_value, row_kind
+            FROM measurements_curated
+            WHERE row_kind = 'hourly'
+              AND day_ref >= ? AND day_ref <= ?
+            """,
+            conn,
+            params=(day_from, day_to),
+        )
+    finally:
+        conn.close()
+
+    if df_long.empty:
+        return pd.DataFrame(columns=["ProductionDate", "Hour", "Granularity", "Origin", "Tipo", "Bank", "Tag", "Instrumento"])
+
+    # Filter exact datetime window
+    df_long["_dt"] = pd.to_datetime(df_long["day_ref"]) + pd.to_timedelta(
+        df_long["hour_ref"].fillna(0).astype(int), unit="h"
+    )
+    df_long = df_long[df_long["_dt"].between(first, last)].copy()
+    df_long.drop(columns=["_dt"], inplace=True)
+
+    if df_long.empty:
+        return pd.DataFrame(columns=["ProductionDate", "Hour", "Granularity", "Origin", "Tipo", "Bank", "Tag", "Instrumento"])
+
+    # Pivot long → wide (each metric_name becomes a column)
+    idx_cols = ["day_ref", "hour_ref", "bank", "loop", "tipo", "tag", "instrument", "row_kind"]
+    df_wide = df_long.pivot_table(
+        index=idx_cols,
+        columns="metric_name",
+        values="metric_value",
+        aggfunc="first",
+    ).reset_index()
+    df_wide.columns.name = None
+
+    df_wide.rename(columns={
+        "day_ref": "ProductionDate",
+        "hour_ref": "Hour",
+        "tipo": "Tipo",
+        "bank": "Bank",
+        "tag": "Tag",
+        "instrument": "Instrumento",
+    }, inplace=True)
+    df_wide["Granularity"] = "HOURLY"
+    df_wide["Origin"] = "MPFM"
+    df_wide.drop(columns=["row_kind", "loop"], errors="ignore", inplace=True)
+
+    return df_wide
+
+
 def load_sep_window(sep_root: Path, first: datetime, last: datetime) -> list[dict]:
     """Lê os TXT reais do SEP para as 24 posições da janela solicitada."""
     from gerar_base_unica_standalone import find_sep_files_for_day, parse_sep_txt_set
@@ -140,6 +201,8 @@ def main() -> int:
     parser.add_argument("--tag", default="", help="Filtra Tag MPFM.")
     parser.add_argument("--instrument", default="", help="Filtra Instrumento MPFM.")
     parser.add_argument("--allow-missing-sep", action="store_true", help="Permite gerar as abas SEP vazias de forma explícita.")
+    parser.add_argument("--from-db", action="store_true", help="Busca dados MPFM do banco SQLite local em vez do Excel.")
+    parser.add_argument("--db-path", default="", help="Caminho para mpfm_local.db (padrão: <projeto>/data/mpfm_local.db).")
     args = parser.parse_args()
     try:
         first = parse_datetime(args.date_from or input("Data/hora inicial (DD/MM/AAAA HH:MM:SS): "))
@@ -155,7 +218,15 @@ def main() -> int:
         sep_root = Path(args.sep_root)
         if not sep_root.is_dir() and not args.allow_missing_sep:
             raise ValueError("Informe uma pasta SEP válida em --sep-root ou use --allow-missing-sep conscientemente.")
-        shutil.copy2(template, output); data = load_window(master, first, last)
+        shutil.copy2(template, output)
+        if args.from_db:
+            _db = Path(args.db_path) if args.db_path else Path(__file__).resolve().parents[1] / "data" / "mpfm_local.db"
+            if not _db.exists():
+                raise FileNotFoundError(f"Banco não encontrado: {_db}. Use --db-path para especificar o caminho.")
+            print(f"Fonte: banco SQLite -> {_db}")
+            data = load_window_from_db(_db, first, last)
+        else:
+            data = load_window(master, first, last)
         for column_name, requested in (("Bank", args.bank), ("Tag", args.tag), ("Instrumento", args.instrument)):
             if requested:
                 data = data[data[column_name].astype(str).str.strip().str.upper().eq(requested.strip().upper())].copy()
