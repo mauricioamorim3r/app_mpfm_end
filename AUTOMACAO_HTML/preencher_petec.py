@@ -141,6 +141,61 @@ def load_window_from_db(db_path: Path, first: datetime, last: datetime) -> pd.Da
     return df_wide
 
 
+def load_sep_window_from_db(db_path: Path, first: datetime, last: datetime) -> list[dict]:
+    """Lê dados SEP do banco SQLite para as 24 posições da janela solicitada."""
+    import sqlite3
+
+    METRIC_MAP = {
+        "Pressure_kPa": "pressure_kpa", "Pressure_barg": "pressure_barg",
+        "Pressure_kPa_g": "pressure_kpa_g", "Temperature_degC": "temp",
+        "SD_kg_sm3": "sd", "MD_kg_m3": "md", "DT_kg_m3": "dt",
+        "IV_m3": "iv_m3", "GV_m3": "gv_m3", "GSV_sm3": "gsv_sm3",
+        "GrVol_m3": "gr_vol_m3", "StVol_m3": "st_vol_m3",
+        "Mass_t": "mass_t", "Mass_ton": "mass_t",
+        "Energy_GJ": "energy_gj", "NSV_sm3": "nsv_sm3",
+        "BSW_pct": "bsw_pct", "CPL": "cpl", "CTL": "ctl",
+        "DiffPress_kPa": "diff_press_kpa", "Flowtime_min": "flowtime_min",
+    }
+    PHASE_MAP = {
+        "sep_oleo_detail": "oil",
+        "sep_gas_detail": "gas",
+        "sep_agua_detail": "water",
+    }
+
+    day_from = first.date().isoformat()
+    day_to = max(first.date(), (last - timedelta(seconds=1)).date()).isoformat()
+
+    conn = sqlite3.connect(db_path)
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT row_kind, day_ref, hour_ref, metric_name, metric_value
+               FROM measurements_curated
+               WHERE row_kind IN ('sep_oleo_detail','sep_gas_detail','sep_agua_detail')
+                 AND day_ref >= ? AND day_ref <= ?""",
+            (day_from, day_to),
+        )
+        db_rows = cur.fetchall()
+    finally:
+        conn.close()
+
+    result: list[dict] = [{} for _ in range(24)]
+    for row_kind, day_ref, hour_ref, metric_name, metric_value in db_rows:
+        phase = PHASE_MAP.get(row_kind)
+        key_suffix = METRIC_MAP.get(metric_name)
+        if not phase or not key_suffix or hour_ref is None:
+            continue
+        ts = datetime.strptime(day_ref, "%Y-%m-%d") + timedelta(hours=int(hour_ref) - 1)
+        if not (first <= ts < last):
+            continue
+        offset = int((ts - first).total_seconds() // 3600)
+        if 0 <= offset < 24:
+            full_key = f"{phase}_{key_suffix}"
+            if full_key not in result[offset]:
+                result[offset][full_key] = metric_value
+    return result
+
+
 def load_sep_window(sep_root: Path, first: datetime, last: datetime) -> list[dict]:
     """Lê os TXT reais do SEP para as 24 posições da janela solicitada."""
     from gerar_base_unica_standalone import find_sep_files_for_day, parse_sep_txt_set
@@ -219,8 +274,8 @@ def main() -> int:
         if not sep_root.is_dir() and not args.allow_missing_sep:
             raise ValueError("Informe uma pasta SEP válida em --sep-root ou use --allow-missing-sep conscientemente.")
         shutil.copy2(template, output)
+        _db = Path(args.db_path) if args.db_path else Path(__file__).resolve().parents[1] / "data" / "mpfm_local.db"
         if args.from_db:
-            _db = Path(args.db_path) if args.db_path else Path(__file__).resolve().parents[1] / "data" / "mpfm_local.db"
             if not _db.exists():
                 raise FileNotFoundError(f"Banco não encontrado: {_db}. Use --db-path para especificar o caminho.")
             print(f"Fonte: banco SQLite -> {_db}")
@@ -232,7 +287,12 @@ def main() -> int:
                 data = data[data[column_name].astype(str).str.strip().str.upper().eq(requested.strip().upper())].copy()
         book = load_workbook(output)
         count = fill_mpfm(book["MPFM"], data)
-        sep_rows = load_sep_window(sep_root, first, last) if sep_root.is_dir() else [{} for _ in range(24)]
+        if args.from_db and _db.exists():
+            sep_rows = load_sep_window_from_db(_db, first, last)
+        elif sep_root.is_dir():
+            sep_rows = load_sep_window(sep_root, first, last)
+        else:
+            sep_rows = [{} for _ in range(24)]
         if not args.allow_missing_sep and not any(sep_rows):
             raise ValueError("Nenhum conjunto TXT de óleo/gás/água do SEP foi encontrado na janela solicitada.")
         fill_sep(book["separador óleo "], sep_rows, "oil")
