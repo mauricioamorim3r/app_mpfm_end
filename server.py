@@ -59,6 +59,7 @@ from routes.sep_routes import register_sep_routes
 from routes.sgmfm_routes import register_sgmfm_routes
 from routes.system_routes import register_system_routes
 from routes.xml042_routes import register_xml042_routes
+from routes.automacao_routes import register_automacao_routes
 from routes.ai_routes import router as ai_router
 from routes.ai_agent_routes import router as ai_agent_router
 from services.cards import build_daily_cards
@@ -2516,6 +2517,13 @@ if AlarmRepository is not None and register_alarme_routes is not None:
 else:
     alarm_bootstrap_error = _ALARM_REPOSITORY_IMPORT_ERROR or _ALARM_ROUTES_IMPORT_ERROR
     print(f"[WARNING] Rotas de alarmes desabilitadas: {alarm_bootstrap_error}")
+
+register_automacao_routes(
+    app,
+    {
+        'db_path': DB_PATH,
+    },
+)
 
 
 if __name__ == '__main__':

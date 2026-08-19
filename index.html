@@ -486,6 +486,25 @@
             </div>
             <div id="sepPreviewResult" class="log-box" role="status" aria-live="polite">Informe a pasta raiz e clique em pré-visualizar. O backend vai procurar apenas FC13, FC14 e FC17, filtrando somente arquivos Run_24Hours.</div>
           </div>
+          <div class="card ops-card ops-card--accent">
+            <h3 class="section-title">Automações — Base Única e PETEC</h3>
+            <div class="text-muted-11 mb10">Gera relatório HTML ou Excel PETEC diretamente do banco SQLite, sem necessidade de arquivos externos.</div>
+            <div class="row ops-filter-row row--fe-wrap mb10">
+              <div class="field f-150">
+                <label for="automacaoDateFrom">Data inicial</label>
+                <input type="date" id="automacaoDateFrom">
+              </div>
+              <div class="field f-150">
+                <label for="automacaoDateTo">Data final / PETEC</label>
+                <input type="date" id="automacaoDateTo">
+              </div>
+            </div>
+            <div class="row row--wrap mb10">
+              <button class="btn" id="btnGerarPetec" type="button">⬇ Gerar Excel PETEC</button>
+              <button class="btn secondary" id="btnRelatorioDb" type="button">📋 Relatório Base Única</button>
+            </div>
+            <div id="automacaoStatus" class="log-box" style="display:none" role="status" aria-live="polite"></div>
+          </div>
         </div>
         <div class="stack">
           <div class="card ops-card">

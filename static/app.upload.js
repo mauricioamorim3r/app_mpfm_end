@@ -761,3 +761,57 @@ document.getElementById('sepImportBtn')?.addEventListener('click', async () => {
   }
 });
 
+// ── AUTOMAÇÕES DO BANCO ───────────────────────────────────────────────────────
+(function () {
+  function automacaoStatus(msg, isError) {
+    const el = document.getElementById('automacaoStatus');
+    if (!el) return;
+    el.style.display = 'block';
+    el.textContent = msg;
+    el.style.color = isError ? 'var(--red, #c0392b)' : '';
+  }
+
+  document.getElementById('btnGerarPetec')?.addEventListener('click', async () => {
+    const from = document.getElementById('automacaoDateFrom')?.value;
+    const to   = document.getElementById('automacaoDateTo')?.value || from;
+    if (!from) { automacaoStatus('Informe a data inicial.', true); return; }
+    automacaoStatus('Gerando Excel PETEC…');
+    try {
+      const res = await fetch('/api/automacao/gerar-petec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date_from: from, date_to: to || from }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        const detail = Array.isArray(err.detail)
+          ? err.detail.map(e => e.msg || JSON.stringify(e)).join('; ')
+          : (err.detail || res.statusText);
+        automacaoStatus('Erro: ' + detail, true);
+        return;
+      }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      const cd   = res.headers.get('content-disposition') || '';
+      a.download = cd.match(/filename="?([^"]+)"?/)?.[1] || ('PETEC_' + from + '.xlsx');
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
+      automacaoStatus('Excel PETEC gerado com sucesso.');
+    } catch (e) {
+      automacaoStatus('Erro de rede: ' + e.message, true);
+    }
+  });
+
+  document.getElementById('btnRelatorioDb')?.addEventListener('click', () => {
+    const from = document.getElementById('automacaoDateFrom')?.value || '';
+    const to   = document.getElementById('automacaoDateTo')?.value || '';
+    const params = new URLSearchParams();
+    if (from) params.set('date_from', from);
+    if (to)   params.set('date_to', to);
+    automacaoStatus('Abrindo relatório em nova aba…');
+    window.open('/api/automacao/relatorio-base-unica?' + params.toString(), '_blank');
+  });
+})();
+
