@@ -100,12 +100,29 @@ BANK_FOLDERS = {
 }
 
 MPFM_INSTRUMENT_METADATA = {
-    # Os dois instrumentos são seções do mesmo relatório físico do B05.
-    # PE_4, PE_4A, PE-4 e PE-04 são aliases do ponto 18FT1506.
-    "18FT1506": {"bank": "B05", "tag": "18FT1506", "entity": "PE_4", "tipo": "Subsea", "loop": "North"},
-    "18FT1706": {"bank": "B05", "tag": "18FT1706", "entity": "PE_EO105", "tipo": "Subsea", "loop": "North"},
-    "18FT1406": {"bank": "B05", "tag": "18FT1406", "entity": "PE_EO10", "tipo": "Subsea", "loop": "North"},
-    "18FT1806": {"bank": "B05", "tag": "18FT1806", "entity": "PE_EO4", "tipo": "Subsea", "loop": "North"},
+    # B03 – Topside North
+    "13FT0367": {"bank": "B03", "tag": "13FT0367", "entity": "Riser_P5",  "tipo": "Topside", "loop": "North"},
+    "13FT0417": {"bank": "B03", "tag": "13FT0417", "entity": "Riser_P6",  "tipo": "Topside", "loop": "North"},
+    # B05 – Subsea North  (PE_4, PE_4A, PE-4 e PE-04 são aliases do ponto 18FT1506)
+    "18FT1506": {"bank": "B05", "tag": "18FT1506", "entity": "PE_4",      "tipo": "Subsea",  "loop": "North"},
+    "18FT1706": {"bank": "B05", "tag": "18FT1706", "entity": "PE_EO105",  "tipo": "Subsea",  "loop": "North"},
+    "18FT1406": {"bank": "B05", "tag": "18FT1406", "entity": "PE_EO10",   "tipo": "Subsea",  "loop": "North"},
+    "18FT1806": {"bank": "B05", "tag": "18FT1806", "entity": "PE_EO4",    "tipo": "Subsea",  "loop": "North"},
+    # B08 – Topside South
+    "13FT0167": {"bank": "B08", "tag": "13FT0167", "entity": "Riser_P1",  "tipo": "Topside", "loop": "South"},
+    "13FT0217": {"bank": "B08", "tag": "13FT0217", "entity": "Riser_P2",  "tipo": "Topside", "loop": "South"},
+    # B10 – Subsea South
+    "18FT0506": {"bank": "B10", "tag": "18FT0506", "entity": "PE_2",      "tipo": "Subsea",  "loop": "South"},
+    "18FT0306": {"bank": "B10", "tag": "18FT0306", "entity": "PE_8",      "tipo": "Subsea",  "loop": "South"},
+    "18FT0106": {"bank": "B10", "tag": "18FT0106", "entity": "PE_9",      "tipo": "Subsea",  "loop": "South"},
+    # B13 – Topside West
+    "13FT0267": {"bank": "B13", "tag": "13FT0267", "entity": "Riser_P3",  "tipo": "Topside", "loop": "West"},
+    "13FT0317": {"bank": "B13", "tag": "13FT0317", "entity": "Riser_P4",  "tipo": "Topside", "loop": "West"},
+    # B15 – Subsea West
+    "18FT0706": {"bank": "B15", "tag": "18FT0706", "entity": "PE_1",      "tipo": "Subsea",  "loop": "West"},
+    "18FT0906": {"bank": "B15", "tag": "18FT0906", "entity": "PI_1",      "tipo": "Subsea",  "loop": "West"},
+    "18FT1206": {"bank": "B15", "tag": "18FT1206", "entity": "PI_2",      "tipo": "Subsea",  "loop": "West"},
+    "18FT1106": {"bank": "B15", "tag": "18FT1106", "entity": "PW-104DA",  "tipo": "Subsea",  "loop": "West"},
 }
 
 MPFM_IDENTITY_ALIASES = {
@@ -115,10 +132,16 @@ MPFM_IDENTITY_ALIASES = {
     "18FT1806": "18FT1806", "PEEO4": "18FT1806",
     "13FT0367": "13FT0367", "RISERP5": "13FT0367",
     "13FT0417": "13FT0417", "RISERP6": "13FT0417",
-    "13FT0217": "13FT0217", "13FT0167": "13FT0217", "RISERP2": "13FT0217",
+    "13FT0167": "13FT0167", "RISERP1": "13FT0167",
+    "13FT0217": "13FT0217", "RISERP2": "13FT0217",
     "13FT0267": "13FT0267", "RISERP3": "13FT0267",
     "13FT0317": "13FT0317", "RISERP4": "13FT0317",
     "18FT0506": "18FT0506", "PE2": "18FT0506",
+    "18FT0306": "18FT0306", "PE8": "18FT0306",
+    "18FT0106": "18FT0106", "PE9": "18FT0106",
+    "18FT0706": "18FT0706", "PE1": "18FT0706",
+    "18FT0906": "18FT0906", "PI1": "18FT0906",
+    "18FT1206": "18FT1206", "PI2": "18FT1206",
     "18FT1106": "18FT1106", "PW104DA": "18FT1106",
 }
 
@@ -135,15 +158,12 @@ AUTHORIZED_EXTRACTION_MPFMS: set[str] = set()
 # mesmo banco dentro do mesmo arquivo (ex.: PE_4/18FT1506 e
 # PE_EO105/18FT1706 no PDF Daily/Hourly do B05).
 INSTRUMENT_TO_BANK = {
-    "13FT0367": "B03",
-    "13FT0167": "B08",
-    "13FT0317": "B13",
-    "18FT1506": "B05",
-    "18FT1706": "B05",
-    "18FT1406": "B05",
-    "18FT1806": "B05",
-    "18FT0506": "B10",
-    "18FT1106": "B15",
+    "13FT0367": "B03", "13FT0417": "B03",
+    "18FT1506": "B05", "18FT1706": "B05", "18FT1406": "B05", "18FT1806": "B05",
+    "13FT0167": "B08", "13FT0217": "B08",
+    "18FT0506": "B10", "18FT0306": "B10", "18FT0106": "B10",
+    "13FT0267": "B13", "13FT0317": "B13",
+    "18FT0706": "B15", "18FT0906": "B15", "18FT1206": "B15", "18FT1106": "B15",
 }
 
 
@@ -1177,7 +1197,7 @@ def _apply_mpfm_metadata(row: dict) -> dict:
         row["Tipo"] = metadata["tipo"]
         row["Loop"] = metadata["loop"]
         row["Entity"] = metadata["entity"]
-        row["Tag"] = row.get("Instrumento") or metadata["tag"]
+        row["Tag"] = metadata["entity"]
     elif row.get("Instrumento"):
         row["Tag"] = row.get("Instrumento")
     return row
@@ -1869,7 +1889,7 @@ def _normalize_master_columns(df: pd.DataFrame) -> pd.DataFrame:
         out.loc[identity_mask, "Tipo"] = metadata["tipo"]
         out.loc[identity_mask, "Loop"] = metadata["loop"]
         out.loc[identity_mask, "Entity"] = metadata["entity"]
-        out.loc[identity_mask, "Tag"] = instrument
+        out.loc[identity_mask, "Tag"] = metadata["entity"]
         out.loc[identity_mask, "Instrumento"] = instrument
         already_resolved |= identity_mask
     # Segunda passagem: aliases resolvem apenas linhas sem instrumento físico
@@ -1882,14 +1902,9 @@ def _normalize_master_columns(df: pd.DataFrame) -> pd.DataFrame:
         out.loc[identity_mask, "Tipo"] = metadata["tipo"]
         out.loc[identity_mask, "Loop"] = metadata["loop"]
         out.loc[identity_mask, "Entity"] = metadata["entity"]
-        out.loc[identity_mask, "Tag"] = instrument
+        out.loc[identity_mask, "Tag"] = metadata["entity"]
         out.loc[identity_mask, "Instrumento"] = instrument
         already_resolved |= identity_mask
-    tag_sync_mask = (
-        out["Origin"].where(pd.notna(out["Origin"]), "").astype(str).eq("MPFM")
-        & out["Instrumento"].where(pd.notna(out["Instrumento"]), "").astype(str).str.strip().ne("")
-    )
-    out.loc[tag_sync_mask, "Tag"] = out.loc[tag_sync_mask, "Instrumento"].astype(str).str.strip()
     # Migração de históricos: o SEP é fonte independente. Remove das linhas
     # MPFM qualquer massa, desvio ou marcador de alinhamento herdado, sem
     # alterar as linhas Origin=SEP extraídas diretamente dos TXT.
