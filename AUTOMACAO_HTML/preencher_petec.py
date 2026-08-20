@@ -236,8 +236,17 @@ def fill_mpfm(ws, df: pd.DataFrame) -> int:
     ws.freeze_panes = "A2"
     return len(rows)
 
-def fill_sep(ws, sep_rows: list[dict], phase: str) -> None:
+def fill_sep(ws, sep_rows: list[dict], phase: str, first: "datetime | None" = None) -> None:
+    import re as _re
+    # Update the date in the header row (merged cell A1)
+    if first is not None:
+        cell = ws.cell(1, 1)
+        if cell.value and isinstance(cell.value, str):
+            cell.value = _re.sub(r"\d{4}-\d{2}-\d{2}", first.strftime("%Y-%m-%d"), cell.value)
+
     headers = [norm(c.value) for c in ws[2]]; rules = [norm(c.value) for c in ws[3]]
+    has_data = any(any(k.startswith(f"{phase}_") for k in row) for row in sep_rows)
+
     for excel_row in range(4, 28):
         offset = excel_row - 4; ws.cell(excel_row, 1).value = offset + 1
         row = sep_rows[offset] if offset < len(sep_rows) else {}
@@ -245,6 +254,12 @@ def fill_sep(ws, sep_rows: list[dict], phase: str) -> None:
             key = f"{phase}_{header_key(header)}"
             value = row.get(key)
             ws.cell(excel_row, number).value = value if value is not None and not pd.isna(value) else None
+
+    if not has_data:
+        cell = ws.cell(1, 1)
+        current = cell.value or ""
+        if "SEM DADOS" not in current:
+            cell.value = current + "  |  SEM DADOS PARA ESTE PERÍODO"
 
 def header_key(value: str) -> str:
     return {"pressure (kpa)": "pressure_kpa", "pressure (barg)": "pressure_barg", "pressure (kpa_g)": "pressure_kpa_g", "temperature (deg c)": "temp", "sd (kg/sm³)": "sd", "md (kg/m³)": "md", "dt (kg/m³)": "dt", "iv (m³)": "iv_m3", "gv (m³)": "gv_m3", "gsv (sm³)": "gsv_sm3", "gr. vol. (m³)": "gr_vol_m3", "st. vol. (m³)": "st_vol_m3", "mass (t)": "mass_t", "energy (gj)": "energy_gj", "nsv (sm³)": "nsv_sm3", "bsw (%)": "bsw_pct", "cpl": "cpl", "ctl": "ctl", "diff. press. (kpa)": "diff_press_kpa", "flowtime (min)": "flowtime_min"}.get(value, value)
@@ -295,9 +310,9 @@ def main() -> int:
             sep_rows = [{} for _ in range(24)]
         if not args.allow_missing_sep and not any(sep_rows):
             raise ValueError("Nenhum conjunto TXT de óleo/gás/água do SEP foi encontrado na janela solicitada.")
-        fill_sep(book["separador óleo "], sep_rows, "oil")
-        fill_sep(book["separador gás"], sep_rows, "gas")
-        fill_sep(book["separador agua"], sep_rows, "water")
+        fill_sep(book["separador óleo "], sep_rows, "oil", first)
+        fill_sep(book["separador gás"], sep_rows, "gas", first)
+        fill_sep(book["separador agua"], sep_rows, "water", first)
         for sheet in book.worksheets: sheet.sheet_view.showGridLines = False
         book.save(output); print(f"PETEC preenchido: {output}"); print(f"Registros MPFM: {count}. BASE_UNICA_TOTAL.xlsx não foi alterada."); return 0
     except Exception as exc: print(f"ERRO PETEC: {exc}"); return 1

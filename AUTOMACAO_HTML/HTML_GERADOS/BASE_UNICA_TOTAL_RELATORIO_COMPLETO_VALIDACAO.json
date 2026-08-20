@@ -1,6 +1,6 @@
 {
   "status": "APROVADO",
-  "validatedAt": "17/08/2026 13:14",
+  "validatedAt": "18/08/2026 11:37",
   "dashboard": "C:\\Users\\MAUAM\\OneDrive - Equinor\\Desktop\\app_mpfm_end-main\\AUTOMACAO_HTML\\HTML_GERADOS\\BASE_UNICA_TOTAL_RELATORIO_COMPLETO.html",
   "workbook": "C:\\Users\\MAUAM\\OneDrive - Equinor\\Desktop\\app_mpfm_end-main\\AUTOMACAO_HTML\\EXCEL_GERADOS\\BASE_UNICA_TOTAL.xlsx",
   "rules": {
@@ -17,9 +17,9 @@
   "sheets": [
     {
       "name": "BASE_UNICA_TOTAL",
-      "rows": 1698,
+      "rows": 2724,
       "columns": 125,
-      "fingerprint": "4abe654643eb804b1f901099789c3954755dd08f5bf73e3a88a629494bccf8ff"
+      "fingerprint": "b2a0a6a9c515dd93ca690403e62d2ea17ef6d717c895010c345838a1b6d73c39"
     },
     {
       "name": "COMPARATIVO_MANUAL",
@@ -29,33 +29,33 @@
     },
     {
       "name": "COMPARATIVO_TOTAL",
-      "rows": 60,
+      "rows": 96,
       "columns": 45,
-      "fingerprint": "138ebc79c8cd3db4476feeab8d318da846a1d0296ee89a1c59dbef0bf9f4df4d"
+      "fingerprint": "76f217936c8ab8902d5bab2c5fce5a58c7e5614618a58534c1e72af47d1f1aad"
     },
     {
       "name": "ALARMES_EVENTOS_TOTAL",
-      "rows": 152,
+      "rows": 281,
       "columns": 15,
-      "fingerprint": "ee53a51c0a544fcd53bf911d7e3dc08a3defac203d4c7d2df454d99ceddb3f35"
+      "fingerprint": "624c6f5cb0173f1bfcf9cc52495c713dfb87d96dba0bb433a6f1e7ec1bceb4ad"
     },
     {
       "name": "PI_EXTRACT_TOTAL",
-      "rows": 43440,
+      "rows": 72341,
       "columns": 22,
-      "fingerprint": "1ef05c600877cd3a1ec785e20ee58f2e013f40ea70f8c7de4d7fdc6798bcabfa"
+      "fingerprint": "87e5fd1b3a9eb98d1e23c2347f5dcbc4ad93277ac38c5342ec10577b64f62c75"
     },
     {
       "name": "PI_EXTRACT_RESUMO",
       "rows": 4,
       "columns": 2,
-      "fingerprint": "763d9d193c8e9a118a3a284cec10a51714d14967caa9e76d547cecddb460e6bb"
+      "fingerprint": "55940c9d71de2cbc8de4e27667fb18586e4c29c7c6caf732a9d37b9d5c132a7e"
     },
     {
       "name": "COMPARATIVO_PARES",
-      "rows": 1494,
+      "rows": 2786,
       "columns": 17,
-      "fingerprint": "8a92fb517e806be716ed15cc82fc0f07ec2717221a3cd25af351c3b31105f924"
+      "fingerprint": "793ee9794d8717a6c3109acac23e98aa9b517e0970f269823f237c73649fe217"
     }
   ]
 }

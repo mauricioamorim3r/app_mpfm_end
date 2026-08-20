@@ -52,9 +52,9 @@ def register_automacao_routes(app, ctx: dict) -> None:
             sep_rows = pp.load_sep_window_from_db(db_path, first, last)
             book = load_workbook(tmp.name)
             pp.fill_mpfm(book["MPFM"], df)
-            pp.fill_sep(book["separador óleo "], sep_rows, "oil")
-            pp.fill_sep(book["separador gás"], sep_rows, "gas")
-            pp.fill_sep(book["separador agua"], sep_rows, "water")
+            pp.fill_sep(book["separador óleo "], sep_rows, "oil", first)
+            pp.fill_sep(book["separador gás"], sep_rows, "gas", first)
+            pp.fill_sep(book["separador agua"], sep_rows, "water", first)
             for ws in book.worksheets:
                 ws.sheet_view.showGridLines = False
             book.save(tmp.name)
