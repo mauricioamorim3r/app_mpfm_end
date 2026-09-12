@@ -176,7 +176,7 @@ document.querySelectorAll('.navbtn').forEach(b => b.onclick = () => setPage(b.da
 
 async function initDates() {
   // Load available months from server, populate month selector
-  const d = await j(`${API}/ops/months`).catch(() => ({}));
+  const d = await j(`${API}/ops/month-summary`).catch(() => ({}));
   const months = d.months_available || [];
   const sel = document.getElementById('globalMonth');
   if (sel) {
@@ -353,6 +353,12 @@ if (_initialPage !== 'resumo') setPage(_initialPage);
 if (_initialPage === 'resumo' && typeof initPocoRiserTable === 'function') {
   initPocoRiserTable(document.getElementById('globalMonth')?.value || '');
 }
+
+// Inicializar sistema de internacionalização
+if (typeof i18n !== 'undefined' && typeof i18n.init === 'function') {
+  i18n.init();
+}
+
 initDates()
   .catch((err) => {
     console.warn('Falha na inicializacao; aplicando pagina inicial mesmo assim.', err);

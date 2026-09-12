@@ -153,7 +153,7 @@ class ImportRepository:
                        report_start, report_end, excel_month, identity_key, time_source, file_hash,
                        processed_ok, message, created_at
                 FROM files_imported
-                WHERE identity_key=?
+                WHERE identity_key=? AND COALESCE(processed_ok,1)=1
                 ORDER BY id DESC
                 LIMIT 1
                 """,
@@ -175,6 +175,20 @@ class ImportRepository:
                        processed_ok, message, created_at
                 FROM files_imported
                 WHERE file_hash=? AND COALESCE(processed_ok,1)=1
+                  AND (
+                    ext<>'pdf'
+                    OR EXISTS (
+                        SELECT 1
+                        FROM measurements_curated AS measurement
+                        WHERE measurement.bank=files_imported.unit_code
+                          AND measurement.day_ref=files_imported.content_date
+                          AND measurement.row_kind=files_imported.file_type
+                          AND (
+                            files_imported.file_type<>'hourly'
+                            OR measurement.hour_ref=CAST(substr(files_imported.report_start,12,2) AS INTEGER)
+                          )
+                    )
+                  )
                 ORDER BY id DESC
                 LIMIT 1
                 """,
@@ -346,6 +360,28 @@ class ImportRepository:
                             )
                         )
             if metric_rows:
+                targets = {
+                    (
+                        item[4],
+                        item[5],
+                        item[7],
+                        item[6],
+                    )
+                    for item in metric_rows
+                }
+                for row_kind, day_ref, bank, hour_ref in targets:
+                    if hour_ref is None:
+                        conn.execute(
+                            """DELETE FROM measurements_curated
+                               WHERE row_kind=? AND day_ref=? AND bank=? AND hour_ref IS NULL""",
+                            (row_kind, day_ref, bank),
+                        )
+                    else:
+                        conn.execute(
+                            """DELETE FROM measurements_curated
+                               WHERE row_kind=? AND day_ref=? AND bank=? AND hour_ref=?""",
+                            (row_kind, day_ref, bank, hour_ref),
+                        )
                 conn.executemany(
                     """INSERT INTO measurements_curated(
                         run_id, source_file, excel_file, sheet_name, row_kind, day_ref, hour_ref,

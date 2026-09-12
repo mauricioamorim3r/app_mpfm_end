@@ -309,8 +309,8 @@ def register_xml042_routes(app, ctx: dict) -> None:
         )
 
     @app.get("/api/xml042/documents")
-    def api_xml042_documents(month: str = ""):
-        return {"rows": repo.list_documents(month)}
+    def api_xml042_documents(month: str = "", day: str = ""):
+        return {"rows": repo.list_documents(month, normalize_date_input(day))}
 
     @app.post("/api/xml042/import")
     async def api_xml042_import(files: list[UploadFile] = File(...)):

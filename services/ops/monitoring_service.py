@@ -51,6 +51,7 @@ def invalidate_months_cache() -> None:
 
 HC_LIMIT_PCT = 10.0
 TOTAL_LIMIT_PCT = 7.0
+ATTENTION_TRIGGER_DAYS = 5
 CONSECUTIVE_WARNING_DAYS = 8
 PROTOCOL_TRIGGER_DAYS = 10
 
@@ -95,6 +96,17 @@ def _parse_month_bounds(month: str) -> tuple[str, str]:
     return f"{raw}-01", f"{raw}-31"
 
 
+def _parse_month_bounds_with_lookback(month: str, lookback_days: int = PROTOCOL_TRIGGER_DAYS + 2) -> tuple[str, str, str]:
+    """Widen the query start date so a streak that began in the previous month
+    is still walked correctly, while month_date_from marks where the month itself starts."""
+    raw = str(month or "").strip()
+    if len(raw) != 7 or raw[4] != "-":
+        return "", "", ""
+    month_start = datetime.strptime(f"{raw}-01", "%Y-%m-%d").date()
+    query_start = month_start - timedelta(days=lookback_days)
+    return query_start.isoformat(), f"{raw}-01", f"{raw}-31"
+
+
 def normalize_meter_type(value: str) -> str:
     raw = str(value or "").strip().lower()
     if raw.startswith("sub"):
@@ -127,6 +139,8 @@ def _status_label_for_streak(days_outside_limits: int, protocol_required: bool) 
         return "Iniciar protocolo de tratamento de desvios no SGM-FM"
     if days_outside_limits >= CONSECUTIVE_WARNING_DAYS:
         return f"{days_outside_limits} dias consecutivos fora do limite"
+    if days_outside_limits >= ATTENTION_TRIGGER_DAYS:
+        return f"Atenção: {days_outside_limits} dias consecutivos fora do limite"
     return "Fora do limite"
 
 
@@ -209,8 +223,8 @@ def list_monitoring_rows(
     load_cadastro_fn,
     normalize_tag_name: Callable[[str], str],
 ) -> dict:
-    date_from, date_to = _parse_month_bounds(month)
-    if not date_from:
+    query_date_from, month_date_from, date_to = _parse_month_bounds_with_lookback(month)
+    if not query_date_from:
         return {
             "month": "",
             "months_available": [],
@@ -258,7 +272,7 @@ def list_monitoring_rows(
         GROUP BY day_ref, bank, COALESCE(loop,''), COALESCE(tipo,''), COALESCE(tag,''), COALESCE(instrument,'')
         ORDER BY day_ref, bank, meter_type, tag
         """,
-        (date_from, date_to),
+        (query_date_from, date_to),
     ).fetchall()
 
     annotation_rows = [
@@ -289,7 +303,7 @@ def list_monitoring_rows(
             WHERE production_date BETWEEN ? AND ?
             ORDER BY production_date, bank, meter_type, tag
             """,
-            (date_from, date_to),
+            (query_date_from, date_to),
         ).fetchall()
     ]
     conn.close()
@@ -428,6 +442,7 @@ def list_monitoring_rows(
             row["outside_total_limit"] = False
             row["outside_limits"] = False
             row["attention_threshold_reached"] = False
+            row["attention_5d_reached"] = False
             row["protocol_required"] = False
             row["monthly_hc_deviation_pct"] = None
             row["monthly_total_deviation_pct"] = None
@@ -462,6 +477,7 @@ def list_monitoring_rows(
             row["outside_total_limit"] = False
             row["outside_limits"] = False
             row["attention_threshold_reached"] = False
+            row["attention_5d_reached"] = False
             row["protocol_required"] = False
             row["monthly_hc_deviation_pct"] = None
             row["monthly_total_deviation_pct"] = None
@@ -488,6 +504,7 @@ def list_monitoring_rows(
         row["total_deviation_pct"] = _rounded(total_pct)
         row["days_outside_limits"] = 0
         row["attention_threshold_reached"] = False
+        row["attention_5d_reached"] = False
         row["protocol_required"] = False
         row["monthly_hc_deviation_pct"] = None
         row["monthly_total_deviation_pct"] = None
@@ -573,6 +590,7 @@ def list_monitoring_rows(
             previous_date = current_date or previous_date
             max_consecutive_days_outside = max(max_consecutive_days_outside, consecutive_days_outside)
             attention_threshold_reached = is_outside and consecutive_days_outside >= CONSECUTIVE_WARNING_DAYS
+            attention_5d_reached = is_outside and consecutive_days_outside >= ATTENTION_TRIGGER_DAYS
             protocol_required = is_outside and consecutive_days_outside >= PROTOCOL_TRIGGER_DAYS
             protocol_triggered_in_month = protocol_triggered_in_month or protocol_required
             status_label = _status_label_for_streak(consecutive_days_outside, protocol_required) if is_outside else "Dentro do limite"
@@ -587,6 +605,7 @@ def list_monitoring_rows(
                     continue
                 pair_row["days_outside_limits"] = consecutive_days_outside if is_outside else 0
                 pair_row["attention_threshold_reached"] = attention_threshold_reached
+                pair_row["attention_5d_reached"] = attention_5d_reached
                 pair_row["protocol_required"] = protocol_required
                 pair_row["status_label"] = status_label
 
@@ -630,6 +649,8 @@ def list_monitoring_rows(
                 pair_row["monthly_days_paired"] = len(day_keys)
                 pair_row["monthly_outside_days"] = outside_days
                 pair_row["monthly_max_consecutive_outside_days"] = max_consecutive_days_outside
+
+    merged_rows = [row for row in merged_rows if row["production_date"] >= month_date_from]
 
     filtered_rows = []
     bank_filter = str(bank or "").strip().upper()
@@ -690,6 +711,68 @@ def list_monitoring_rows(
         "summary": summary,
         "limits": {"hc_pct": HC_LIMIT_PCT, "total_pct": TOTAL_LIMIT_PCT},
         "monthly_pairs": monthly_pairs,
+    }
+
+
+def list_daily_deviation_alerts(
+    db_conn_fn,
+    *,
+    month: str,
+    load_cadastro_fn: Callable[[], dict],
+    normalize_tag_name: Callable[[str], str],
+) -> dict:
+    """Extrai do monitoramento MPFM x Referência os dias com desvio consecutivo
+    (%Desvio HC / %Desvio Total fora de ±10%/±7%) classificados em 3 níveis:
+    attention (5-7 dias), urgent (8-9 dias) e protocol (10+ dias, exige calibração
+    conforme o Sistema de Gestão Multifásico de BACALHAU)."""
+    monitoring = list_monitoring_rows(
+        db_conn_fn,
+        month=month,
+        load_cadastro_fn=load_cadastro_fn,
+        normalize_tag_name=normalize_tag_name,
+    )
+
+    days_by_date: dict[str, dict] = {}
+    for row in monitoring.get("rows", []):
+        if row.get("meter_type") != "Subsea" or not row.get("pair_key"):
+            continue
+        if row.get("protocol_required"):
+            tier, tier_rank = "protocol", 3
+        elif row.get("attention_threshold_reached"):
+            tier, tier_rank = "urgent", 2
+        elif row.get("attention_5d_reached"):
+            tier, tier_rank = "attention", 1
+        else:
+            continue
+
+        pair_info = {
+            "pair_key": row.get("pair_key"),
+            "pair_label": f'{row.get("bank")} · {row.get("tag")} × {row.get("pair_tag")}',
+            "days_outside_limits": row.get("days_outside_limits") or 0,
+            "status_label": row.get("status_label") or "",
+            "hc_deviation_pct": row.get("hc_deviation_pct"),
+            "total_deviation_pct": row.get("total_deviation_pct"),
+        }
+        day_entry = days_by_date.setdefault(
+            row["production_date"],
+            {"day": row["production_date"], "tier": "none", "tier_rank": 0, "pairs": []},
+        )
+        day_entry["pairs"].append(pair_info)
+        if tier_rank > day_entry["tier_rank"]:
+            day_entry["tier_rank"] = tier_rank
+            day_entry["tier"] = tier
+
+    days = sorted(days_by_date.values(), key=lambda item: item["day"])
+
+    return {
+        "month": monitoring.get("month", month),
+        "limits": monitoring.get("limits", {"hc_pct": HC_LIMIT_PCT, "total_pct": TOTAL_LIMIT_PCT}),
+        "thresholds": {
+            "attention_days": ATTENTION_TRIGGER_DAYS,
+            "urgent_days": CONSECUTIVE_WARNING_DAYS,
+            "protocol_days": PROTOCOL_TRIGGER_DAYS,
+        },
+        "days": days,
     }
 
 

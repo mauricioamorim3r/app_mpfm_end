@@ -3,7 +3,7 @@ import os
 import sys
 import shutil
 import tempfile
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 from fastapi import HTTPException
@@ -71,45 +71,108 @@ def register_automacao_routes(app, ctx: dict) -> None:
         )
 
     @app.get("/api/automacao/relatorio-base-unica")
-    def relatorio_base_unica(date_from: str = "", date_to: str = "", bank: str = ""):
-        if not db_path.exists():
-            raise HTTPException(status_code=500, detail=f"Banco não encontrado: {db_path}")
+    def relatorio_base_unica(date_from: str = "", date_to: str = ""):
+        # Gera o relatório exatamente como a automação (gerar_base_unica_standalone.py):
+        # republica o dashboard a partir do consolidado BASE_UNICA_TOTAL.xlsx, sem reler
+        # PDFs/TXTs e sem alterar o consolidado (apenas leitura).
+        import gerar_base_unica_standalone as gb
 
-        import gerar_relatorio_db as gr
+        master_path = automacao_dir / "EXCEL_GERADOS" / "BASE_UNICA_TOTAL.xlsx"
+        if not master_path.exists():
+            master_path = automacao_dir / "BASE_UNICA_TOTAL.xlsx"
+        if not master_path.exists():
+            raise HTTPException(status_code=500, detail=f"Consolidado não encontrado: {master_path}")
 
-        conn = gr.conn_open(str(db_path))
-        cur  = conn.cursor()
+        master_df = gb.read_master_base_unica(master_path)
+        if master_df.empty:
+            raise HTTPException(status_code=500, detail=f"{master_path.name} não contém dados na aba consolidada.")
+
+        all_days = sorted({str(d) for d in master_df["ProductionDate"] if str(d).strip()})
+        if date_from and date_to:
+            selected_days = [d for d in all_days if date_from <= d <= date_to]
+        else:
+            selected_days = all_days[-gb.DAYS_COUNT:]
+        if not selected_days:
+            raise HTTPException(status_code=422, detail="Nenhum dia com dados no intervalo informado.")
+
+        master_window = master_df[master_df["ProductionDate"].astype(str).isin(set(selected_days))].copy()
         try:
-            df = date_from
-            dt = date_to
-            if not df or not dt:
-                row = cur.execute(
-                    "SELECT MIN(day_ref), MAX(day_ref) FROM measurements_active"
-                ).fetchone()
-                if not df:
-                    df = row[0] or ""
-                if not dt:
-                    dt = row[1] or ""
-            period = f"{df} a {dt}" + (f" · Banco: {bank}" if bank else "")
-            data = {
-                "executivo":   gr.q_executivo(cur, df, dt, bank),
-                "comparacoes": gr.q_comparacoes(cur, df, dt),
-                "separador":   gr.q_separador(cur, df, dt),
-                "cobertura":   gr.q_cobertura(cur, df, dt),
-                "pi":          gr.q_pi_vision(cur),
-                "alarmes":     gr.q_alarmes(cur, df, dt),
-                "detalhes":    gr.q_detalhes(cur, df, dt, bank),
-                "auditoria":   gr.q_auditoria(cur),
-                "validacao":   gr.q_validacao(cur),
-                "xml042":      gr.q_xml042(cur, df, dt),
-            }
-        finally:
-            conn.close()
+            master_alarm_events = gb.read_master_alarm_events(master_path)
+        except Exception:
+            master_alarm_events = None
 
-        meta = {
-            "db": str(db_path),
-            "period": period,
-            "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        }
-        html_content = gr.build_html(data, meta)
+        tmp_dir = Path(tempfile.mkdtemp(prefix="relatorio_base_unica_"))
+        try:
+            dashboard_path = tmp_dir / "BASE_UNICA_TOTAL_RELATORIO_COMPLETO.html"
+            gb.publish_dashboard(
+                dashboard_path,
+                master_window,
+                selected_days,
+                selected_days,
+                [],
+                master_path,
+                master_alarm_events,
+                aligned_bank=gb.SEP_ALIGNED_BANK,
+                preloaded_master_df=master_df,
+                source_workbook_path=master_path,
+            )
+            html_content = dashboard_path.read_text(encoding="utf-8")
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+
         return HTMLResponse(html_content)
+
+    @app.get("/api/automacao/exportar-base-unica-excel")
+    def exportar_base_unica_excel(date_from: str = "", date_to: str = ""):
+        """
+        Exporta dados da BASE_UNICA_TOTAL.xlsx filtrados por período para um novo Excel.
+        Útil para preparar datasets de treinamento de modelos ML.
+        """
+        import pandas as pd
+
+        master_path = automacao_dir / "EXCEL_GERADOS" / "BASE_UNICA_TOTAL.xlsx"
+        if not master_path.exists():
+            master_path = automacao_dir / "BASE_UNICA_TOTAL.xlsx"
+        if not master_path.exists():
+            raise HTTPException(status_code=500, detail=f"Consolidado não encontrado: {master_path}")
+
+        try:
+            # Lê a aba BASE_UNICA_TOTAL (dados consolidados)
+            df = pd.read_excel(master_path, sheet_name="BASE_UNICA_TOTAL")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Erro ao ler consolidado: {str(e)}")
+
+        if df.empty:
+            raise HTTPException(status_code=500, detail="Consolidado não contém dados.")
+
+        # Filtra por período se especificado
+        if date_from and date_to:
+            df["ProductionDate"] = pd.to_datetime(df["ProductionDate"], errors="coerce")
+            mask = (df["ProductionDate"] >= date_from) & (df["ProductionDate"] <= date_to)
+            df = df[mask].copy()
+            if df.empty:
+                raise HTTPException(status_code=422, detail=f"Nenhum dado encontrado entre {date_from} e {date_to}.")
+
+        # Gera arquivo temporário
+        tmp = tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False)
+        tmp.close()
+        try:
+            # Salva dados filtrados em novo Excel
+            with pd.ExcelWriter(tmp.name, engine="openpyxl") as writer:
+                df.to_excel(writer, sheet_name="Base_Unica", index=False)
+        except Exception as e:
+            os.unlink(tmp.name)
+            raise HTTPException(status_code=500, detail=f"Erro ao gerar Excel: {str(e)}")
+
+        # Nome do arquivo
+        if date_from and date_to:
+            fname = f"BASE_UNICA_{date_from}_a_{date_to}.xlsx"
+        else:
+            fname = f"BASE_UNICA_EXPORT_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+
+        return FileResponse(
+            tmp.name,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            filename=fname,
+            background=BackgroundTask(os.unlink, tmp.name),
+        )

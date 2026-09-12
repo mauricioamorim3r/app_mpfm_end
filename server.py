@@ -9,6 +9,7 @@ MPFM Manager Local v4
 """
 
 import os, sys, re, json, shutil, tempfile, glob, pathlib, sqlite3, math, zipfile, hashlib, threading, warnings, time, secrets, base64, asyncio, logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
@@ -53,6 +54,7 @@ from routes.ops_routes import register_ops_routes
 from services.ops.monitoring_service import invalidate_months_cache
 from cache_manager import invalidate_cache
 from services.measurement_dimensions import ensure_measurement_dimensions, refresh_measurement_dimensions
+from services.pdf_cache_service import get_pdf_cache
 from routes.painel_operador_routes import register_painel_operador_routes
 from routes.recon_routes import register_recon_routes
 from routes.sep_routes import register_sep_routes
@@ -130,6 +132,61 @@ def load_engine():
     raise FileNotFoundError("mpfm_engine.py não encontrado.")
 
 engine = load_engine()
+_pdf_cache = get_pdf_cache()
+
+
+def _parse_pdf_cached(pdf_path, report_type="daily"):
+    source_path = Path(pdf_path)
+    cache_version = f"mpfm:{engine.PARSER_VERSION}:{report_type}"
+    parsed = _pdf_cache.get_or_parse(
+        source_path,
+        lambda path: engine.parse_pdf(str(path), report_type),
+        cache_version=cache_version,
+    )
+    if isinstance(parsed, dict):
+        parsed = dict(parsed)
+        parsed["pdf_path"] = str(source_path)
+    return parsed
+
+
+def _warm_pdf_cache(paths_names) -> None:
+    jobs = []
+    for path, name in paths_names:
+        info = classify_input(Path(path), name)
+        if info.get("ext") != "pdf":
+            continue
+        report_type = info.get("file_type")
+        if report_type not in {"daily", "hourly"}:
+            report_type = "daily"
+        jobs.append((path, report_type))
+    if len(jobs) < 32:
+        return
+
+    worker_count = min(6, max(2, os.cpu_count() or 2))
+    failures = []
+    started = time.monotonic()
+    with ThreadPoolExecutor(max_workers=worker_count, thread_name_prefix="pdf-parser") as executor:
+        futures = {
+            executor.submit(_parse_pdf_cached, path, report_type): (path, report_type)
+            for path, report_type in jobs
+        }
+        for future in as_completed(futures):
+            path, report_type = futures[future]
+            try:
+                future.result()
+            except Exception as exc:
+                failures.append(f"{Path(path).name} ({report_type}): {exc}")
+    logging.getLogger(__name__).info(
+        "Cache de PDFs preparado: %s arquivo(s) em %.2fs, %s falha(s)",
+        len(jobs),
+        time.monotonic() - started,
+        len(failures),
+    )
+    if failures:
+        logging.getLogger(__name__).warning(
+            "Falhas ao preparar cache de PDFs; a ingestão tentará novamente: %s",
+            " | ".join(failures[:10]),
+        )
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.responses import Response, FileResponse, HTMLResponse, StreamingResponse
@@ -756,6 +813,7 @@ def _reset_local_data(keep_backup_zip: bool = True, hard_restart: bool = False):
         _monthly_reset_in_progress = True
         _monthly_refresh_generation += 1
         _monthly_refresh_guard.clear()
+        _monthly_refresh_pending.clear()
         _monthly_refresh_threads.clear()
         fallback = _truncate_local_database()
         removed['db_files'] = 1 if fallback.get('tables_cleared') else 0
@@ -1107,6 +1165,7 @@ def build_monthly_base_unica(workbook_path: Path, yr: str, mo: str):
 _monthly_refresh_guard = set()
 _monthly_refresh_lock = threading.Lock()
 _monthly_refresh_threads = {}
+_monthly_refresh_pending = set()
 _monthly_reset_in_progress = False
 _monthly_refresh_generation = 0
 _monthly_refresh_tmp_dir = WORK_DIR / "_monthly_refresh"
@@ -1125,38 +1184,45 @@ def schedule_monthly_base_unica(workbook_path: Path, yr: str, mo: str):
         if _monthly_reset_in_progress:
             return False
         if key in _monthly_refresh_guard:
-            return False
+            _monthly_refresh_pending.add(key)
+            return True
         _monthly_refresh_guard.add(key)
         generation = _monthly_refresh_generation
 
     def _runner():
-        temp_path = None
         try:
-            _monthly_refresh_tmp_dir.mkdir(parents=True, exist_ok=True)
-            with tempfile.NamedTemporaryFile(
-                delete=False,
-                suffix=".xlsx",
-                dir=str(_monthly_refresh_tmp_dir),
-                prefix=f"monthly_{yr}_{mo}_",
-            ) as tmp_file:
-                temp_path = Path(tmp_file.name)
-            build_monthly_base_unica(temp_path, yr, mo)
-            with _monthly_refresh_lock:
-                can_publish = (
-                    generation == _monthly_refresh_generation and
-                    not _monthly_reset_in_progress
-                )
-            if can_publish and temp_path.exists():
-                temp_path.replace(workbook_path)
+            while True:
+                temp_path = None
+                try:
+                    _monthly_refresh_tmp_dir.mkdir(parents=True, exist_ok=True)
+                    with tempfile.NamedTemporaryFile(
+                        delete=False,
+                        suffix=".xlsx",
+                        dir=str(_monthly_refresh_tmp_dir),
+                        prefix=f"monthly_{yr}_{mo}_",
+                    ) as tmp_file:
+                        temp_path = Path(tmp_file.name)
+                    build_monthly_base_unica(temp_path, yr, mo)
+                    with _monthly_refresh_lock:
+                        can_publish = (
+                            generation == _monthly_refresh_generation and
+                            not _monthly_reset_in_progress
+                        )
+                    if can_publish and temp_path.exists():
+                        workbook_path.parent.mkdir(parents=True, exist_ok=True)
+                        temp_path.replace(workbook_path)
+                finally:
+                    if temp_path and temp_path.exists():
+                        temp_path.unlink(missing_ok=True)
+                with _monthly_refresh_lock:
+                    if key not in _monthly_refresh_pending:
+                        break
+                    _monthly_refresh_pending.discard(key)
         except Exception as exc:
             print(f"WARN monthly workbook refresh failed for {workbook_path}: {exc}")
         finally:
-            if temp_path and temp_path.exists():
-                try:
-                    temp_path.unlink()
-                except Exception:
-                    pass
             with _monthly_refresh_lock:
+                _monthly_refresh_pending.discard(key)
                 _monthly_refresh_guard.discard(key)
                 _monthly_refresh_threads.pop(key, None)
 
@@ -1645,13 +1711,15 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
     run_id = start_run(source_type, source_ref, density, len(paths_names))
     print(f"[diag] run {run_id}: iniciando parse de {len(paths_names)} arquivo(s)", flush=True)
     _t_parse0 = _time.monotonic()
+    if force_overwrite:
+        _warm_pdf_cache(paths_names)
     import_repo = ImportRepository(db_conn, _file_sha1, _infer_metric_unit)
     with import_repo.batch_writes():
         prepared = prepare_ingestion_batches(
             paths_names,
             run_id,
             source_type,
-            engine.parse_pdf,
+            _parse_pdf_cached,
             _build_cadastro_index,
             import_repo.log_raw_file,
             import_repo.log_file,
@@ -1870,62 +1938,64 @@ def process_file_list(paths_names, density=DEFAULT_DENSITY, source_type='upload'
         except Exception as e:
             log.append(f'  ⚠️  Status sheet: {e}')
 
-        if new_sheets:
+        db_write_ok = True
+        if sheet_records_for_db:
             try:
-                _t_merge0 = _time.monotonic()
-                engine._merge_excel(str(outxls), new_sheets, area_rows)
-                print(f"[diag] run {run_id}: _merge_excel concluido em {_time.monotonic()-_t_merge0:.2f}s", flush=True)
-                log.append(f'  ✅ {fname}  ({len(new_sheets)} abas + BASE_UNICA_MES)')
-                excels.append(fname)
                 _t_dbwrite0 = _time.monotonic()
                 with import_repo.batch_writes():
                     for sheet_name, rows in sheet_records_for_db:
                         import_repo.store_sheet_rows(run_id, fname, sheet_name, rows)
                 print(f"[diag] run {run_id}: gravacao em measurements_curated concluida em {_time.monotonic()-_t_dbwrite0:.2f}s", flush=True)
-                touched_keys = sorted(set(list(data.get('daily', {}).keys()) + list(data.get('hourly', {}).keys())))
-                for key in touched_keys:
-                    unit_code = key.split('_')[0]
-                    production_date = _day_tag_to_iso(yr, mo, "_".join(key.split("_")[1:]))
-                    if production_date:
-                        recon_targets.add((unit_code, production_date))
-                # Reconstrução de reconciliação e base única são executadas em background
-                # para não bloquear a resposta do upload.
-                def _background_recon_and_base():
-                    for unit_code, production_date in sorted(recon_targets):
-                        try:
-                            _rebuild_recon_from_curated(unit_code, production_date, run_id, fname)
-                        except Exception as exc:
-                            try:
-                                db_add_issue(run_id, fname, 'recon_rebuild_error', 'warn', f'{unit_code}/{production_date}', production_date, str(exc))
-                            except Exception:
-                                pass
-                    try:
-                        schedule_monthly_base_unica(outxls, yr, mo)
-                    except Exception as exc:
-                        try:
-                            db_add_issue(run_id, fname, 'base_unica_schedule_error', 'warn', fname, '', str(exc))
-                        except Exception:
-                            pass
+                log.append(f'  ✅ Banco atualizado: {len(sheet_records_for_db)} conjunto(s) de medições')
+            except Exception as exc:
+                db_write_ok = False
+                db_add_issue(run_id, fname, 'database_write_error', 'error', fname, '', str(exc))
+                log.append(f'  ❌ Erro ao gravar medições no banco: {exc}')
 
-                threading.Thread(target=_background_recon_and_base, daemon=True).start()
-                log.append('  ℹ️  Reconciliação/base única em atualização assíncrona')
-            except Exception as e:
-                db_add_issue(run_id, fname, 'excel_save_error', 'error', fname, '', str(e))
-                log.append(f'  ❌ Erro ao salvar Excel: {e}')
-        else:
-            if outxls.exists():
-                try:
-                    status_df = engine.build_status_sheet(state)
-                    if not status_df.empty:
-                        engine._merge_excel(str(outxls), {'STATUS_MES': status_df}, [])
-                except Exception:
-                    pass
-                _cleanup_workbook(outxls)
-                log.append('  ℹ️  Sem abas novas — status atualizado')
-                excels.append(fname)
+        touched_keys = sorted(set(list(data.get('daily', {}).keys()) + list(data.get('hourly', {}).keys())))
+        for key in touched_keys:
+            unit_code = key.split('_')[0]
+            production_date = _day_tag_to_iso(yr, mo, "_".join(key.split("_")[1:]))
+            if production_date:
+                recon_targets.add((unit_code, production_date))
 
         state['last_run'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         save_state(state)
+
+        has_month_updates = bool(sheet_records_for_db or data.get('txts'))
+        if db_write_ok and has_month_updates:
+            # O banco é a fonte oficial. Reconciliação e Excel são derivados e não
+            # bloqueiam a ingestão nem a atualização das telas.
+            def _background_recon_and_base():
+                for unit_code, production_date in sorted(recon_targets):
+                    try:
+                        _rebuild_recon_from_curated(unit_code, production_date, run_id, fname)
+                    except Exception as exc:
+                        db_add_issue(
+                            run_id,
+                            fname,
+                            'recon_rebuild_error',
+                            'warn',
+                            f'{unit_code}/{production_date}',
+                            production_date,
+                            str(exc),
+                        )
+                try:
+                    schedule_monthly_base_unica(outxls, yr, mo)
+                except Exception as exc:
+                    db_add_issue(run_id, fname, 'base_unica_schedule_error', 'warn', fname, '', str(exc))
+
+            threading.Thread(
+                target=_background_recon_and_base,
+                name=f"post-ingestion-{yr}-{mo}-{run_id}",
+                daemon=True,
+            ).start()
+            log.append('  ℹ️  Reconciliação e Excel em atualização assíncrona')
+            excels.append(fname)
+        elif outxls.exists():
+            log.append('  ℹ️  Nenhuma medição nova; Excel existente preservado')
+            excels.append(fname)
+
         print(f"[diag] run {run_id}: mes {label} finalizado em {_time.monotonic()-_t_month0:.2f}s", flush=True)
 
     _t_postcheck0 = _time.monotonic()

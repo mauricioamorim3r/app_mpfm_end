@@ -84,7 +84,7 @@ def register_export_routes(app, ctx: dict) -> None:
         if unit:
             detail_sql += "AND bank=? "
             params.append(unit)
-        detail_sql += "ORDER BY day_ref, row_kind, COALESCE(hour_ref,-1), tag, metric_name"
+        detail_sql += "ORDER BY row_kind, day_ref, hour_ref, tag, metric_name"
 
         detail_sheet_config = {
             "oleo": [
@@ -190,17 +190,6 @@ def register_export_routes(app, ctx: dict) -> None:
                     copy_cell_style(ws.cell(template_row, col_idx), ws.cell(target_row, col_idx))
                 ws.row_dimensions[target_row].height = ws.row_dimensions[template_row].height
 
-        def sorted_detail_keys(pivot):
-            return sorted(
-                pivot.keys(),
-                key=lambda item: (
-                    item[0] or "",
-                    -1 if item[1] is None else int(item[1]),
-                    item[2] or "",
-                    item[3] or "",
-                ),
-            )
-
         detail_store = {}
         for fluid in detail_kind_by_fluid:
             detail_store[fluid] = {
@@ -222,7 +211,7 @@ def register_export_routes(app, ctx: dict) -> None:
             }
         conn.close()
         for fluid, payload in detail_store.items():
-            for key in sorted_detail_keys(payload["pivot"]):
+            for key in payload["pivot"].keys():
                 item_meta = payload["meta"][key]
                 payload["grouped"][item_meta["day_ref"]].append((key, item_meta))
                 if item_meta["hour_ref"] is None:
@@ -710,7 +699,7 @@ def register_export_routes(app, ctx: dict) -> None:
             if bank:
                 sql += " AND bank=?"
                 params.append(bank)
-            sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), bank, tag, metric_name"
+            sql += " ORDER BY day_ref, hour_ref, bank, tag, metric_name"
             piv = defaultdict(dict)
             metrics = []
             for row in cur.execute(sql, params):
@@ -807,7 +796,7 @@ def register_export_routes(app, ctx: dict) -> None:
 
         def pivot_rows(piv, include_hour: bool):
             items = []
-            for key in sorted(piv.keys(), key=lambda item: (item[0] or "", -1 if item[1] is None else int(item[1]), item[2] or "", item[5] or "")):
+            for key in piv.keys():
                 day_ref, hour_ref, bank_name, loop, tipo, tag_name = key
                 metric_dict = piv[key]
                 row = {
@@ -929,7 +918,7 @@ def register_export_routes(app, ctx: dict) -> None:
             )
             if bank:
                 sql += " AND (bank=? OR bank='SEP')"
-            sql += " ORDER BY day_ref, COALESCE(hour_ref,-1), tag, metric_name"
+            sql += " ORDER BY day_ref, hour_ref, tag, metric_name"
             ws = wb[title] if title in wb.sheetnames else wb.create_sheet(title)
             set_sheet_subtitle(ws)
             piv = defaultdict(dict)
@@ -938,7 +927,7 @@ def register_export_routes(app, ctx: dict) -> None:
                 piv[key][row["metric_name"]] = row["metric_value"]
             sep_rows = []
             if fluid_flags[fluid]:
-                for key in sorted(piv.keys(), key=lambda item: (item[0] or "", -1 if item[1] is None else int(item[1]), item[2] or "")):
+                for key in piv.keys():
                     day_ref, hour_ref, tag_name, instrument, bank_name = key
                     row = {
                         "Data": day_ref,

@@ -37,6 +37,10 @@ CREATE TABLE IF NOT EXISTS files_imported (
 );
 CREATE INDEX IF NOT EXISTS idx_files_imported_lookup
     ON files_imported(content_date, ext, file_type, meter_id);
+CREATE INDEX IF NOT EXISTS idx_files_imported_identity_ok
+    ON files_imported(identity_key, processed_ok, id);
+CREATE INDEX IF NOT EXISTS idx_files_imported_hash_ok
+    ON files_imported(file_hash, processed_ok, id);
 
 CREATE TABLE IF NOT EXISTS source_files_raw (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -125,6 +129,10 @@ CREATE INDEX IF NOT EXISTS idx_measurements_curated_lookup
     ON measurements_curated(day_ref, row_kind, bank, tag, metric_name);
 CREATE INDEX IF NOT EXISTS idx_measurements_curated_source
     ON measurements_curated(source_record_id, is_official);
+CREATE INDEX IF NOT EXISTS idx_measurements_curated_export
+    ON measurements_curated(row_kind, day_ref, hour_ref, bank, tag, metric_name);
+CREATE INDEX IF NOT EXISTS idx_measurements_curated_metric_scan
+    ON measurements_curated(row_kind, metric_name, day_ref, bank, tag);
 
 CREATE TABLE IF NOT EXISTS mpfm_adjustment_imports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1568,6 +1576,8 @@ CREATE INDEX IF NOT EXISTS idx_files_imported_identity
         cur.execute("CREATE INDEX IF NOT EXISTS idx_files_imported_lookup ON files_imported(content_date, ext, file_type, meter_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_files_imported_hash ON files_imported(file_hash)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_files_imported_identity ON files_imported(identity_key)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_files_imported_hash_ok ON files_imported(file_hash, processed_ok, id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_files_imported_identity_ok ON files_imported(identity_key, processed_ok, id)")
 
     raw_cols = [r[1] for r in cur.execute("PRAGMA table_info(source_files_raw)").fetchall()]
     if "report_start" not in raw_cols:

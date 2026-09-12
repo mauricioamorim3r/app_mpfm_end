@@ -2,21 +2,21 @@
 
 const SEP_ALL_METRICS = [
   // Volumes
-  { key:'oil_m3',        label:'Óleo (m³)',          group:'volumes',   color:'#23c16b' },
-  { key:'gsv_sep_sm3',   label:'GSV óleo (sm³)',     group:'volumes',   color:'#23c16b' },
-  { key:'gas_vol_sm3',   label:'Gás (sm³)',          group:'volumes',   color:'#f3b33d' },
-  { key:'water_gsv_sm3', label:'GSV Água (m³)',       group:'volumes',   color:'#26a0ff' },
+  { key:'oil_m3',        label:'Óleo (m³)',          group:'volumes',   color:'var(--sep-oil)' },
+  { key:'gsv_sep_sm3',   label:'GSV óleo (sm³)',     group:'volumes',   color:'var(--sep-oil)' },
+  { key:'gas_vol_sm3',   label:'Gás (sm³)',          group:'volumes',   color:'var(--sep-gas)' },
+  { key:'water_gsv_sm3', label:'GSV Água (m³)',       group:'volumes',   color:'var(--sep-water)' },
   // Massas
-  { key:'oil_t',         label:'Óleo (t)',            group:'massas',    color:'#23c16b' },
-  { key:'gas_t',         label:'Gás (t)',             group:'massas',    color:'#f3b33d' },
-  { key:'water_t',       label:'Água (t)',            group:'massas',    color:'#26a0ff' },
-  { key:'hc_t',          label:'HC (t)',              group:'massas',    color:'#26a0ff' },
-  { key:'total_t',       label:'Total (t)',           group:'massas',    color:'#dbe7f5' },
+  { key:'oil_t',         label:'Óleo (t)',            group:'massas',    color:'var(--sep-oil)' },
+  { key:'gas_t',         label:'Gás (t)',             group:'massas',    color:'var(--sep-gas)' },
+  { key:'water_t',       label:'Água (t)',            group:'massas',    color:'var(--sep-water)' },
+  { key:'hc_t',          label:'HC (t)',              group:'massas',    color:'var(--sep-hc)' },
+  { key:'total_t',       label:'Total (t)',           group:'massas',    color:'var(--sep-total)' },
   // Condições P/T
-  { key:'temp',          label:'Temperatura (°c)',    group:'condicoes', color:'#ef5a5a' },
-  { key:'pressure_barg', label:'Pressão (barg)',      group:'condicoes', color:'#a855f7' },
-  { key:'density_sim',   label:'Dens. sim (kg/m³)',   group:'condicoes', color:'#8ea3ba' },
-  { key:'bsw_user_pct',  label:'BSW usuário (%)',     group:'condicoes', color:'#8ea3ba' },
+  { key:'temp',          label:'Temperatura (°c)',    group:'condicoes', color:'var(--sep-temp)' },
+  { key:'pressure_barg', label:'Pressão (barg)',      group:'condicoes', color:'var(--sep-pressure)' },
+  { key:'density_sim',   label:'Dens. sim (kg/m³)',   group:'condicoes', color:'var(--sep-neutral)' },
+  { key:'bsw_user_pct',  label:'BSW usuário (%)',     group:'condicoes', color:'var(--sep-neutral)' },
 ];
 
 const SEP_METRIC_LABELS = Object.fromEntries(SEP_ALL_METRICS.map(m => [m.key, m.label]));
@@ -253,7 +253,7 @@ function renderSepData() {
     <th>Data</th><th>Hora</th><th>Origem</th><th>TAG SEP</th><th>Uso</th>
     ${sel.map(m => {
       const def = SEP_ALL_METRICS.find(x => x.key===m);
-      return `<th style="color:${def?.color||'#8ea3ba'}" title="${escapeHtml(def?.group||'')}">${escapeHtml(def?.label||SEP_METRIC_LABELS[m]||m)}</th>`;
+      return `<th style="color:${def?.color||'var(--sep-neutral)'}" title="${escapeHtml(def?.group||'')}">${escapeHtml(def?.label||SEP_METRIC_LABELS[m]||m)}</th>`;
     }).join('')}
     <th style="width:60px"></th>
   </tr>`;

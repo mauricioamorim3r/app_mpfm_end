@@ -391,6 +391,9 @@ if (document.readyState === 'loading') {
 window.openAppModal = openAppModal;
 window.closeAppModal = closeAppModal;
 window.bindAccessibleModals = bindAccessibleModals;
+// Aliases used by inline onclick="openModal(...)"/"closeModal(...)" handlers across the app.
+window.openModal = window.openModal || openAppModal;
+window.closeModal = window.closeModal || closeAppModal;
 
 function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;

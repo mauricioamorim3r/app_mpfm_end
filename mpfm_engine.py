@@ -14,6 +14,8 @@ from pypdf import PdfReader
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
+PARSER_VERSION = "2026.09.01.1"
+
 # ── Formatação BR ─────────────────────────────────────────────────────────────
 _DATE_PAT     = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 _DATETIME_PAT = re.compile(r'^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}')
@@ -1034,9 +1036,12 @@ def _merge_excel(output_path, new_sheets, new_area_rows):
         dest_wb = None
         src_wb = None
         tmp = output_path + ".tmp.xlsx"
+        final_tmp = output_path + ".save.tmp.xlsx"
         try:
             if os.path.exists(tmp):
                 os.remove(tmp)
+            if os.path.exists(final_tmp):
+                os.remove(final_tmp)
             dest_wb = lw(output_path)
             # Write new sheets to temp, style them, then copy into dest
             with pd.ExcelWriter(tmp, engine="openpyxl") as writer:
@@ -1071,7 +1076,10 @@ def _merge_excel(output_path, new_sheets, new_area_rows):
                 if src_ws.freeze_panes:
                     dest_ws.freeze_panes = src_ws.freeze_panes
             _update_area_totals_wb(dest_wb, new_area_rows)
-            dest_wb.save(output_path)
+            dest_wb.save(final_tmp)
+            dest_wb.close()
+            dest_wb = None
+            os.replace(final_tmp, output_path)
         finally:
             if src_wb is not None:
                 try:
@@ -1086,6 +1094,11 @@ def _merge_excel(output_path, new_sheets, new_area_rows):
             if os.path.exists(tmp):
                 try:
                     os.remove(tmp)
+                except Exception:
+                    pass
+            if os.path.exists(final_tmp):
+                try:
+                    os.remove(final_tmp)
                 except Exception:
                     pass
     else:

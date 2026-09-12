@@ -1,7 +1,7 @@
 {
   "theme_mode": "light",
   "auto_folder_monitor": {
-    "enabled": false,
+    "enabled": true,
     "stability_seconds": 20,
     "schedule_enabled": false,
     "schedule_times": [
@@ -14,7 +14,7 @@
       {
         "id": "folder-1785003811839",
         "label": "Riser P5",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.1_13-FT-0367 Riser P5 - Topside B03\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.1_13-FT-0367 Riser P5 - Topside B03",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -22,7 +22,7 @@
       {
         "id": "folder-1785003841689",
         "label": "Riser P2",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.2_13-FT-0167 Riser P2 - Topside B08\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.2_13-FT-0167 Riser P2 - Topside B08",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -30,7 +30,7 @@
       {
         "id": "folder-1785003886218",
         "label": "Riser P4",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.3_13-FT-0317 Riser P4 - Topside B13\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.3_13-FT-0317 Riser P4 - Topside B13",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -38,7 +38,7 @@
       {
         "id": "folder-1785003910367",
         "label": "PE-4",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.4_18-FT-1506 PE 4 e PE_EO105 - Subsea B05",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -46,7 +46,7 @@
       {
         "id": "folder-1785003930814",
         "label": "PE-2",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.5_18-FT-0506 PE 2 - Subsea B10\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.5_18-FT-0506 PE 2 - Subsea B10",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -54,7 +54,15 @@
       {
         "id": "folder-1785003951258",
         "label": "PW-104",
-        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3. Registros de Operação SGM Multifasico\\3.1 Registros Diarios MPFM\\3.1.6_18-FT-1106 PW_104DA - Subsea B15\\2026\\07. Julho",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\3.1.6_18-FT-1106 PW_104DA - Subsea B15",
+        "active": true,
+        "interval_seconds": 300,
+        "duplicate_policy": "skip"
+      },
+      {
+        "id": "folder-mpfm-email-zips",
+        "label": "MPFM ZIPs Automação Email",
+        "path": "C:\\Users\\MAUAM\\OneDrive - Equinor\\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM\\3.1 Registros Diarios MPFM\\Zip\\Registros Automacao Email",
         "active": true,
         "interval_seconds": 300,
         "duplicate_policy": "skip"
@@ -117,15 +125,19 @@
   ],
   "summary_layout": {
     "cards": false,
-    "bank": true,
-    "tag": true,
+    "bank": false,
+    "tag": false,
     "daily": true
   },
   "summary_daily_chart": {
     "visibleSeries": [
       "mpfm_oil",
       "mpfm_gas",
-      "mpfm_water"
+      "mpfm_water",
+      "mpfm_hc",
+      "mpfm_total"
     ]
-  }
+  },
+  "app_title": "Metering MPFM BRA",
+  "app_subtitle": "Local · editável"
 }

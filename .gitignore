@@ -50,6 +50,7 @@ data/database_v2.sqlite3
 data/backups/
 data/outputs/
 data/uploads/
+data/pdf_cache/
 build/
 Material_analisado/
 output/
@@ -65,6 +66,9 @@ test-results/
 
 # Temporary / debug scripts
 tmp_*.py
+tmp_*.json
+diff_*.txt
+cadastro.json
 scripts/tmp_*.py
 scripts/_debug_*
 scripts/_inspect_*

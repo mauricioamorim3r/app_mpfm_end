@@ -169,6 +169,26 @@ function bindSummaryVisibilityControls() {
   });
 }
 
+function bindSummaryMonthReportButton() {
+  if (window.__summaryMonthReportButtonBound) return;
+  window.__summaryMonthReportButtonBound = true;
+  const btn = document.getElementById('btnRelatorioMesResumo');
+  if (!btn) return;
+  btn.onclick = () => {
+    const month = document.getElementById('globalMonth')?.value || '';
+    const params = new URLSearchParams();
+    const m = /^(\d{4})-(\d{2})$/.exec(month);
+    if (m) {
+      const year = Number(m[1]);
+      const monthIdx = Number(m[2]) - 1;
+      const lastDay = new Date(year, monthIdx + 1, 0).getDate();
+      params.set('date_from', `${m[1]}-${m[2]}-01`);
+      params.set('date_to', `${m[1]}-${m[2]}-${String(lastDay).padStart(2, '0')}`);
+    }
+    window.open('/api/automacao/relatorio-base-unica?' + params.toString(), '_blank');
+  };
+}
+
 function summaryEnsureDailyChartPlugins() {
   if (!window.Chart || window.__summaryDailyChartPluginsRegistered) return;
   Chart.register({
@@ -549,12 +569,57 @@ window.selectSummaryDay = (day) => {
   renderSummaryDailyChart();
 };
 
+window.repairCalendarNow = async () => {
+  const btn = document.getElementById('btnRepairCalendar');
+  const info = document.getElementById('summaryRefreshInfo');
+  const month = document.getElementById('globalMonth')?.value || '';
+  if (!month) return;
+  const oldText = btn ? btn.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Reparando...';
+  }
+  if (info) info.textContent = `Rodando ronda de reparo para ${summaryMonthLabel(month)}...`;
+  try {
+    const payload = await j(`${API}/calendar-repair/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month, run_monitor: true }),
+    });
+    if (typeof invalidateApiCache === 'function') invalidateApiCache();
+    const monitorProcessed = (payload.monitor_results || []).reduce((acc, item) => acc + Number(item.processed || 0), 0);
+    const importProcessed = Number(payload.import_result?.processed || 0);
+    if (info) {
+      if (payload.mode === 'full') {
+        const remainingPending = Number(payload.remaining_pending || 0);
+        const remainingGap = Number(payload.remaining_source_gap || 0);
+        info.textContent = `Reparo completo: ${monitorProcessed + importProcessed} processado(s), ${remainingPending} pendente(s), ${remainingGap} fonte(s) ausente(s).`;
+      } else {
+        info.textContent = payload.message || `Ronda rápida concluída: ${monitorProcessed + importProcessed} processado(s).`;
+      }
+    }
+    await loadSummary(true);
+    if (typeof loadAutoFolderMonitorStatus === 'function') loadAutoFolderMonitorStatus();
+  } catch (error) {
+    if (info) info.textContent = `Falha no reparo do calendário: ${error?.message || error}`;
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = oldText || '🛠 Reparar calendário';
+    }
+  }
+};
+
 async function loadSummary(silent = false) {
   if (!silent) setLoading('page-resumo', true);
   try {
   const month = document.getElementById('globalMonth')?.value || '';
-  const d = await j(`${API}/ops/month-summary?month=${month}`).catch(() => ({}));
+  const [d, alertsPayload] = await Promise.all([
+    j(`${API}/ops/month-summary?month=${month}`).catch(() => ({})),
+    j(`${API}/ops/mpfm-monitoring/daily-alerts?month=${month}`).catch(() => ({ days: [] })),
+  ]);
   state.summaryMonthData = d;
+  state.summaryDeviationAlerts = alertsPayload.days || [];
   const p = d.production || {};
   const mesLabel = summaryMonthLabel(month || d.month);
   const conversion = d.conversion || {
@@ -677,6 +742,7 @@ async function loadSummary(silent = false) {
   daySel.onchange = () => { state.summary.day = daySel.value; renderSummaryDayDetail(); renderSummaryDailyChart(); };
   renderSummaryDayDetail();
   bindSummaryVisibilityControls();
+  bindSummaryMonthReportButton();
   summaryApplyVisibility();
   renderSummaryDailyChart();
 
@@ -692,21 +758,29 @@ async function loadSummary(silent = false) {
   if (_totCb) _totCb.onchange = () => { (state.summaryChart = state.summaryChart || {}).showTotalLimit = _totCb.checked; _rewireDesvio(); };
 
   // Render monthly calendar
-  renderMonthCalendar(month, d.daily || []);
+  renderMonthCalendar(month, d.daily || [], state.summaryDeviationAlerts);
 
   // Poço x Riser daily table
   initPocoRiserTable(month);
+
+  // SGM-FM calibration protocol alert (10+ consecutive days out of limits)
+  maybeShowCalibrationAlert(state.summaryDeviationAlerts);
   } finally {
     if (!silent) setLoading('page-resumo', false);
   }
 }
 
 // ─── MONTHLY CALENDAR ─────────────────────────────────────────────────────────
-function renderMonthCalendar(month, daily) {
+function renderMonthCalendar(month, daily, alertDays) {
   const el = document.getElementById('monthCalendar');
   if (!el) return;
 
   state.summaryDailyData = daily || [];
+  state.summaryAlertDays = alertDays || [];
+
+  // Lookup: day_ref → deviation alert info ({tier, tier_rank, pairs})
+  const alertLookup = {};
+  (alertDays || []).forEach(x => { alertLookup[x.day] = x; });
 
   const [yr, mo] = (month || '2026-01').split('-').map(Number);
   const daysInMonth = new Date(yr, mo, 0).getDate();
@@ -735,19 +809,16 @@ function renderMonthCalendar(month, daily) {
   for (let d = 1; d <= daysInMonth; d++) {
     const dayRef = `${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const row    = lookup[dayRef] || {};
+    const alertInfo = alertLookup[dayRef];
+    const alertTier = alertInfo?.tier || 'none';
+    const alertClass = alertTier !== 'none' ? ` calday-alert-${alertTier}` : '';
+    const alertTopPair = (alertInfo?.pairs || [])[0];
+    const alertTitle = alertTopPair
+      ? `⚠️ ${summaryEscapeHtml(alertTopPair.pair_label || '')}: ${summaryEscapeHtml(alertTopPair.status_label || '')}`
+      : '';
     const hasMpfm = row.mpfm_hc != null && row.mpfm_hc > 0;
     const hasSep  = !!row.sep_present;
     const isToday = isThisMonth && d === todayD;
-
-    let bg = 'var(--panel2)', bc = 'var(--line)';
-
-    if (hasMpfm && hasSep) {
-      bg = 'rgba(35,193,107,.14)'; bc = 'rgba(35,193,107,.45)';
-    } else if (hasMpfm) {
-      bg = 'rgba(38,160,255,.12)'; bc = 'rgba(38,160,255,.4)';
-    } else if (hasSep) {
-      bg = 'rgba(168,85,247,.12)'; bc = 'rgba(168,85,247,.4)';
-    }
 
     const hasAny = hasMpfm || hasSep;
     const hcVal = hasMpfm ? row.mpfm_hc : row.sep_hc;
@@ -783,6 +854,29 @@ function renderMonthCalendar(month, daily) {
     const topside = mpfmDet.topside || [];
     const subsea  = mpfmDet.subsea  || [];
 
+    // Card status: GREEN only if every daily+hourly item (SEP + MPFM topside/subsea) is
+    // fully closed (24h); YELLOW if some but not all data exists; RED if nothing exists.
+    const sepAllOk  = !!(sepOleo && sepGas && sepAgua);
+    const sepAnyOk  = !!(sepOleo || sepGas || sepAgua);
+    const itemFull  = item => !!item.daily && (item.hours || 0) >= 24;
+    const itemAny   = item => !!item.daily || (item.hours || 0) > 0;
+    const topsideAllOk = topside.length > 0 && topside.every(itemFull);
+    const topsideAnyOk = topside.some(itemAny);
+    const subseaAllOk  = subsea.length > 0 && subsea.every(itemFull);
+    const subseaAnyOk  = subsea.some(itemAny);
+
+    const allClosed = sepAllOk && topsideAllOk && subseaAllOk;
+    const anyData    = sepAnyOk || topsideAnyOk || subseaAnyOk;
+
+    let bg = 'var(--panel2)', bc = 'var(--line)';
+    if (allClosed) {
+      bg = 'rgba(35,193,107,.14)'; bc = 'rgba(35,193,107,.45)';   // green — tudo fechado
+    } else if (anyData) {
+      bg = 'rgba(245,158,11,.14)'; bc = 'rgba(245,158,11,.5)';    // yellow — parcial
+    } else {
+      bg = 'rgba(239,68,68,.12)';  bc = 'rgba(239,68,68,.45)';    // red — nada cadastrado
+    }
+
     const renderMpfmRow = (items, title, icon) => {
       if (!items || !items.length) return '';
       const chips = items.map(item => {
@@ -800,9 +894,10 @@ function renderMonthCalendar(month, daily) {
     const todayBorder = isToday ? ';outline:2px solid var(--accent);outline-offset:1px' : '';
 
     cells += `
-      <div class="calday calday-enhanced ${hasAny?'has-data':''}" style="background:${bg};border-color:${bc}${todayBorder};" onclick="openCaldayDetails('${dayRef}')" title="Clique para detalhar o cadastro de ${fmtDate(dayRef)}">
+      <div class="calday calday-enhanced${alertClass} ${hasAny?'has-data':''}" style="background:${bg};border-color:${bc}${todayBorder};" onclick="openCaldayDetails('${dayRef}')" title="Clique para detalhar o cadastro de ${fmtDate(dayRef)}${alertTitle ? ' — ' + alertTitle : ''}">
         <div class="calday-hdr">
           <span class="n" style="color:${isToday?'var(--accent)':hasAny?'var(--text)':'var(--muted)'}">${d}</span>
+          ${alertTier !== 'none' ? `<span class="calday-alert-badge calday-alert-badge-${alertTier}" title="${alertTitle}">${alertTier === 'protocol' ? '🚨' : alertTier === 'urgent' ? '⚠️' : '🔶'}</span>` : ''}
           ${valStr ? `<span class="calday-val">${valStr}</span>` : '<span class="calday-hint">🔍 Detalhar</span>'}
         </div>
 
@@ -845,6 +940,42 @@ window.openCaldayDetails = function(dayRef) {
   const hasMpfm = row.mpfm_hc != null && row.mpfm_hc > 0;
   const hasSep  = !!row.sep_present;
 
+  const alertDays = state.summaryAlertDays || [];
+  const alertInfo = alertDays.find(x => x.day === dayRef);
+  const alertTierLabels = { attention: '🔶 Atenção', urgent: '⚠️ Urgente', protocol: '🚨 Protocolo SGM-FM' };
+  const alertSectionHtml = (alertInfo && alertInfo.tier !== 'none' && (alertInfo.pairs || []).length)
+    ? `
+    <div class="card ops-card mb12" style="border-color:var(--warn, #f59e0b);">
+      <h4 class="section-title modal-h3" style="color:var(--warn, #f59e0b); margin-bottom:10px;">
+        ${alertTierLabels[alertInfo.tier] || 'Desvio'} — MPFM x Referência
+      </h4>
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Par Subsea × Topside</th>
+              <th>Dias Consecutivos Fora do Limite</th>
+              <th>%Desvio HC</th>
+              <th>%Desvio Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${alertInfo.pairs.map(p => `
+              <tr>
+                <td>${summaryEscapeHtml(p.pair_label || '')}</td>
+                <td class="mono">${p.days_outside_limits ?? '—'}</td>
+                <td class="num">${summaryPctLabel(p.hc_deviation_pct)}</td>
+                <td class="num">${summaryPctLabel(p.total_deviation_pct)}</td>
+                <td>${summaryEscapeHtml(p.status_label || '')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`
+    : '';
+
   const sepDet = row.sep_details || {
     oleo: { tag: "20FT0247", label: "Óleo", present: hasSep },
     gas:  { tag: "20FT0244", label: "Gás", present: hasSep },
@@ -868,6 +999,26 @@ window.openCaldayDetails = function(dayRef) {
     };
   }
 
+  const expectedHint = (text, title) => text
+    ? `<div class="muted fs11" title="${summaryEscapeHtml(title || text)}">Esperado: <span class="mono">${summaryEscapeHtml(text)}</span></div>`
+    : '';
+  const sepBadge = phase => phase?.present
+    ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
+    : `<span class="badge missing">🔴 Ausente / Não Encontrado</span>${expectedHint(phase?.expected?.file, `Carimbo esperado para fechar ${fmtDate(dayRef)}: ${phase?.expected?.timestamp || ''}`)}`;
+  const mpfmDailyBadge = item => item.daily
+    ? '<span class="badge ok">🟢 Presente</span>'
+    : `<span class="badge missing">🔴 Ausente</span>${expectedHint(item.expected?.daily_file, 'Arquivo diário esperado para esta data operacional')}`;
+  const mpfmHourlyBadge = item => {
+    if (item.hourly) {
+      return `<span class="badge ${item.hours>=24?'ok':'warn'}">${item.hours>=24?'🟢 24h':'🟡 '+item.hours+'h/24h'}</span>`;
+    }
+    const expected = item.expected || {};
+    const range = expected.hourly_expected_first && expected.hourly_expected_last
+      ? `${expected.hourly_expected_first} ... ${expected.hourly_expected_last}`
+      : '';
+    return `<span class="badge missing">🔴 Ausente (0h)</span>${expectedHint(range, (expected.hourly_missing_files || []).join('\n'))}`;
+  };
+
   let html = `
     <!-- RESUMO DO DIA -->
     <div class="row row--sb-ac mb12" style="background:var(--panel2); padding:12px 16px; border-radius:10px; border:1px solid var(--line); flex-wrap:wrap; gap:16px;">
@@ -888,6 +1039,7 @@ window.openCaldayDetails = function(dayRef) {
         <strong class="fs15">${row.max_hrs || 0}h / 24h</strong>
       </div>
     </div>
+    ${alertSectionHtml}
 
     <!-- SEPARADOR DE TESTE -->
     <div class="card ops-card mb12">
@@ -908,27 +1060,21 @@ window.openCaldayDetails = function(dayRef) {
               <td>🛢️ <strong>Óleo</strong></td>
               <td class="mono">${summaryEscapeHtml(sepDet.oleo?.tag || '20FT0247')}</td>
               <td>
-                ${sepDet.oleo?.present
-                  ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
-                  : '<span class="badge missing">🔴 Ausente / Não Encontrado</span>'}
+                ${sepBadge(sepDet.oleo)}
               </td>
             </tr>
             <tr>
               <td>💨 <strong>Gás</strong></td>
               <td class="mono">${summaryEscapeHtml(sepDet.gas?.tag || '20FT0244')}</td>
               <td>
-                ${sepDet.gas?.present
-                  ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
-                  : '<span class="badge missing">🔴 Ausente / Não Encontrado</span>'}
+                ${sepBadge(sepDet.gas)}
               </td>
             </tr>
             <tr>
               <td>💧 <strong>Água</strong></td>
               <td class="mono">${summaryEscapeHtml(sepDet.agua?.tag || '20FT0251')}</td>
               <td>
-                ${sepDet.agua?.present
-                  ? '<span class="badge ok">🟢 Cadastrado (Presente)</span>'
-                  : '<span class="badge missing">🔴 Ausente / Não Encontrado</span>'}
+                ${sepBadge(sepDet.agua)}
               </td>
             </tr>
           </tbody>
@@ -959,14 +1105,10 @@ window.openCaldayDetails = function(dayRef) {
                 <td>${tagChip(summaryEscapeHtml(item.bank))}</td>
                 <td class="mono">${summaryEscapeHtml(item.sensor_tag || '—')}</td>
                 <td>
-                  ${item.daily
-                    ? '<span class="badge ok">🟢 Presente</span>'
-                    : '<span class="badge missing">🔴 Ausente</span>'}
+                  ${mpfmDailyBadge(item)}
                 </td>
                 <td>
-                  ${item.hourly
-                    ? `<span class="badge ${item.hours>=24?'ok':'warn'}">${item.hours>=24?'🟢 24h':'🟡 '+item.hours+'h/24h'}</span>`
-                    : '<span class="badge missing">🔴 Ausente (0h)</span>'}
+                  ${mpfmHourlyBadge(item)}
                 </td>
               </tr>
             `).join('') || '<tr><td colspan="5" class="muted text-center">Nenhum MPFM Topside cadastrado.</td></tr>'}
@@ -998,14 +1140,10 @@ window.openCaldayDetails = function(dayRef) {
                 <td>${tagChip(summaryEscapeHtml(item.bank))}</td>
                 <td class="mono">${summaryEscapeHtml(item.sensor_tag || '—')}</td>
                 <td>
-                  ${item.daily
-                    ? '<span class="badge ok">🟢 Presente</span>'
-                    : '<span class="badge missing">🔴 Ausente</span>'}
+                  ${mpfmDailyBadge(item)}
                 </td>
                 <td>
-                  ${item.hourly
-                    ? `<span class="badge ${item.hours>=24?'ok':'warn'}">${item.hours>=24?'🟢 24h':'🟡 '+item.hours+'h/24h'}</span>`
-                    : '<span class="badge missing">🔴 Ausente (0h)</span>'}
+                  ${mpfmHourlyBadge(item)}
                 </td>
               </tr>
             `).join('') || '<tr><td colspan="5" class="muted text-center">Nenhum MPFM Subsea cadastrado.</td></tr>'}
@@ -1028,6 +1166,97 @@ window.openCaldayDetails = function(dayRef) {
 window.closeCaldayDetailsModal = function() {
   const modal = document.getElementById('caldayDetailModal');
   if (modal) modal.classList.remove('show');
+};
+
+// ─── SGM-FM CALIBRATION ALERT (10+ dias consecutivos fora do limite) ─────────
+function sgmfmDismissKey(pairKey) {
+  return `sgmfmCalibDismiss:${pairKey}`;
+}
+
+function maybeShowCalibrationAlert(alertDays) {
+  const days = alertDays || [];
+
+  // Collect, per pair_key, the most recent status while in protocol tier this month.
+  const protocolPairs = new Map();
+  days.forEach(day => {
+    if (day.tier !== 'protocol') return;
+    (day.pairs || []).forEach(p => {
+      if (!p.pair_key) return;
+      const prev = protocolPairs.get(p.pair_key);
+      if (!prev || (p.days_outside_limits || 0) >= (prev.days_outside_limits || 0)) {
+        protocolPairs.set(p.pair_key, p);
+      }
+    });
+  });
+
+  // Auto-clear dismissal for pairs whose streak has resolved (no longer in protocol tier),
+  // so a brand-new 10+ day episode will show the modal again.
+  const allPairKeysSeen = new Set();
+  days.forEach(day => (day.pairs || []).forEach(p => { if (p.pair_key) allPairKeysSeen.add(p.pair_key); }));
+  allPairKeysSeen.forEach(pairKey => {
+    if (!protocolPairs.has(pairKey)) {
+      try { localStorage.removeItem(sgmfmDismissKey(pairKey)); } catch (e) { /* ignore storage errors */ }
+    }
+  });
+
+  const pending = [...protocolPairs.values()].filter(p => {
+    try { return !localStorage.getItem(sgmfmDismissKey(p.pair_key)); } catch (e) { return true; }
+  });
+
+  if (!pending.length) return;
+
+  state.summaryPendingCalibrationPairs = pending;
+
+  const body = document.getElementById('sgmfmCalibrationBody');
+  if (body) {
+    body.innerHTML = `
+      <p>
+        Os pares abaixo permanecem fora do critério de desvio aceito
+        (±10% em %Desvio HC e/ou ±7% em %Desvio Total) há <strong>10 dias consecutivos ou mais</strong>.
+      </p>
+      <p>
+        Conforme preconiza o <strong>Sistema de Gestão Multifásico de BACALHAU (SGM-FM)</strong>,
+        é necessário iniciar o protocolo de calibração dos MPFM indicados.
+      </p>
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Par Subsea × Topside</th>
+              <th>Dias Consecutivos Fora do Limite</th>
+              <th>%Desvio HC</th>
+              <th>%Desvio Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pending.map(p => `
+              <tr>
+                <td>${summaryEscapeHtml(p.pair_label || '')}</td>
+                <td class="mono">${p.days_outside_limits ?? '—'}</td>
+                <td class="num">${summaryPctLabel(p.hc_deviation_pct)}</td>
+                <td class="num">${summaryPctLabel(p.total_deviation_pct)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <p class="muted fs12">
+        Este aviso desaparece automaticamente assim que as comparações diárias seguintes
+        voltarem a apresentar valores dentro do critério de desvio aceito.
+      </p>
+    `;
+  }
+
+  if (typeof window.openModal === 'function') window.openModal('sgmfmCalibrationModal');
+}
+
+window.acknowledgeSgmfmCalibrationAlert = function() {
+  const pending = state.summaryPendingCalibrationPairs || [];
+  pending.forEach(p => {
+    if (!p.pair_key) return;
+    try { localStorage.setItem(sgmfmDismissKey(p.pair_key), String(p.days_outside_limits || Date.now())); } catch (e) { /* ignore storage errors */ }
+  });
+  if (typeof window.closeModal === 'function') window.closeModal('sgmfmCalibrationModal');
 };
 
 // ─── DESVIO CHART ─────────────────────────────────────────────────────────────
@@ -1910,6 +2139,7 @@ function renderPocoRiserCepChart(rows, payload) {
   if (_pocoRiserCepChart) {
     _pocoRiserCepChart.destroy();
     _pocoRiserCepChart = null;
+    pocoRiserCepZoomLevel = 1.0; // Reset zoom level
   }
   if (!window.Chart || !rows.length) {
     empty.style.display = 'flex';
@@ -2186,9 +2416,9 @@ function renderPocoRiserTable(payload) {
   `).join('');
 
   wrap.innerHTML = `
-    <table class="table">
+    <table class="table poco-riser-table">
       <thead>
-        <tr>
+        <tr class="poco-riser-header-row-1">
           <th rowspan="2">Data</th>
           <th rowspan="2">Poço</th>
           <th rowspan="2">Riser</th>
@@ -2199,7 +2429,7 @@ function renderPocoRiserTable(payload) {
           <th rowspan="2">% Desvio HC<br><span class="text-muted-11">±${fmt(limHC)}%</span></th>
           <th rowspan="2">% Desvio Total<br><span class="text-muted-11">±${fmt(limTotal)}%</span></th>
         </tr>
-        <tr>
+        <tr class="poco-riser-header-row-2">
           <th class="poco-riser-subsea-head">Óleo (t)</th><th class="poco-riser-subsea-head">Gás (t)</th><th class="poco-riser-subsea-head">Água (t)</th><th class="poco-riser-subsea-head">HC (t)</th><th class="poco-riser-subsea-head">Total (t)</th>
           <th class="poco-riser-topside-head">Óleo (t)</th><th class="poco-riser-topside-head">Gás (t)</th><th class="poco-riser-topside-head">Água (t)</th><th class="poco-riser-topside-head">HC (t)</th><th class="poco-riser-topside-head">Total (t)</th>
         </tr>
@@ -2210,16 +2440,16 @@ function renderPocoRiserTable(payload) {
 
   referenceWrap.innerHTML = `
     <div class="section-title section-title--mb10">Volumes e condições de referência @20°C/1atm</div>
-    <table class="table">
+    <table class="table poco-riser-table">
       <thead>
-        <tr>
+        <tr class="poco-riser-header-row-1">
           <th rowspan="2">Data</th>
           <th rowspan="2">Poço</th>
           <th rowspan="2">Riser</th>
           <th colspan="6" class="poco-riser-subsea-head">Subsea / Poço</th>
           <th colspan="6" class="poco-riser-topside-head">Topside / Riser</th>
         </tr>
-        <tr>
+        <tr class="poco-riser-header-row-2">
           <th class="poco-riser-subsea-head">Óleo vol20 (m³)</th><th class="poco-riser-subsea-head">Óleo mass20 (t)</th>
           <th class="poco-riser-subsea-head">Gás vol20 (Sm³)</th><th class="poco-riser-subsea-head">Gás mass20 (t)</th>
           <th class="poco-riser-subsea-head">Água vol20 (m³)</th><th class="poco-riser-subsea-head">Água mass20 (t)</th>
@@ -2336,3 +2566,76 @@ function fillSelect(id, items, keepBlank) {
 // ── SEPARADOR ─────────────────────────────────────────────────────────────────
 
 // All available separator metric definitions with labels and groups
+
+// Zoom controls for poco-riser CEP chart
+let pocoRiserCepZoomLevel = 1.0;
+
+function adjustPocoRiserCepZoom(factor) {
+  if (!_pocoRiserCepChart || !_pocoRiserCepChart.options || !_pocoRiserCepChart.data) {
+    console.warn('Gráfico CEP não está disponível para zoom');
+    return;
+  }
+
+  pocoRiserCepZoomLevel *= factor;
+  pocoRiserCepZoomLevel = Math.max(0.1, Math.min(5.0, pocoRiserCepZoomLevel));
+
+  const chart = _pocoRiserCepChart;
+  const yScale = chart.options.scales?.y;
+
+  if (!yScale) {
+    console.warn('Escala Y não encontrada');
+    return;
+  }
+
+  // Get current data range
+  const allValues = [];
+  chart.data.datasets.forEach(dataset => {
+    if (!dataset.label.startsWith('+') && !dataset.label.startsWith('-')) {
+      dataset.data.forEach(v => {
+        if (v != null) allValues.push(typeof v === 'object' ? v.y : v);
+      });
+    }
+  });
+
+  if (!allValues.length) return;
+
+  const dataMin = Math.min(...allValues);
+  const dataMax = Math.max(...allValues);
+  const dataRange = dataMax - dataMin;
+  const padding = dataRange * 0.1;
+
+  // Calculate new range based on zoom level
+  const center = (dataMax + dataMin) / 2;
+  const newRange = dataRange / pocoRiserCepZoomLevel;
+
+  yScale.min = center - newRange / 2 - padding;
+  yScale.max = center + newRange / 2 + padding;
+
+  if (typeof chart.update === 'function') {
+    chart.update('none');
+  }
+}
+
+function resetPocoRiserCepZoom() {
+  if (!_pocoRiserCepChart || !_pocoRiserCepChart.options) {
+    console.warn('Gráfico CEP não está disponível para reset');
+    return;
+  }
+
+  pocoRiserCepZoomLevel = 1.0;
+  const yScale = _pocoRiserCepChart.options.scales?.y;
+
+  if (!yScale) return;
+
+  delete yScale.min;
+  delete yScale.max;
+
+  if (typeof _pocoRiserCepChart.update === 'function') {
+    _pocoRiserCepChart.update('none');
+  }
+}
+
+// Attach event listeners for poco-riser CEP zoom
+document.getElementById('pocoRiserCepZoomIn')?.addEventListener('click', () => adjustPocoRiserCepZoom(1.3));
+document.getElementById('pocoRiserCepZoomOut')?.addEventListener('click', () => adjustPocoRiserCepZoom(1 / 1.3));
+document.getElementById('pocoRiserCepZoomReset')?.addEventListener('click', resetPocoRiserCepZoom);

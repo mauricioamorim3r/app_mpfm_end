@@ -20,6 +20,7 @@ from services.ops.monitoring_service import (
     TOTAL_LIMIT_PCT,
     delete_monitoring_annotation,
     invalidate_months_cache,
+    list_daily_deviation_alerts,
     list_monitoring_rows,
     normalize_meter_type,
     upsert_monitoring_annotation,
@@ -83,10 +84,62 @@ def register_ops_routes(app, ctx: dict) -> None:
             "show_boe_criterion": bool(show_criterion),
         }
 
+    def _expected_mpfm_files(day_ref: str, bank: str, present_hours: set[int] | None = None) -> dict:
+        day = datetime.strptime(day_ref, "%Y-%m-%d").date()
+        next_day = day + timedelta(days=1)
+        missing_hours = [hour for hour in range(24) if not present_hours or hour not in present_hours]
+
+        def hourly_name(hour: int) -> str:
+            file_day = next_day if hour == 23 else day
+            file_hour = 0 if hour == 23 else hour + 1
+            return f"{bank}_MPFM_Hourly-{file_day:%Y%m%d}-{file_hour:02d}0000+0000.pdf"
+
+        return {
+            "daily_file": f"{bank}_MPFM_Daily-{next_day:%Y%m%d}-000000+0000.pdf",
+            "hourly_missing_hours": missing_hours,
+            "hourly_missing_files": [hourly_name(hour) for hour in missing_hours],
+            "hourly_expected_first": hourly_name(0),
+            "hourly_expected_last": hourly_name(23),
+        }
+
+    def _expected_sep_file(day_ref: str, phase: str) -> dict:
+        day = datetime.strptime(day_ref, "%Y-%m-%d").date()
+        next_day = day + timedelta(days=1)
+        source_by_phase = {"oleo": "Run_24Hours1-1", "gas": "Run_24Hours2-1", "agua": "Run_24Hours1-1"}
+        prefix = source_by_phase.get(phase, "Run_24Hours")
+        return {
+            "file": f"{prefix}.{next_day:%Y%m%d}000000.txt",
+            "timestamp": f"{next_day:%Y-%m-%d} 00:00",
+        }
+
     def _invalidate_cache(pattern: str | None = None) -> dict:
         """Invalida entradas do cache. Sem padrão, limpa tudo."""
         removed = _cache.invalidate(pattern)
+        _month_summary_cache.clear()
         return {"ok": True, "removed": removed}
+
+    def _available_operational_months(cur) -> list[str]:
+        rows = cur.execute(
+            """
+            SELECT m
+            FROM (
+                SELECT DISTINCT substr(day_ref,1,7) AS m
+                FROM measurements_active
+                WHERE day_ref NOT LIKE '0000%'
+                  AND day_ref >= '1900-01-01'
+                  AND row_kind IN ('daily','hourly','recon','sep')
+                UNION
+                SELECT DISTINCT substr(content_date,1,7) AS m
+                FROM files_imported
+                WHERE processed_ok=1
+                  AND content_date NOT LIKE '0000%'
+                  AND content_date >= '1900-01-01'
+            )
+            WHERE m GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]'
+            ORDER BY m DESC
+            """
+        ).fetchall()
+        return [row[0] for row in rows]
 
     def _parse_target_month(month: str):
         raw = str(month or "").strip()
@@ -973,8 +1026,22 @@ def register_ops_routes(app, ctx: dict) -> None:
         criteria = _summary_limits()
         if not month:
             last = cur.execute(
-                "SELECT MAX(day_ref) FROM measurements_active WHERE row_kind IN ('daily','hourly') AND day_ref NOT LIKE '0000%'"
+                """
+                SELECT MAX(day_ref)
+                FROM measurements_active
+                WHERE row_kind IN ('daily','hourly','recon','sep')
+                  AND day_ref NOT LIKE '0000%'
+                """
             ).fetchone()[0] or ""
+            if not last:
+                last = cur.execute(
+                    """
+                    SELECT MAX(content_date)
+                    FROM files_imported
+                    WHERE processed_ok=1
+                      AND content_date NOT LIKE '0000%'
+                    """
+                ).fetchone()[0] or ""
             month = last[:7] if last else ""
         if not month:
             conn.close()
@@ -997,12 +1064,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         _nyr, _nmo = (yr + 1, 1) if mo == 12 else (yr, mo + 1)
         month_end = f"{_nyr:04d}-{_nmo:02d}-01"
 
-        months_available = [
-            row[0]
-            for row in cur.execute(
-                "SELECT DISTINCT substr(day_ref,1,7) m FROM measurements_active WHERE row_kind IN ('daily','hourly') AND day_ref NOT LIKE '0000%' ORDER BY m DESC"
-            ).fetchall()
-        ]
+        months_available = _available_operational_months(cur)
 
         production = {}
         metric_specs = [
@@ -1048,7 +1110,7 @@ def register_ops_routes(app, ctx: dict) -> None:
         production["boe"] = production["boe_total"]
 
         days_with_data = cur.execute(
-            "SELECT COUNT(DISTINCT day_ref) FROM measurements_active WHERE day_ref>=? AND day_ref<? AND row_kind IN ('daily','hourly') AND bank<>''",
+            "SELECT COUNT(DISTINCT day_ref) FROM measurements_active WHERE day_ref>=? AND day_ref<? AND row_kind IN ('daily','hourly','recon','sep')",
             (month_start, month_end),
         ).fetchone()[0]
 
@@ -1066,27 +1128,54 @@ def register_ops_routes(app, ctx: dict) -> None:
         ).fetchall():
             hourly_bank_totals.setdefault(bank, {})[metric] = float(value or 0)
 
+        _cov_metrics = (
+            "MPFM corr Óleo (t)",
+            "MPFM corr Gás (t)",
+            "MPFM corr HC (t)",
+            "MPFM corr Água (t)",
+            "MPFM corr Total (t)",
+            "PVT @20 vol Óleo (m³)",
+            "PVT @20 vol Gás (Sm³)",
+            "PVT @20 vol Água (m³)",
+        )
+        _cov_metrics_ph = ",".join(["?"] * len(_cov_metrics))
+
         by_bank = []
+        _bank_cov = {}
         for row in cur.execute(
             """
             SELECT bank,
                    COUNT(DISTINCT day_ref) as days,
-                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN day_ref||hour_ref END) as hours,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Óleo (t)' THEN metric_value ELSE 0 END) as oil_t,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Gás (t)' THEN metric_value ELSE 0 END) as gas_t,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr HC (t)' THEN metric_value ELSE 0 END) as hc_t,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Água (t)' THEN metric_value ELSE 0 END) as water_t,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Total (t)' THEN metric_value ELSE 0 END) as total_t,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='PVT @20 vol Óleo (m³)' THEN metric_value ELSE 0 END) as oil_m3,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='PVT @20 vol Gás (Sm³)' THEN metric_value ELSE 0 END) as gas_sm3,
-                   SUM(CASE WHEN row_kind='daily' AND metric_name='PVT @20 vol Água (m³)' THEN metric_value ELSE 0 END) as water_m3
+                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN day_ref||hour_ref END) as hours
             FROM measurements_active
             WHERE day_ref>=? AND day_ref<? AND bank<>'' AND row_kind IN ('daily','hourly')
-            GROUP BY bank ORDER BY bank
+            GROUP BY bank
             """,
             (month_start, month_end),
-        ):
-            bank, days, hours, oil, gas, hc, water, total, oil_m3, gas_sm3, water_m3 = row
+        ).fetchall():
+            _bank_cov[row[0]] = (row[1], row[2])
+        _bank_vals = {}
+        for row in cur.execute(
+            f"""
+            SELECT bank,
+                   SUM(CASE WHEN metric_name='MPFM corr Óleo (t)' THEN metric_value ELSE 0 END) as oil_t,
+                   SUM(CASE WHEN metric_name='MPFM corr Gás (t)' THEN metric_value ELSE 0 END) as gas_t,
+                   SUM(CASE WHEN metric_name='MPFM corr HC (t)' THEN metric_value ELSE 0 END) as hc_t,
+                   SUM(CASE WHEN metric_name='MPFM corr Água (t)' THEN metric_value ELSE 0 END) as water_t,
+                   SUM(CASE WHEN metric_name='MPFM corr Total (t)' THEN metric_value ELSE 0 END) as total_t,
+                   SUM(CASE WHEN metric_name='PVT @20 vol Óleo (m³)' THEN metric_value ELSE 0 END) as oil_m3,
+                   SUM(CASE WHEN metric_name='PVT @20 vol Gás (Sm³)' THEN metric_value ELSE 0 END) as gas_sm3,
+                   SUM(CASE WHEN metric_name='PVT @20 vol Água (m³)' THEN metric_value ELSE 0 END) as water_m3
+            FROM measurements_active
+            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND row_kind='daily' AND metric_name IN ({_cov_metrics_ph})
+            GROUP BY bank
+            """,
+            (month_start, month_end, *_cov_metrics),
+        ).fetchall():
+            _bank_vals[row[0]] = row[1:]
+        for bank in sorted(_bank_cov):
+            days, hours = _bank_cov[bank]
+            oil, gas, hc, water, total, oil_m3, gas_sm3, water_m3 = _bank_vals.get(bank, (0, 0, 0, 0, 0, 0, 0, 0))
             if hc == 0 and hours > 0:
                 htotals = hourly_bank_totals.get(bank, {})
                 hc = htotals.get("MPFM corr HC (t)", hc)
@@ -1114,10 +1203,21 @@ def register_ops_routes(app, ctx: dict) -> None:
             )
 
         by_tag = []
+        _tag_cov2 = {}
         for row in cur.execute(
             """
+            SELECT bank, tag, COUNT(DISTINCT day_ref) as days
+            FROM measurements_active
+            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND tag<>'' AND row_kind IN ('daily','hourly')
+            GROUP BY bank, tag
+            """,
+            (month_start, month_end),
+        ).fetchall():
+            _tag_cov2[(row[0], row[1])] = row[2]
+        _tag_vals2 = {}
+        for row in cur.execute(
+            f"""
             SELECT bank, tag,
-                   COUNT(DISTINCT day_ref) as days,
                    SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr HC (t)' THEN metric_value ELSE 0 END) as hc_daily,
                    SUM(CASE WHEN row_kind='hourly' AND metric_name='MPFM corr HC (t)' THEN metric_value ELSE 0 END) as hc_hourly,
                    SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Óleo (t)' THEN metric_value ELSE 0 END) as oil_t,
@@ -1129,11 +1229,18 @@ def register_ops_routes(app, ctx: dict) -> None:
                    SUM(CASE WHEN row_kind='daily' AND metric_name='PVT @20 vol Água (m³)' THEN metric_value ELSE 0 END) as water_m3
             FROM measurements_active
             WHERE day_ref>=? AND day_ref<? AND bank<>'' AND tag<>'' AND row_kind IN ('daily','hourly')
-            GROUP BY bank, tag ORDER BY bank, tag
+              AND metric_name IN ({_cov_metrics_ph})
+            GROUP BY bank, tag
             """,
-            (month_start, month_end),
-        ):
-            bank, tag, days, hc_daily, hc_hourly, oil, gas, water, total, oil_m3, gas_sm3, water_m3 = row
+            (month_start, month_end, *_cov_metrics),
+        ).fetchall():
+            _tag_vals2[(row[0], row[1])] = row[2:]
+        _tag_zero8 = (0, 0, 0, 0, 0, 0, 0, 0)
+        for bank, tag in sorted(_tag_cov2):
+            days = _tag_cov2[(bank, tag)]
+            hc_daily, hc_hourly, oil, gas, water, total, oil_m3, gas_sm3, water_m3 = _tag_vals2.get(
+                (bank, tag), _tag_zero8
+            )
             hc = hc_daily if hc_daily > 0 else hc_hourly
             by_tag.append(
                 {
@@ -1157,10 +1264,22 @@ def register_ops_routes(app, ctx: dict) -> None:
 
         tag_daily = []
         bank_daily_map = {}
+        _tag_cov = {}
         for row in cur.execute(
             """
             SELECT day_ref, bank, tag,
-                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as hours,
+                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as hours
+            FROM measurements_active
+            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND bank<>'SEP' AND tag<>'' AND row_kind IN ('daily','hourly')
+            GROUP BY day_ref, bank, tag
+            """,
+            (month_start, month_end),
+        ).fetchall():
+            _tag_cov[(row[0], row[1], row[2])] = row[3]
+        _tag_vals = {}
+        for row in cur.execute(
+            f"""
+            SELECT day_ref, bank, tag,
                    SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Óleo (t)' THEN metric_value ELSE 0 END) as oil_d,
                    SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Gás (t)' THEN metric_value ELSE 0 END) as gas_d,
                    SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Água (t)' THEN metric_value ELSE 0 END) as water_d,
@@ -1178,17 +1297,22 @@ def register_ops_routes(app, ctx: dict) -> None:
                    SUM(CASE WHEN row_kind='hourly' AND metric_name='PVT @20 vol Gás (Sm³)' THEN metric_value ELSE 0 END) as gasv_h,
                    SUM(CASE WHEN row_kind='hourly' AND metric_name='PVT @20 vol Água (m³)' THEN metric_value ELSE 0 END) as waterv_h
             FROM measurements_active
-            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND bank<>'SEP' AND tag<>'' AND row_kind IN ('daily','hourly')
+            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND bank<>'SEP' AND tag<>''
+              AND row_kind IN ('daily','hourly') AND metric_name IN ({_cov_metrics_ph})
             GROUP BY day_ref, bank, tag
-            ORDER BY day_ref, bank, tag
             """,
-            (month_start, month_end),
+            (month_start, month_end, *_cov_metrics),
         ).fetchall():
+            _tag_vals[(row[0], row[1], row[2])] = row[3:]
+        _tag_zero16 = (0,) * 16
+        for key in sorted(_tag_cov):
             (
                 day_ref,
                 bank,
                 tag,
-                hours,
+            ) = key
+            hours = _tag_cov[key]
+            (
                 oil_d,
                 gas_d,
                 water_d,
@@ -1205,7 +1329,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                 oilv_h,
                 gasv_h,
                 waterv_h,
-            ) = row
+            ) = _tag_vals.get(key, _tag_zero16)
             use_hourly = (hc_d or 0) == 0 and (total_d or 0) == 0 and (oilv_d or 0) == 0 and hours > 0
             oil_val   = (oil_h   if use_hourly else oil_d)   or 0
             gas_val   = (gas_h   if use_hourly else gas_d)   or 0
@@ -1268,8 +1392,20 @@ def register_ops_routes(app, ctx: dict) -> None:
 
         daily = []
         _mpfm_rows_by_day: dict[str, list] = defaultdict(list)
+        _mpfm_cov2 = {}
         for row in cur.execute(
             """
+            SELECT day_ref, bank, tag,
+                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as hrs
+            FROM measurements_active WHERE day_ref>=? AND day_ref<? AND bank<>'' AND tag<>''
+            GROUP BY day_ref, bank, tag
+            """,
+            (month_start, month_end),
+        ).fetchall():
+            _mpfm_cov2[(row[0], row[1], row[2])] = row[3]
+        _mpfm_vals2 = {}
+        for row in cur.execute(
+            f"""
             SELECT day_ref, bank, tag,
                 SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Óleo (t)'  THEN metric_value ELSE 0 END) as oil_d,
                 SUM(CASE WHEN row_kind='daily' AND metric_name='MPFM corr Gás (t)'   THEN metric_value ELSE 0 END) as gas_d,
@@ -1286,14 +1422,19 @@ def register_ops_routes(app, ctx: dict) -> None:
                 SUM(CASE WHEN row_kind='hourly' AND metric_name='MPFM corr Total (t)'THEN metric_value ELSE 0 END) as total_h,
                 SUM(CASE WHEN row_kind='hourly' AND metric_name='PVT @20 vol Óleo (m³)' THEN metric_value ELSE 0 END) as oilv_h,
                 SUM(CASE WHEN row_kind='hourly' AND metric_name='PVT @20 vol Gás (Sm³)' THEN metric_value ELSE 0 END) as gasv_h,
-                SUM(CASE WHEN row_kind='hourly' AND metric_name='PVT @20 vol Água (m³)' THEN metric_value ELSE 0 END) as waterv_h,
-                COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as hrs
-            FROM measurements_active WHERE day_ref>=? AND day_ref<? AND bank<>'' AND tag<>''
+                SUM(CASE WHEN row_kind='hourly' AND metric_name='PVT @20 vol Água (m³)' THEN metric_value ELSE 0 END) as waterv_h
+            FROM measurements_active
+            WHERE day_ref>=? AND day_ref<? AND bank<>'' AND tag<>'' AND metric_name IN ({_cov_metrics_ph})
             GROUP BY day_ref, bank, tag
             """,
-            (month_start, month_end),
+            (month_start, month_end, *_cov_metrics),
         ).fetchall():
-            _mpfm_rows_by_day[row[0]].append(row[1:])
+            _mpfm_vals2[(row[0], row[1], row[2])] = row[3:]
+        _mpfm_zero16 = (0,) * 16
+        for _key, _hrs in _mpfm_cov2.items():
+            _day_ref_k, _bank_k, _tag_k = _key
+            _vals = _mpfm_vals2.get(_key, _mpfm_zero16)
+            _mpfm_rows_by_day[_day_ref_k].append((_bank_k, _tag_k, *_vals, _hrs))
 
         sep_month_map = _get_sep_month_summary_map(cur, month_start, month_end)
 
@@ -1334,19 +1475,25 @@ def register_ops_routes(app, ctx: dict) -> None:
             ]
 
         # Map MPFM coverage per (day_ref, bank, tag) for the whole month
-        mpfm_cov: dict[tuple[str, str, str], tuple[bool, int]] = {}
-        for day_ref_c, b_code, t_name, d_cnt, h_hrs in cur.execute(
+        mpfm_cov: dict[tuple[str, str, str], tuple[bool, int, set[int]]] = {}
+        for day_ref_c, b_code, t_name, d_cnt, h_hrs, hour_refs in cur.execute(
             """
             SELECT day_ref, bank, tag,
                    SUM(CASE WHEN row_kind='daily' THEN 1 ELSE 0 END) as d_cnt,
-                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as h_hrs
+                   COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as h_hrs,
+                   GROUP_CONCAT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) as hour_refs
             FROM measurements_active
             WHERE day_ref>=? AND day_ref<? AND bank<>'' AND bank<>'SEP' AND tag<>''
             GROUP BY day_ref, bank, tag
             """,
             (month_start, month_end),
         ).fetchall():
-            mpfm_cov[(day_ref_c, b_code, t_name)] = (bool(d_cnt > 0), int(h_hrs or 0))
+            present_hours = {
+                int(item)
+                for item in str(hour_refs or "").split(",")
+                if str(item).strip().isdigit()
+            }
+            mpfm_cov[(day_ref_c, b_code, t_name)] = (bool(d_cnt > 0), int(h_hrs or 0), present_hours)
 
         # Map Separador presence per day
         sep_p: dict[str, dict[str, bool]] = defaultdict(lambda: {"oleo": False, "gas": False, "agua": False})
@@ -1367,7 +1514,7 @@ def register_ops_routes(app, ctx: dict) -> None:
             elif ft == "sep_agua": sep_p[day_ref_s]["agua"] = True
 
         for day_ref_s, rk in cur.execute(
-            "SELECT DISTINCT day_ref, row_kind FROM measurements_active WHERE day_ref>=? AND day_ref<? AND row_kind LIKE 'sep_%'",
+            "SELECT DISTINCT day_ref, row_kind FROM measurements_active WHERE day_ref>=? AND day_ref<? AND row_kind IN ('sep_oleo_detail','sep_gas_detail','sep_agua_detail')",
             (month_start, month_end),
         ).fetchall():
             if rk == "sep_oleo_detail": sep_p[day_ref_s]["oleo"] = True
@@ -1391,16 +1538,16 @@ def register_ops_routes(app, ctx: dict) -> None:
                     s_flags["agua"] = True
 
             sep_details = {
-                "oleo": {"tag": "20FT0247", "label": "Óleo", "present": bool(s_flags["oleo"])},
-                "gas":  {"tag": "20FT0244", "label": "Gás",  "present": bool(s_flags["gas"])},
-                "agua": {"tag": "20FT0251", "label": "Água", "present": bool(s_flags["agua"])},
+                "oleo": {"tag": "20FT0247", "label": "Óleo", "present": bool(s_flags["oleo"]), "expected": _expected_sep_file(day_ref, "oleo")},
+                "gas":  {"tag": "20FT0244", "label": "Gás",  "present": bool(s_flags["gas"]), "expected": _expected_sep_file(day_ref, "gas")},
+                "agua": {"tag": "20FT0251", "label": "Água", "present": bool(s_flags["agua"]), "expected": _expected_sep_file(day_ref, "agua")},
                 "present_count": sum(1 for k in ("oleo", "gas", "agua") if s_flags[k]),
             }
 
             topside_details = []
             for t in active_topside:
                 key = (day_ref, t["bank"], t["tag"])
-                d_has, hrs = mpfm_cov.get(key, (False, 0))
+                d_has, hrs, present_hours = mpfm_cov.get(key, (False, 0, set()))
                 topside_details.append({
                     "bank": t["bank"],
                     "tag": t["tag"],
@@ -1408,12 +1555,13 @@ def register_ops_routes(app, ctx: dict) -> None:
                     "daily": d_has,
                     "hourly": hrs > 0,
                     "hours": hrs,
+                    "expected": _expected_mpfm_files(day_ref, t["bank"], present_hours),
                 })
 
             subsea_details = []
             for s in active_subsea:
                 key = (day_ref, s["bank"], s["tag"])
-                d_has, hrs = mpfm_cov.get(key, (False, 0))
+                d_has, hrs, present_hours = mpfm_cov.get(key, (False, 0, set()))
                 subsea_details.append({
                     "bank": s["bank"],
                     "tag": s["tag"],
@@ -1421,6 +1569,7 @@ def register_ops_routes(app, ctx: dict) -> None:
                     "daily": d_has,
                     "hourly": hrs > 0,
                     "hours": hrs,
+                    "expected": _expected_mpfm_files(day_ref, s["bank"], present_hours),
                 })
 
             mpfm_details = {
@@ -2066,6 +2215,21 @@ def register_ops_routes(app, ctx: dict) -> None:
             meter_type=meter_type,
             event_status=event_status,
             only_outside_limits=str(only_outside_limits).strip().lower() in {"1", "true", "yes", "sim", "on"},
+            load_cadastro_fn=load_cadastro,
+            normalize_tag_name=normalize_tag_name,
+        )
+
+    @app.get("/api/ops/mpfm-monitoring/daily-alerts")
+    def api_ops_mpfm_monitoring_daily_alerts(month: str = ""):
+        if not month:
+            conn = db_conn()
+            month = conn.execute(
+                "SELECT MAX(substr(day_ref,1,7)) FROM measurements_active WHERE day_ref<>'' AND bank<>'' AND bank<>'SEP'"
+            ).fetchone()[0] or ""
+            conn.close()
+        return list_daily_deviation_alerts(
+            db_conn,
+            month=month,
             load_cadastro_fn=load_cadastro,
             normalize_tag_name=normalize_tag_name,
         )

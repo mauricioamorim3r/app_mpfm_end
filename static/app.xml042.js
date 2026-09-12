@@ -9,7 +9,19 @@ function xml042CurrentMonth() {
 }
 
 function xml042SelectedDayValue() {
-  return document.getElementById('xml042Day')?.value || '';
+  const input = document.getElementById('xml042Day');
+  if (!input) return '';
+  if (typeof parseBrDateToIso === 'function') {
+    return parseBrDateToIso(input.dataset?.isoValue || input.value || '');
+  }
+  const raw = input.dataset?.isoValue || input.value || '';
+  const br = String(raw).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return br ? `${br[3]}-${br[2]}-${br[1]}` : raw;
+}
+
+function xml042EffectiveMonth() {
+  const day = xml042SelectedDayValue();
+  return day && /^\d{4}-\d{2}-\d{2}$/.test(day) ? day.slice(0, 7) : xml042CurrentMonth();
 }
 
 function xml042StatusText(message, isError = false) {
@@ -214,14 +226,17 @@ async function loadXml042Catalog() {
 }
 
 async function loadXml042Documents() {
-  const month = xml042CurrentMonth();
-  const d = await j(`${API}/xml042/documents?month=${encodeURIComponent(month)}`);
+  const qs = new URLSearchParams({
+    month: xml042EffectiveMonth(),
+    day: xml042SelectedDayValue(),
+  });
+  const d = await j(`${API}/xml042/documents?${qs}`);
   state.xml042Docs = d.rows || [];
   xml042RenderDocuments(state.xml042Docs);
 }
 
 async function loadXml042Imported() {
-  const month = xml042CurrentMonth();
+  const month = xml042EffectiveMonth();
   const cod = document.getElementById('xml042ImportedCode')?.value || '';
   const qs = new URLSearchParams({month, cod_cadastro_poco: cod});
   const d = await j(`${API}/xml042/imported?${qs}`);
@@ -232,7 +247,7 @@ async function loadXml042Imported() {
 }
 
 async function loadXml042Candidates() {
-  const month = xml042CurrentMonth();
+  const month = xml042EffectiveMonth();
   const qs = new URLSearchParams({
     month,
     day: xml042SelectedDayValue(),
@@ -280,7 +295,7 @@ window.approveXml042Candidate = async function(index) {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
-      month: xml042CurrentMonth(),
+      month: row.production_day ? row.production_day.slice(0, 7) : xml042EffectiveMonth(),
       production_day: row.production_day,
       bank: row.bank,
       well_operator_name: row.well_operator_name,
@@ -310,7 +325,11 @@ window.deleteXml042Catalog = async function(id) {
   }
 };
 
-document.getElementById('btnLoadXml042')?.addEventListener('click', loadXml042Candidates);
+document.getElementById('btnLoadXml042')?.addEventListener('click', async () => {
+  await loadXml042Candidates();
+  await loadXml042Documents();
+  await loadXml042Imported();
+});
 document.getElementById('btnXml042CatalogNew')?.addEventListener('click', () => xml042FillCatalogForm(null));
 document.getElementById('btnResetXml042Catalog')?.addEventListener('click', () => xml042FillCatalogForm(null));
 document.getElementById('btnSaveXml042Catalog')?.addEventListener('click', async () => {
@@ -351,7 +370,7 @@ window.generateSingleXml042Candidate = async function(index) {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
-          month: xml042CurrentMonth(),
+          month: row.production_day ? row.production_day.slice(0, 7) : xml042EffectiveMonth(),
           production_day: row.production_day,
           bank: row.bank,
           well_operator_name: row.well_operator_name,
@@ -364,7 +383,7 @@ window.generateSingleXml042Candidate = async function(index) {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        month: xml042CurrentMonth(),
+        month: row.production_day ? row.production_day.slice(0, 7) : xml042EffectiveMonth(),
         production_day: row.production_day,
         bank: row.bank,
         well_operator_name: row.well_operator_name,
@@ -392,7 +411,7 @@ window.batchGenerateXml042 = async function() {
   const targetDir = document.getElementById('xml042TargetDir')?.value?.trim() || '';
   const cnpj8 = document.getElementById('xml042Cnpj8')?.value?.trim() || '04028583';
   const overwrite = !!document.getElementById('chkOverwriteXml042')?.checked;
-  const month = xml042CurrentMonth();
+  const month = xml042EffectiveMonth();
 
   if (batchStatus) {
     batchStatus.textContent = '⏳ Aprovando, gerando e salvando arquivos XML 042 em lote... Aguarde.';
@@ -442,7 +461,7 @@ window.batchGenerateXml042 = async function() {
 };
 
 window.downloadZipXml042 = function() {
-  const month = xml042CurrentMonth();
+  const month = xml042EffectiveMonth();
   window.open(`${API}/xml042/download-batch-zip?month=${encodeURIComponent(month)}`, '_blank');
 };
 
@@ -489,7 +508,7 @@ document.getElementById('btnGenerateXml042')?.addEventListener('click', async ()
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
-          month: xml042CurrentMonth(),
+          month: row.production_day ? row.production_day.slice(0, 7) : xml042EffectiveMonth(),
           production_day: row.production_day,
           bank: row.bank,
           well_operator_name: row.well_operator_name,
@@ -502,7 +521,7 @@ document.getElementById('btnGenerateXml042')?.addEventListener('click', async ()
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        month: xml042CurrentMonth(),
+        month: row.production_day ? row.production_day.slice(0, 7) : xml042EffectiveMonth(),
         production_day: row.production_day,
         bank: row.bank,
         well_operator_name: row.well_operator_name,
@@ -589,7 +608,7 @@ document.getElementById('btnImportXml042Files')?.addEventListener('click', async
 });
 
 document.getElementById('btnExportXml042Imported')?.addEventListener('click', () => {
-  const month = xml042CurrentMonth();
+  const month = xml042EffectiveMonth();
   const cod = document.getElementById('xml042ImportedCode')?.value || '';
   const qs = new URLSearchParams({month, cod_cadastro_poco: cod});
   window.open(`${API}/xml042/imported-export?${qs}`, '_blank', 'noopener');

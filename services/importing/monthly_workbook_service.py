@@ -13,11 +13,9 @@ from services.excel_template_service import (
     MONTHLY_WORKBOOK_TEMPLATE,
     clear_value_region,
     center_cell_content,
-    center_filled_cells,
     ensure_workbook_from_template,
     reset_sheet_from_template,
     reset_tabular_sheet_from_template,
-    seed_row_from_template,
 )
 
 warnings.filterwarnings(
@@ -97,16 +95,28 @@ def excel_name(month_pt: dict, year, month):
 
 
 def cleanup_workbook(workbook_path: Path):
+    workbook_path = Path(workbook_path)
+    workbook_path.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile(
+        delete=False,
+        suffix=".xlsx",
+        dir=workbook_path.parent,
+    ) as tmp_file:
+        temp_path = Path(tmp_file.name)
     try:
         from openpyxl import load_workbook
 
         wb = load_workbook(workbook_path)
         _cleanup_workbook_in_memory(wb)
-        wb.save(workbook_path)
+        wb.save(temp_path)
         wb.close()
+        temp_path.replace(workbook_path)
         _normalize_base_unica_table_xml(workbook_path)
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"WARN cleanup_workbook failed for {workbook_path}: {exc}")
+    finally:
+        if temp_path.exists():
+            temp_path.unlink(missing_ok=True)
 
 
 def _last_filled_row(ws, start_row: int, start_col: int, column_count: int) -> int:
@@ -444,6 +454,111 @@ def _merge_sep_into_base_unica(out_rows: list, mpfm_row_index: dict, sep_piv: di
                 out_rows.append(_build_standalone_sep_row(day_ref, hour_ref, values, meta_info, aligns_csv))
 
 
+def _xlsx_value(value):
+    if value is None:
+        return ""
+    try:
+        if value != value:
+            return ""
+    except (TypeError, ValueError):
+        pass
+    if hasattr(value, "item"):
+        return value.item()
+    return value
+
+
+def _write_fast_monthly_workbook(workbook_path: Path, sheets: list[tuple[str, object, int]]) -> None:
+    import xlsxwriter
+
+    workbook_path = Path(workbook_path)
+    workbook_path.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile(delete=False, suffix=".xlsx", dir=workbook_path.parent) as tmp_file:
+        temp_path = Path(tmp_file.name)
+
+    try:
+        workbook = xlsxwriter.Workbook(
+            temp_path,
+            {
+                "constant_memory": False,
+                "strings_to_urls": False,
+                "nan_inf_to_errors": True,
+            },
+        )
+        header_format = workbook.add_format(
+            {
+                "bold": True,
+                "font_color": "#FFFFFF",
+                "bg_color": "#1F4E78",
+                "align": "center",
+                "valign": "vcenter",
+                "border": 1,
+            }
+        )
+        odd_format = workbook.add_format(
+            {
+                "bg_color": "#D9EAF7",
+                "align": "center",
+                "valign": "vcenter",
+                "border": 1,
+            }
+        )
+        even_format = workbook.add_format(
+            {
+                "bg_color": "#FFFFFF",
+                "align": "center",
+                "valign": "vcenter",
+                "border": 1,
+            }
+        )
+
+        for sheet_name, frame, start_col in sheets:
+            worksheet = workbook.add_worksheet(sheet_name)
+            worksheet.hide_gridlines(2)
+            worksheet.freeze_panes(1, start_col)
+            if start_col == 2:
+                worksheet.write(0, 0, "NAVEGAÇÃO", header_format)
+                worksheet.write(1, 0, "══════════════", even_format)
+                worksheet.write(2, 0, "Abas Disponíveis", odd_format)
+            columns = [str(column) for column in frame.columns]
+            if columns:
+                worksheet.write_row(0, start_col, columns, header_format)
+            for row_index, row in enumerate(frame.itertuples(index=False, name=None), start=1):
+                row_format = odd_format if row_index % 2 else even_format
+                worksheet.set_row(row_index, None, row_format)
+                worksheet.write_row(
+                    row_index,
+                    start_col,
+                    [_xlsx_value(value) for value in row],
+                    row_format,
+                )
+            if columns:
+                last_row = max(len(frame), 1)
+                last_col = start_col + len(columns) - 1
+                if sheet_name == "BASE_UNICA_MES":
+                    worksheet.add_table(
+                        0,
+                        start_col,
+                        last_row,
+                        last_col,
+                        {
+                            "name": "tblBaseUnicaMes",
+                            "style": "Table Style Medium 9",
+                            "columns": [{"header": column} for column in columns],
+                        },
+                    )
+                else:
+                    worksheet.autofilter(0, start_col, last_row, last_col)
+                worksheet.set_column(start_col, last_col, 18)
+                worksheet.set_column(start_col, start_col, 13)
+            worksheet.set_row(0, 30)
+
+        workbook.close()
+        temp_path.replace(workbook_path)
+    finally:
+        if temp_path.exists():
+            temp_path.unlink(missing_ok=True)
+
+
 def build_monthly_base_unica(
     db_conn_fn,
     workbook_path: Path,
@@ -493,8 +608,23 @@ def build_monthly_base_unica(
         """
         SELECT day_ref, severity, issue_type, ref_key, details, created_at
         FROM validation_issues
+        WHERE day_ref LIKE ?
+           OR (
+                day_ref GLOB ?
+                AND created_at LIKE ?
+           )
+           OR (
+                (day_ref IS NULL OR TRIM(day_ref)='')
+                AND created_at LIKE ?
+           )
         ORDER BY id
-        """
+        """,
+        (
+            f"{month_prefix}%",
+            f"??_{month}",
+            f"{year}-%",
+            f"{month_prefix}%",
+        ),
     ).fetchall():
         item = dict(row)
         item["day_ref"] = normalize_validation_issue_day_ref(item.get("day_ref", ""), item.get("created_at", ""))
@@ -604,39 +734,22 @@ def build_monthly_base_unica(
     _merge_sep_into_base_unica(out_rows, mpfm_row_index, sep_piv, sep_meta, aligns)
 
     df = pd.DataFrame(out_rows, columns=BASE_UNICA_COLUMNS) if out_rows else pd.DataFrame(columns=BASE_UNICA_COLUMNS)
-    _user_hidden_sheets = _save_user_hidden_sheets(workbook_path)
-    template_wb = load_workbook(MONTHLY_WORKBOOK_TEMPLATE) if MONTHLY_WORKBOOK_TEMPLATE.exists() else None
-    if template_wb:
-        wb = load_workbook(MONTHLY_WORKBOOK_TEMPLATE)
-    else:
-        wb = load_workbook(workbook_path) if workbook_path.exists() else Workbook()
-
-    _replace_sheet_in_workbook(wb, template_wb, "BASE_UNICA_MES", df)
-
     df_daily = df[df["Granularity"].eq("Daily") & ~df["Origin"].eq("RECON")].copy()
     df_hourly = df[df["Granularity"].eq("Hourly") & ~df["Origin"].eq("RECON")].copy()
     df_recon = df[df["Origin"].eq("RECON")].copy()
-    _replace_sheet_in_workbook(wb, template_wb, "DAILYS", df_daily if not df_daily.empty else pd.DataFrame(columns=BASE_UNICA_COLUMNS))
-    _replace_sheet_in_workbook(wb, template_wb, "HOURLYS", df_hourly if not df_hourly.empty else pd.DataFrame(columns=BASE_UNICA_COLUMNS))
-    _replace_sheet_in_workbook(wb, template_wb, "RECON", df_recon if not df_recon.empty else pd.DataFrame(columns=BASE_UNICA_COLUMNS))
-
     alerts_df = pd.DataFrame(alerts, columns=["day_ref", "severity", "issue_type", "ref_key", "details", "created_at"])
-    _replace_sheet_in_workbook(wb, template_wb, "ALERTAS_MES", alerts_df)
-    _replace_sheet_in_workbook(wb, template_wb, "STATUS_MES", status_df)
-    for ws in wb.worksheets:
-        center_filled_cells(ws)
-    _cleanup_workbook_in_memory(wb)
-    if _user_hidden_sheets:
-        _restore_user_hidden_sheets(wb, _user_hidden_sheets)
-    wb.save(workbook_path)
-    wb.close()
-    _normalize_base_unica_table_xml(workbook_path)
-    if template_wb:
-        template_wb.close()
-        # Restoring raw template sheet XML breaks sharedStrings coherence in the
-        # saved workbook and produces invalid .xlsx files. Keep the workbook
-        # generated by openpyxl until we have a safe merge strategy for those
-        # advanced template parts.
+    empty_base = pd.DataFrame(columns=BASE_UNICA_COLUMNS)
+    _write_fast_monthly_workbook(
+        workbook_path,
+        [
+            ("BASE_UNICA_MES", df, 1),
+            ("DAILYS", df_daily if not df_daily.empty else empty_base, 2),
+            ("HOURLYS", df_hourly if not df_hourly.empty else empty_base, 2),
+            ("RECON", df_recon if not df_recon.empty else empty_base, 2),
+            ("ALERTAS_MES", alerts_df, 2),
+            ("STATUS_MES", status_df, 0),
+        ],
+    )
 
 
 def _replace_sheet_in_workbook(wb, template_wb, sheet_name: str, df):
@@ -659,7 +772,15 @@ def _replace_sheet_in_workbook(wb, template_wb, sheet_name: str, df):
         "STATUS_MES": 1,
     }
 
-    if sheet_name in wb.sheetnames:
+    if (
+        template_wb
+        and sheet_name in template_wb.sheetnames
+        and sheet_name in lightweight_template_sheets
+        and sheet_name != "STATUS_MES"
+    ):
+        ws, template_ws = reset_tabular_sheet_from_template(wb, template_wb, sheet_name)
+        start_col = start_col_map.get(sheet_name, 3)
+    elif sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         template_ws = template_wb[sheet_name] if template_wb and sheet_name in template_wb.sheetnames else None
         start_col = start_col_map.get(sheet_name, 3 if template_ws else 1)
@@ -680,24 +801,21 @@ def _replace_sheet_in_workbook(wb, template_wb, sheet_name: str, df):
 
     for column_offset, column in enumerate(df.columns):
         cell = ws.cell(header_row, start_col + column_offset, column)
-        center_cell_content(cell)
+        if cell.alignment.horizontal != "center" or cell.alignment.vertical != "center":
+            center_cell_content(cell)
 
     for row_offset, row in enumerate(df.itertuples(index=False), start=data_row):
-        if template_ws and row_offset > template_ws.max_row:
-            style_row = data_row if (row_offset - data_row) % 2 == 0 else min(data_row + 1, template_ws.max_row)
-            seed_row_from_template(
-                ws,
-                template_ws,
-                row_offset,
-                style_row,
-                start_col,
-                start_col + max(len(df.columns) - 1, 0),
-            )
+        style_row = data_row if (row_offset - data_row) % 2 == 0 else min(data_row + 1, template_ws.max_row if template_ws else data_row)
+        if template_ws:
+            ws.row_dimensions[row_offset].height = template_ws.row_dimensions[style_row].height
         for column_offset, value in enumerate(row):
             cell = ws.cell(row_offset, start_col + column_offset, value)
-            if value not in (None, ""):
+            if template_ws:
+                # StyleArray is immutable in practice and shared by openpyxl;
+                # reusing it avoids millions of copy/alignment allocations.
+                cell._style = template_ws.cell(style_row, start_col + column_offset)._style
+            elif value not in (None, ""):
                 center_cell_content(cell)
-
     if df.columns.size:
         last_col = get_column_letter(start_col + len(df.columns) - 1)
         ws.auto_filter.ref = f"{get_column_letter(start_col)}{header_row}:{last_col}{max(ws.max_row, header_row)}"

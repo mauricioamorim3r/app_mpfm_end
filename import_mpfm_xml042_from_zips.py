@@ -18,10 +18,13 @@ import io
 import re
 from pathlib import Path
 
-DEFAULT_ZIP_FOLDER = (
-    r"C:\Users\MAUAM\OneDrive - Equinor"
-    r"\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM"
-    r"\3. Registros de Operação SGM Multifasico\3.7 Registros XML 042"
+DEFAULT_ZIP_FOLDER = os.environ.get(
+    "DPB_XML042_ZIP_FOLDER",
+    (
+        r"C:\Users\MAUAM\OneDrive - Equinor"
+        r"\DPB FPSO Bacalhau - Metering - 02 MULTIPHASE MANAGEMENT SYSTEM"
+        r"\3.1 Registros Diarios MPFM\Zip"
+    ),
 )
 DEFAULT_APP_URL = "http://localhost:8765"
 API_IMPORT = "/api/xml042/import"
@@ -41,6 +44,21 @@ def find_xml042_in_zip(zip_path: Path) -> list[tuple[str, bytes]]:
     except Exception as e:
         print(f"  [ERRO] {zip_path.name}: {e}")
     return results
+
+
+def find_zip_files(zip_folder: Path) -> list[Path]:
+    roots = [
+        zip_folder,
+        zip_folder / "Registros Automacao Email",
+        zip_folder / "Old",
+    ]
+    found: dict[Path, Path] = {}
+    for root in roots:
+        if not root.exists():
+            continue
+        for path in root.glob("*.zip"):
+            found[path.resolve()] = path
+    return sorted(found.values(), key=lambda p: (p.stat().st_mtime, p.name.lower()))
 
 
 def post_files_multipart(url: str, files: list[tuple[str, bytes]]) -> dict:
@@ -80,8 +98,7 @@ def main():
 
     api_url = args.app_url.rstrip("/") + API_IMPORT
 
-    # Encontrar todos os ZIPs (incluindo Old/)
-    zip_files = sorted(zip_folder.glob("*.zip")) + sorted((zip_folder / "Old").glob("*.zip"))
+    zip_files = find_zip_files(zip_folder)
     print(f"ZIPs encontrados: {len(zip_files)}")
 
     all_xmls: list[tuple[str, bytes, str]] = []  # (name, content, zip_source)
@@ -94,12 +111,18 @@ def main():
     if not all_xmls:
         print("Nenhum XML 042 encontrado nos ZIPs.")
         sys.exit(0)
+    unique_by_name: dict[str, tuple[str, bytes, str]] = {}
+    for name, content, source in all_xmls:
+        unique_by_name[name] = (name, content, source)
+    if len(unique_by_name) != len(all_xmls):
+        print(f"XMLs duplicados por nome ignorados: {len(all_xmls) - len(unique_by_name)}")
+    all_xmls = sorted(unique_by_name.values(), key=lambda item: item[0])
 
     # Mostrar o que foi encontrado
     for name, content, source in all_xmls:
         date_m = re.search(r"_(\d{8})", name)
         date_str = date_m.group(1) if date_m else "?"
-        print(f"  {name}  [{len(content)} bytes]  ← {source}")
+        print(f"  {name}  [{len(content)} bytes]  <- {source}")
 
     if args.dry_run:
         print("\n[DRY RUN] Nenhuma importação realizada.")

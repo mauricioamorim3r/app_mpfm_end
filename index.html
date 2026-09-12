@@ -6,6 +6,7 @@
 <title>MPFM Manager Local</title>
 <link rel="icon" type="image/png" href="/static/icons/summary.png">
 <script src="/static/chart.local.js?v=20260720summarybars3"></script>
+<script src="/static/app.i18n.js?v=20260828i18n1"></script>
 <link rel="stylesheet" href="/static/app.base.css?v=20260327theme1">
 <link rel="stylesheet" href="/static/app.layout.css?v=20260721stickycols1">
 <link rel="stylesheet" href="/static/app.methodology_flow.css?v=20260706flow3">
@@ -54,21 +55,21 @@
     </div>
     <nav class="side-nav" aria-label="Navegação principal">
       <section class="nav-group" aria-labelledby="nav-review">
-        <div class="nav-group__label" id="nav-review">Revisão</div>
+        <div class="nav-group__label" id="nav-review" data-i18n="nav.review">Revisão</div>
         <div class="nav-group__items">
-          <button class="navbtn active" type="button" data-page="resumo" aria-current="page"><img class="nav-icon" src="/static/icons/summary.png" alt=""><span>Resumo do Mês</span></button>
-          <button class="navbtn" type="button" data-page="mpfm"><img class="nav-icon" src="/static/icons/mpfm.png" alt=""><span>Dados MPFM</span></button>
-          <button class="navbtn" type="button" data-page="monitoramento"><img class="nav-icon" src="/static/icons/pipeline.png" alt=""><span>Monitoramento MPFM</span></button>
+          <button class="navbtn active" type="button" data-page="resumo" aria-current="page"><img class="nav-icon" src="/static/icons/summary.png" alt=""><span data-i18n="page.resumo">Resumo do Mês</span></button>
+          <button class="navbtn" type="button" data-page="mpfm"><img class="nav-icon" src="/static/icons/mpfm.png" alt=""><span data-i18n="page.mpfm">Dados MPFM</span></button>
+          <button class="navbtn" type="button" data-page="monitoramento"><img class="nav-icon" src="/static/icons/pipeline.png" alt=""><span data-i18n="page.monitoramento">Monitoramento MPFM</span></button>
           <button class="navbtn" type="button" data-page="cards"><img class="nav-icon" src="/static/icons/cards.png" alt=""><span>Cards Diários</span></button>
           <button class="navbtn" type="button" data-page="graficos"><img class="nav-icon" src="/static/icons/charts.png" alt=""><span>Gráficos</span></button>
         </div>
       </section>
       <section class="nav-group" aria-labelledby="nav-ingest">
-        <div class="nav-group__label" id="nav-ingest">Ingestão</div>
+        <div class="nav-group__label" id="nav-ingest" data-i18n="nav.ingest">Ingestão</div>
         <div class="nav-group__items">
-          <button class="navbtn" type="button" data-page="upload"><img class="nav-icon" src="/static/icons/upload.png" alt=""><span>Processar Arquivos</span></button>
-          <button class="navbtn" type="button" data-page="separador"><img class="nav-icon" src="/static/icons/separator.png" alt=""><span>Dados Separador</span></button>
-          <button class="navbtn" type="button" data-page="xml042"><img class="nav-icon" src="/static/icons/hc.png" alt=""><span>XML 042</span></button>
+          <button class="navbtn" type="button" data-page="upload"><img class="nav-icon" src="/static/icons/upload.png" alt=""><span data-i18n="page.upload">Processar Arquivos</span></button>
+          <button class="navbtn" type="button" data-page="separador"><img class="nav-icon" src="/static/icons/separator.png" alt=""><span data-i18n="page.separador">Dados Separador</span></button>
+          <button class="navbtn" type="button" data-page="xml042"><img class="nav-icon" src="/static/icons/hc.png" alt=""><span data-i18n="page.xml042">XML 042</span></button>
           <button class="navbtn" type="button" data-page="alertas"><img class="nav-icon" src="/static/icons/alerts.png" alt=""><span>Alarmes MPFM</span></button>
           <button class="navbtn" type="button" data-page="painel-operador"><img class="nav-icon" src="/static/icons/pipeline.png" alt=""><span>Painel Operador</span></button>
         </div>
@@ -112,6 +113,7 @@
         <select id="globalMonth" class="input sel-month" title="Mês de referência"></select>
         <button class="btn secondary sm" id="btnAutoRefresh">⏱ Auto: ON</button>
         <button class="btn secondary sm" id="btnThemeMode" type="button" aria-pressed="false" title="Alternar modo de cores">◐ Claro</button>
+        <button class="btn secondary sm" id="btnLanguage" type="button" aria-label="Switch language">🌐 EN</button>
         <button class="btn secondary sm" id="btnSettings">⚙ Config.</button>
         <button class="btn secondary sm" id="btnRefresh">↻ Atualizar</button>
       </div>
@@ -122,47 +124,49 @@
       <!-- KPI cards: production data -->
       <div class="ops-intro ops-intro-summary">
         <div class="ops-intro__copy">
-          <div class="ops-eyebrow">Painel Operacional</div>
-          <h2 class="ops-intro__title">Leitura mensal para produção, cobertura e desvios</h2>
-          <p class="ops-intro__text">Use esta visão para acompanhar o mês ativo, identificar lacunas de medição e priorizar os bancos ou TAGs que precisam de investigação.</p>
+          <div class="ops-eyebrow" data-i18n="resumo.eyebrow">Painel Operacional</div>
+          <h2 class="ops-intro__title" data-i18n="resumo.title">Leitura mensal para produção, cobertura e desvios</h2>
+          <p class="ops-intro__text" data-i18n="resumo.text">Use esta visão para acompanhar o mês ativo, identificar lacunas de medição e priorizar os bancos ou TAGs que precisam de investigação.</p>
         </div>
         <div class="ops-intro__meta">
           <div class="ops-stat">
-            <span class="ops-stat__label">Foco</span>
-            <strong class="ops-stat__value">Resumo + cobertura + recon</strong>
+            <span class="ops-stat__label" data-i18n="resumo.focus.label">Foco</span>
+            <strong class="ops-stat__value" data-i18n="resumo.focus.value">Resumo + cobertura + recon</strong>
           </div>
           <div class="ops-stat">
-            <span class="ops-stat__label">Modo</span>
-            <strong class="ops-stat__value">Operação mensal</strong>
+            <span class="ops-stat__label" data-i18n="resumo.mode.label">Modo</span>
+            <strong class="ops-stat__value" data-i18n="resumo.mode.value">Operação mensal</strong>
           </div>
         </div>
       </div>
       <div class="summary-visibility-toolbar">
         <div class="summary-visibility-toolbar__copy">
-          <div class="summary-visibility-toolbar__title">Visibilidade do resumo</div>
-          <div class="summary-visibility-toolbar__meta">Mostre ou esconda os cards e os painéis de produção conforme a sua necessidade operacional.</div>
+          <div class="summary-visibility-toolbar__title" data-i18n="resumo.visibility.title">Visibilidade do resumo</div>
+          <div class="summary-visibility-toolbar__meta" data-i18n="resumo.visibility.meta">Mostre ou esconda os cards e os painéis de produção conforme a sua necessidade operacional.</div>
         </div>
         <div class="summary-visibility-toolbar__actions">
-          <button class="btn secondary sm" id="btnToggleSummaryAll" type="button">Recolher tudo</button>
-          <button class="btn secondary sm" id="btnToggleSummaryCards" type="button">Ocultar cards</button>
+          <button class="btn secondary sm" id="btnToggleSummaryAll" type="button" data-i18n="resumo.btn.collapse">Recolher tudo</button>
+          <button class="btn secondary sm" id="btnToggleSummaryCards" type="button" data-i18n="resumo.btn.hide-cards">Ocultar cards</button>
+          <button class="btn sm" id="btnRelatorioMesResumo" type="button" data-i18n="resumo.btn.report" data-i18n-title="tooltip.html-report">📋 Relatório HTML do Mês</button>
         </div>
       </div>
       <div id="summaryCards" class="summary-kpi-grid"></div>
       <div class="card ops-card mb14">
         <div class="row row--sb-ac-mb10">
-          <h3 class="section-title modal-h3">Prazos e contagem regressiva</h3>
-          <button class="btn secondary sm" onclick="setPage('prazos')">Gerenciar</button>
+          <h3 class="section-title modal-h3" data-i18n="label.deadlines">Prazos e contagem regressiva</h3>
+          <button class="btn secondary sm" onclick="setPage('prazos')" data-i18n="label.manage">Gerenciar</button>
         </div>
         <div id="deadlineSummary" class="deadline-grid"></div>
       </div>
       <!-- Monthly calendar -->
       <div class="card ops-card mb14">
         <div class="row row--sb-ac-mb10" style="flex-wrap:wrap; gap:10px;">
-          <h3 class="section-title modal-h3" style="margin-bottom:0;">Cobertura de dados do mês</h3>
+          <h3 class="section-title modal-h3" style="margin-bottom:0;" data-i18n="label.coverage">Cobertura de dados do mês</h3>
           <div class="summary-legend" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-size:11px;">
-            <span><span class="legend-dot-mpfm" style="background:#26a0ff;"></span> MPFM (Topside / Subsea)</span>
-            <span><span class="legend-dot-sep" style="background:#a855f7;"></span> Separador (Ó, G, Á)</span>
-            <span style="color:var(--accent); font-weight:600;" title="Clique em qualquer dia para ver a auditoria completa">🔍 Clique em qualquer dia para detalhar</span>
+            <span><span class="legend-dot-mpfm" style="background:#26a0ff;"></span> <span data-i18n="label.mpfm-legend">MPFM (Topside / Subsea)</span></span>
+            <span><span class="legend-dot-sep" style="background:#a855f7;"></span> <span data-i18n="label.sep-legend">Separador (Ó, G, Á)</span></span>
+            <span style="color:var(--accent); font-weight:600;" data-i18n="label.click-detail" data-i18n-title="tooltip.click-day">🔍 Clique em qualquer dia para detalhar</span>
+            <button class="btn secondary sm" id="btnRepairCalendar" type="button" onclick="repairCalendarNow()">🛠 Reparar calendário</button>
           </div>
         </div>
         <div id="monthCalendar" class="calendar summary-calendar"></div>
@@ -332,8 +336,8 @@
             <div class="field f-140"><label for="pocoRiserTo">Data final</label><input type="date" id="pocoRiserTo"></div>
             <div class="field f-140"><label for="pocoRiserSource">Fonte</label><select id="pocoRiserSource"><option value="daily">Diários</option><option value="hourly">Horários (somatório do dia)</option></select></div>
             <div class="field f-160"><label for="pocoRiserPair">Poço × Riser</label><select id="pocoRiserPair"><option value="">Todos os pares</option></select></div>
-            <button class="btn secondary sm" id="btnPocoRiserLoad" type="button" title="Consultar tabela diária">Consultar</button>
-            <button class="btn secondary sm" id="btnPocoRiserExcel" type="button" title="Exportar tabela para Excel">↓ Excel</button>
+            <button class="btn secondary sm" id="btnPocoRiserLoad" type="button" data-i18n="btn.query" data-i18n-title="tooltip.query-table">Consultar</button>
+            <button class="btn secondary sm" id="btnPocoRiserExcel" type="button" data-i18n-title="tooltip.export-excel">↓ Excel</button>
           </div>
         </div>
         <div id="pocoRiserMeta" class="text-muted-11 mb8">Selecione um período e consulte para carregar a tabela.</div>
@@ -359,6 +363,11 @@
         </div>
         <div id="pocoRiserCepLegend" class="text-muted-11 mb8">Aguardando consulta para montar o gráfico.</div>
         <div id="pocoRiserCepWrap" class="summary-chart-wrap poco-riser-cep-wrap">
+          <div class="chart-zoom-controls">
+            <button id="pocoRiserCepZoomIn" class="chart-zoom-btn" data-i18n-title="poco-riser.zoom.in" data-i18n-aria-label="poco-riser.zoom.in">+</button>
+            <button id="pocoRiserCepZoomOut" class="chart-zoom-btn" data-i18n-title="poco-riser.zoom.out" data-i18n-aria-label="poco-riser.zoom.out">−</button>
+            <button id="pocoRiserCepZoomReset" class="chart-zoom-btn" data-i18n-title="poco-riser.zoom.reset" data-i18n-aria-label="poco-riser.zoom.reset">⟲</button>
+          </div>
           <div id="pocoRiserCepStage" class="summary-chart-stage">
             <canvas id="pocoRiserCepChart"></canvas>
           </div>
@@ -486,6 +495,19 @@
             </div>
             <div id="sepPreviewResult" class="log-box" role="status" aria-live="polite">Informe a pasta raiz e clique em pré-visualizar. O backend vai procurar apenas FC13, FC14 e FC17, filtrando somente arquivos Run_24Hours.</div>
           </div>
+          <div class="card ops-card">
+            <h3 class="section-title">Diagnóstico mensal de lacunas</h3>
+            <div class="text-muted-11 mb10">Varre, pasta por pasta e subpasta por subpasta, todos os bancos MPFM configurados para o mês escolhido e explica cada data/hora com dado ausente: arquivo pendente de importação (existe em disco, ainda não foi processado) ou lacuna de origem (não existe na pasta de origem).</div>
+            <div class="row row--wrap mb10">
+              <div class="field f-150">
+                <label for="monthlyGapScanMonth">Mês de referência</label>
+                <input type="month" id="monthlyGapScanMonth">
+              </div>
+              <button class="btn" id="monthlyGapScanBtn" type="button">🔍 Buscar lacunas do mês</button>
+              <button class="btn secondary" id="monthlyGapImportBtn" type="button" disabled>⬇ Importar arquivos pendentes</button>
+            </div>
+            <div id="monthlyGapScanResult" class="log-box" role="status" aria-live="polite">Escolha o mês e clique em "Buscar lacunas do mês".</div>
+          </div>
           <div class="card ops-card ops-card--accent">
             <h3 class="section-title">Automações — Base Única e PETEC</h3>
             <div class="text-muted-11 mb10">Gera relatório HTML ou Excel PETEC diretamente do banco SQLite, sem necessidade de arquivos externos.</div>
@@ -502,6 +524,7 @@
             <div class="row row--wrap mb10">
               <button class="btn" id="btnGerarPetec" type="button">⬇ Gerar Excel PETEC</button>
               <button class="btn secondary" id="btnRelatorioDb" type="button">📋 Relatório Base Única</button>
+              <button class="btn accent" id="btnExportarBaseUnica" type="button">📊 Exportar Base Única (Excel)</button>
             </div>
             <div id="automacaoStatus" class="log-box" style="display:none" role="status" aria-live="polite"></div>
           </div>
@@ -1201,6 +1224,11 @@
           <span class="text-muted-13">Carregando gráfico padrão...</span>
         </div>
         <div id="cWrap" class="charts-chart-wrap d-none">
+          <div class="chart-zoom-controls">
+            <button id="chartZoomIn" class="chart-zoom-btn" title="Aumentar zoom" aria-label="Aumentar zoom">+</button>
+            <button id="chartZoomOut" class="chart-zoom-btn" title="Diminuir zoom" aria-label="Diminuir zoom">−</button>
+            <button id="chartZoomReset" class="chart-zoom-btn" title="Resetar zoom" aria-label="Resetar zoom">⟲</button>
+          </div>
           <div id="mainChartStage" class="charts-chart-stage">
             <canvas id="mainChart"></canvas>
           </div>
@@ -2884,6 +2912,20 @@
       <button class="btn secondary sm" onclick="closeModal('caldayDetailModal')">✕ Fechar</button>
     </div>
     <div id="caldayDetailBody" class="stack mt12"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: ALERTA DE CALIBRAÇÃO SGM-FM (10+ dias fora do limite) ════════ -->
+<div class="modal" id="sgmfmCalibrationModal" role="dialog" aria-modal="true" aria-labelledby="sgmfmCalibrationTitle" aria-hidden="true">
+  <div class="modalbox" style="max-width: 720px;">
+    <div class="row modal-hdr" style="margin-bottom:12px;">
+      <h3 class="section-title modal-h3" id="sgmfmCalibrationTitle">🚨 Protocolo de Calibração SGM-FM</h3>
+      <button class="btn secondary sm" onclick="acknowledgeSgmfmCalibrationAlert()">✕ Fechar</button>
+    </div>
+    <div id="sgmfmCalibrationBody" class="stack mt12"></div>
+    <div class="row" style="justify-content:flex-end; margin-top:16px;">
+      <button class="btn primary" onclick="acknowledgeSgmfmCalibrationAlert()">Ciente</button>
+    </div>
   </div>
 </div>
 

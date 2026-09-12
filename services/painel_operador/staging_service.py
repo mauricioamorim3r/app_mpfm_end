@@ -4379,10 +4379,13 @@ class PainelOperadorStagingService:
         calendar = data.get("operationalCalendar") if isinstance(data.get("operationalCalendar"), dict) else {}
         days_count = 0
         pendencies_count = 0
+        seen_dates: set[str] = set()
         for idx, row in enumerate(calendar.get("days") or []):
             if not isinstance(row, dict):
                 continue
             calendar_date = str(row.get("date") or "")
+            if calendar_date:
+                seen_dates.add(calendar_date)
             stable_key = self._stable_key("calendar-day", idx, calendar_date)
             cur.execute(
                 """
@@ -4466,7 +4469,78 @@ class PainelOperadorStagingService:
                     ),
                 )
                 pendencies_count += 1
+        days_count += self._sync_mpfm_calendar_days(cur, sync_run_id, seen_dates)
         return {"days": days_count, "pendencies": pendencies_count}
+
+    def _sync_mpfm_calendar_days(self, cur, sync_run_id: int, seen_dates: set[str]) -> int:
+        rows = cur.execute(
+            """
+            SELECT
+                day_ref AS calendar_date,
+                CAST(strftime('%d', day_ref) AS INTEGER) AS day_number,
+                COUNT(DISTINCT tag) AS points_count,
+                COUNT(*) AS row_count,
+                GROUP_CONCAT(DISTINCT bank) AS banks
+            FROM measurements_curated
+            WHERE day_ref <> ''
+              AND row_kind IN ('daily', 'hourly', 'recon', 'sep')
+              AND COALESCE(is_official, 1)=1
+            GROUP BY day_ref
+            ORDER BY day_ref
+            """
+        ).fetchall()
+        count = 0
+        for row in rows:
+            calendar_date = str(row["calendar_date"] or "")
+            if not calendar_date or calendar_date in seen_dates:
+                continue
+            payload = {
+                "date": calendar_date,
+                "day": self._int_or_zero(row["day_number"]),
+                "loaded": True,
+                "status": "mpfm_loaded",
+                "source": "measurements_curated",
+                "points": self._int_or_zero(row["points_count"]),
+                "rows": self._int_or_zero(row["row_count"]),
+                "banks": [item for item in str(row["banks"] or "").split(",") if item],
+                "pendingItems": [],
+            }
+            cur.execute(
+                """
+                INSERT INTO painel_operador_calendar_days(
+                    sync_run_id, stable_key, calendar_date, day_number, loaded,
+                    status, closing_status, points_count, xml_families_json,
+                    package_families_json, missing_xml_families_json, raw_pending,
+                    anp_pending, alert_count, pending_count, open_pending_count,
+                    resolved_pending_count, payload_json, created_at
+                )
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                """,
+                (
+                    sync_run_id,
+                    self._stable_key("calendar-day", "mpfm", calendar_date),
+                    calendar_date,
+                    self._int_or_zero(row["day_number"]),
+                    1,
+                    "mpfm_loaded",
+                    "",
+                    self._int_or_zero(row["points_count"]),
+                    "[]",
+                    "[]",
+                    "[]",
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    self._json(payload),
+                    self._now(),
+                ),
+            )
+            seen_dates.add(calendar_date)
+            count += 1
+        return count
 
     def _parse_anp_export_row(
         self,

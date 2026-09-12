@@ -90,6 +90,7 @@ class Counters:
     stage1_moved: int = 0
     stage1_unmatched: int = 0
     stage1_invalid_ext: int = 0
+    stage1_xml042_seen: int = 0
     stage1_errors: int = 0
     stage2_moved: int = 0
     stage2_duplicates_renamed: int = 0
@@ -147,6 +148,10 @@ def normalize(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", s.lower())
 
 
+def is_xml042_filename(name: str) -> bool:
+    return bool(re.fullmatch(r"042_[A-Za-z0-9_]+_\d{14}\.xml", name))
+
+
 def unique_destination(dst: Path) -> Tuple[Path, bool]:
     if not dst.exists():
         return dst, False
@@ -160,6 +165,17 @@ def unique_destination(dst: Path) -> Tuple[Path, bool]:
 def zip_identity(zip_path: Path) -> str:
     st = zip_path.stat()
     return f"{zip_path.name}|{st.st_size}|{int(st.st_mtime)}"
+
+
+def processed_db_has_zip(processed_db: Dict[str, dict], zip_path: Path) -> bool:
+    if zip_path.name in processed_db:
+        return True
+    for item in processed_db.values():
+        if isinstance(item, dict) and item.get("name") == zip_path.name:
+            return True
+    if zip_path.exists() and zip_identity(zip_path) in processed_db:
+        return True
+    return False
 
 
 def load_processed_db(db_path: Path, logger: logging.Logger) -> Dict[str, dict]:
@@ -316,6 +332,10 @@ def process_one_zip(zip_path: Path, logger: logging.Logger, counters: Counters) 
             counters.add_error(f"ZIP sem arquivos: {zip_path.name}")
             return
         for src in files:
+            if is_xml042_filename(src.name):
+                counters.stage1_xml042_seen += 1
+                logger.info("[STAGE1] XML042 reconhecido e mantido no ZIP para importador XML: %s", src.relative_to(extract_to))
+                continue
             key = infer_destination_key(src)
             if key is None:
                 counters.stage1_unmatched += 1
@@ -440,6 +460,28 @@ def days_in_month(year: int, month: int) -> List[date]:
     return [date(year, month, d) for d in range(1, calendar.monthrange(year, month)[1] + 1)]
 
 
+def verification_days(year: int, month: int) -> List[date]:
+    override = os.environ.get("DPB_VERIFY_THROUGH_DATE", "").strip()
+    if override:
+        try:
+            through = datetime.strptime(override, "%Y-%m-%d").date()
+        except ValueError as exc:
+            raise RuntimeError("DPB_VERIFY_THROUGH_DATE deve usar o formato YYYY-MM-DD") from exc
+    else:
+        today = date.today()
+        first_day = date(year, month, 1)
+        current_month = date(today.year, today.month, 1)
+        if first_day > current_month:
+            return []
+        through = today - timedelta(days=1) if first_day == current_month else date(year, month, calendar.monthrange(year, month)[1])
+    if through.year != year or through.month != month:
+        if through < date(year, month, 1):
+            return []
+        through = date(year, month, calendar.monthrange(year, month)[1])
+    last_day = min(through.day, calendar.monthrange(year, month)[1])
+    return [date(year, month, d) for d in range(1, last_day + 1)]
+
+
 def expected_hourly_name(bank_code: str, d: date, hour: int) -> str:
     return f"{bank_code}_MPFM_Hourly-{d.strftime('%Y%m%d')}-{hour:02d}0000+0000.pdf"
 
@@ -456,7 +498,7 @@ def verify_month_alarm(alarm_base: Path, year: int, month: int) -> List[str]:
         dt = parse_alarm_date_from_name(p.name, year)
         if dt and dt.year == year and dt.month == month:
             existing.add(dt.day)
-    return [f"ALARMES ausente: {d.isoformat()}" for d in days_in_month(year, month) if d.day not in existing]
+    return [f"ALARMES ausente: {d.isoformat()}" for d in verification_days(year, month) if d.day not in existing]
 
 
 def verify_month_bank(bank_base: Path, bank_code: str, year: int, month: int) -> List[str]:
@@ -477,7 +519,7 @@ def verify_month_bank(bank_base: Path, bank_code: str, year: int, month: int) ->
             if dp:
                 daily_present.add(dp)
     missing: List[str] = []
-    for d in days_in_month(year, month):
+    for d in verification_days(year, month):
         if d not in daily_present:
             missing.append(f"{bank_code} Daily ausente: {d.isoformat()} esperado {expected_daily_name(bank_code, d)}")
         for hour in range(24):
@@ -530,6 +572,7 @@ def build_summary(c: Counters, log_file: Path, report: Optional[Path]) -> str:
         f"ZIPs processados: {c.zips_processed}",
         f"ZIPs ignorados por já processados: {c.zips_skipped}",
         f"Stage 1 - PDFs movidos para base: {c.stage1_moved}",
+        f"Stage 1 - XML042 reconhecidos para importação dedicada: {c.stage1_xml042_seen}",
         f"Stage 1 - não identificados: {c.stage1_unmatched}",
         f"Stage 1 - extensão inválida/não-PDF: {c.stage1_invalid_ext}",
         f"Stage 2 - PDFs organizados/cadastrados: {c.stage2_moved}",
@@ -566,8 +609,7 @@ def cleanup_processed_zips(zip_folder: Path, processed_db: Dict[str, dict], logg
     kept = 0
     
     for zip_path in zip_folder.glob("*.zip"):
-        zid = zip_identity(zip_path)
-        if zid in processed_db or zip_path.name in processed_db:
+        if processed_db_has_zip(processed_db, zip_path):
             # ZIP já processado, mover para registros
             dest = registros_folder / zip_path.name
             if dest.exists():
@@ -661,7 +703,7 @@ def main() -> int:
 
     for zip_path in zips:
         zid = zip_identity(zip_path)
-        if not reprocess and (zid in processed_db or zip_path.name in processed_db):
+        if not reprocess and processed_db_has_zip(processed_db, zip_path):
             counters.zips_skipped += 1
             logger.info("ZIP já processado; ignorado: %s", zip_path.name)
             continue
@@ -710,4 +752,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

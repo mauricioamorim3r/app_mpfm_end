@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import calendar
 import glob
 import hashlib
 import json
@@ -11,6 +12,7 @@ import sqlite3
 import tempfile
 import threading
 import time
+import zipfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -43,6 +45,19 @@ def register_system_routes(app, ctx: dict) -> None:
     def _canonical_monitor_folder_path(folder_path: str) -> str:
         """Mantém PE-4A e PE-EO105 na única pasta oficial compartilhada."""
         return str(folder_path or "").strip().replace(_B05_OLD_FOLDER, _B05_OFFICIAL_FOLDER)
+
+    def _monitor_folder_root_path(folder_path: str) -> str:
+        path = Path(_canonical_monitor_folder_path(folder_path))
+        parts = list(path.parts)
+        if len(parts) >= 2 and re.match(r"^\d{2}\.", parts[-1] or "") and re.match(r"^\d{4}$", parts[-2] or ""):
+            path = Path(*parts[:-2])
+        parts = list(path.parts)
+        for idx, part in enumerate(parts):
+            if part.startswith("3. Registros de Opera") and idx + 1 < len(parts) and parts[idx + 1] == "3.1 Registros Diarios MPFM":
+                candidate = Path(parts[0], *parts[1:idx], *parts[idx + 1:])
+                if candidate.exists():
+                    return str(candidate)
+        return str(path)
     
     allowed_output_patterns = (
         re.compile(r"^MPFM_(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)_\d{4}\.xlsx$", re.IGNORECASE),
@@ -66,13 +81,42 @@ def register_system_routes(app, ctx: dict) -> None:
             raise HTTPException(400, "Caminho de arquivo inválido")
         return resolved
 
+    def _loaded_operational_days(limit: int = 62) -> list[str]:
+        conn = db_conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT day
+                FROM (
+                    SELECT DISTINCT substr(day_ref,1,10) AS day
+                    FROM measurements_curated
+                    WHERE day_ref NOT LIKE '0000%'
+                      AND day_ref >= '1900-01-01'
+                      AND row_kind IN ('daily','hourly','recon','sep')
+                    UNION
+                    SELECT DISTINCT substr(content_date,1,10) AS day
+                    FROM files_imported
+                    WHERE processed_ok=1
+                      AND content_date NOT LIKE '0000%'
+                      AND content_date >= '1900-01-01'
+                )
+                WHERE day GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+                ORDER BY day DESC
+                LIMIT ?
+                """,
+                (max(1, int(limit)),),
+            ).fetchall()
+            return [row[0] for row in rows]
+        finally:
+            conn.close()
+
     def _discover_measurement_files(folder: str | Path) -> list[Path]:
-        """Return PDF/TXT candidates for production imports, skipping reserved app subfolders."""
+        """Return PDF/TXT/ZIP candidates for production imports, skipping reserved app subfolders."""
         base = Path(folder).resolve()
         reserved_dirs = {"alarme", "alarmes", "alarm", "alarms"}
-        all_files = sorted(glob.glob(os.path.join(str(base), "**", "*.pdf"), recursive=True)) + sorted(
-            glob.glob(os.path.join(str(base), "**", "*.txt"), recursive=True)
-        )
+        all_files = []
+        for ext in ("*.pdf", "*.txt", "*.zip"):
+            all_files.extend(sorted(glob.glob(os.path.join(str(base), "**", ext), recursive=True)))
         candidates: list[Path] = []
         for path_str in all_files:
             path = Path(path_str)
@@ -82,8 +126,148 @@ def register_system_routes(app, ctx: dict) -> None:
                 relative = path
             if any(part.lower() in reserved_dirs for part in relative.parts[:-1]):
                 continue
+            if path.suffix.lower() != ".zip" and not _is_measurement_filename(path.name):
+                continue
             candidates.append(path)
         return candidates
+
+    def _is_measurement_filename(filename: str) -> bool:
+        name = Path(filename).name
+        return bool(
+            re.search(r"B\d{2}_MPFM_(Daily|Hourly)-\d{8}-\d{6}", name, re.IGNORECASE)
+            or re.match(r"Run_24Hours[12]-1\.\d{14}", name, re.IGNORECASE)
+        )
+
+    def _zip_measurement_entries(archive: zipfile.ZipFile) -> list[zipfile.ZipInfo]:
+        entries: list[zipfile.ZipInfo] = []
+        for entry in archive.infolist():
+            if entry.is_dir():
+                continue
+            entry_name = Path(entry.filename).name
+            if entry_name and Path(entry_name).suffix.lower() in {".pdf", ".txt"} and _is_measurement_filename(entry_name):
+                entries.append(entry)
+        return entries
+
+    def _known_imported_filenames(filenames: set[str]) -> set[str]:
+        names = {name for name in filenames if name}
+        if not names:
+            return set()
+        conn = db_conn()
+        cur = conn.cursor()
+        known: set[str] = set()
+        try:
+            names_list = sorted(names)
+            for offset in range(0, len(names_list), 900):
+                chunk = names_list[offset : offset + 900]
+                placeholders = ",".join("?" * len(chunk))
+                known.update(
+                    row[0]
+                    for row in cur.execute(
+                        f"SELECT DISTINCT filename FROM files_imported WHERE filename IN ({placeholders})",
+                        chunk,
+                    ).fetchall()
+                    if row[0]
+                )
+                known.update(
+                    row[0]
+                    for row in cur.execute(
+                        f"SELECT DISTINCT source_file FROM sep_source_files WHERE source_file IN ({placeholders})",
+                        chunk,
+                    ).fetchall()
+                    if row[0]
+                )
+                known.update(
+                    row[0]
+                    for row in cur.execute(
+                        f"SELECT DISTINCT filename FROM source_files_raw WHERE filename IN ({placeholders})",
+                        chunk,
+                    ).fetchall()
+                    if row[0]
+                )
+        finally:
+            conn.close()
+        return known
+
+    def _folder_duplicate_items(paths: list[Path]) -> tuple[list[dict], list[str]]:
+        items: list[dict] = []
+        log: list[str] = []
+        for path in paths:
+            if path.suffix.lower() != ".zip":
+                items.append({"file_id": str(path), "filename": path.name, "file_hash": _file_sha1(path)})
+                continue
+            try:
+                with zipfile.ZipFile(path) as archive:
+                    entries = _zip_measurement_entries(archive)
+                    for entry in entries:
+                        entry_name = Path(entry.filename).name
+                        items.append({"file_id": f"{path}::{entry.filename}", "filename": entry_name, "file_hash": ""})
+                    log.append(f"📦 {path.name} → {len(entries)} PDF/TXT interno(s) localizado(s)")
+            except zipfile.BadZipFile:
+                log.append(f"⚠ {path.name} ignorado: ZIP inválido/corrompido")
+            except OSError as exc:
+                log.append(f"⚠ {path.name} ignorado: falha ao ler ZIP ({exc})")
+        return items, log
+
+    def _materialize_process_pairs(paths: list[Path], tmp_parent: Path, *, skip_known_zip_entries: bool = True) -> tuple[list[tuple[Path, str]], list[str]]:
+        pairs: list[tuple[Path, str]] = []
+        log: list[str] = []
+        for path in paths:
+            if path.suffix.lower() != ".zip":
+                pairs.append((path, path.name))
+                continue
+            zip_tmp = Path(tempfile.mkdtemp(prefix=f"zip_{path.stem[:30]}_", dir=tmp_parent))
+            extracted = 0
+            skipped_known = 0
+            try:
+                with zipfile.ZipFile(path) as archive:
+                    entries = _zip_measurement_entries(archive)
+                    known_names = _known_imported_filenames({Path(entry.filename).name for entry in entries}) if skip_known_zip_entries else set()
+                    for entry in entries:
+                        entry_name = Path(entry.filename).name
+                        if entry_name in known_names:
+                            skipped_known += 1
+                            continue
+                        entry_parent = zip_tmp / hashlib.sha1(entry.filename.encode("utf-8", errors="ignore")).hexdigest()[:10]
+                        entry_parent.mkdir(parents=True, exist_ok=True)
+                        dest = entry_parent / entry_name
+                        with archive.open(entry) as source, dest.open("wb") as target:
+                            shutil.copyfileobj(source, target)
+                        pairs.append((dest, entry_name))
+                        extracted += 1
+                detail = f"📦 {path.name} → {extracted} PDF/TXT extraído(s) para processamento"
+                if skipped_known:
+                    detail += f"; {skipped_known} já importado(s) ignorado(s) pelo nome rastreável"
+                log.append(detail)
+            except zipfile.BadZipFile:
+                log.append(f"⚠ {path.name} ignorado: ZIP inválido/corrompido")
+            except OSError as exc:
+                log.append(f"⚠ {path.name} ignorado: falha ao extrair ZIP ({exc})")
+        return pairs, log
+
+    def _incremental_folder_candidates(paths: list[Path], *, scan_all: bool = False, max_files: int = 30) -> tuple[list[Path], str]:
+        def _mtime(path: Path) -> float:
+            try:
+                return path.stat().st_mtime if path.exists() else 0.0
+            except OSError:
+                return 0.0
+
+        ordered = sorted(paths, key=_mtime, reverse=True)
+        if scan_all or len(ordered) <= max_files:
+            return ordered, "histórico completo"
+        loaded_days = _loaded_operational_days(1)
+        cutoff_ts = None
+        if loaded_days:
+            try:
+                latest_loaded = datetime.strptime(loaded_days[0], "%Y-%m-%d") - timedelta(days=3)
+                cutoff_ts = latest_loaded.timestamp()
+            except ValueError:
+                cutoff_ts = None
+        recent = [path for path in ordered if cutoff_ts is not None and _mtime(path) >= cutoff_ts]
+        if len(recent) < min(max_files, len(ordered)):
+            chosen = ordered[:max_files]
+        else:
+            chosen = recent
+        return chosen, f"incremental recente ({len(chosen)} de {len(ordered)} arquivo(s); use scan_all=true para histórico completo)"
 
     def _sep_folder_scan_from_body(body: dict) -> tuple[Path, list, dict]:
         folder = str((body or {}).get("folder") or (body or {}).get("source_root") or "").strip()
@@ -149,7 +333,7 @@ def register_system_routes(app, ctx: dict) -> None:
         for idx, item in enumerate(base.get("folders") or []):
             if not isinstance(item, dict):
                 continue
-            folder_path = _canonical_monitor_folder_path(item.get("path") or "")
+            folder_path = _monitor_folder_root_path(item.get("path") or "")
             if not folder_path:
                 continue
             duplicate_policy = str(item.get("duplicate_policy") or "skip").strip().lower()
@@ -194,7 +378,7 @@ def register_system_routes(app, ctx: dict) -> None:
         for idx, item in enumerate((config or {}).get("folders") or []):
             if not isinstance(item, dict):
                 continue
-            folder_path = _canonical_monitor_folder_path(item.get("path") or "")
+            folder_path = _monitor_folder_root_path(item.get("path") or "")
             if not folder_path:
                 continue
             duplicate_policy = str(item.get("duplicate_policy") or "skip").strip().lower()
@@ -396,31 +580,30 @@ def register_system_routes(app, ctx: dict) -> None:
 
         roots: list[Path] = []
         seen: set[str] = set()
-        month_match = re.match(r"^(?P<num>\d{2})\.", raw.name or "")
-        preferred_months: set[int] = set()
-        if month_match:
-            try:
-                month_num = int(month_match.group("num"))
-                preferred_months.update({month_num - 1, month_num, month_num + 1})
-            except Exception:
-                preferred_months = set()
         for variant in variants:
             if not variant.exists() or not variant.is_dir():
                 continue
             scan_roots = [variant]
             if re.match(r"^\d{2}\.", variant.name or "") and variant.parent.is_dir() and re.match(r"^\d{4}$", variant.parent.name or ""):
-                siblings = [item for item in variant.parent.iterdir() if item.is_dir() and re.match(r"^\d{2}\.", item.name or "")]
-                filtered = []
-                for item in siblings:
-                    item_match = re.match(r"^(\d{2})\.", item.name or "")
-                    if not item_match:
-                        continue
-                    try:
-                        if int(item_match.group(1)) in preferred_months:
-                            filtered.append(item)
-                    except Exception:
-                        continue
-                scan_roots = filtered or [variant]
+                scan_roots = [
+                    item
+                    for item in variant.parent.iterdir()
+                    if item.is_dir() and re.match(r"^\d{2}\.", item.name or "")
+                ] or [variant]
+            else:
+                year_dirs = [
+                    item
+                    for item in variant.iterdir()
+                    if item.is_dir() and re.match(r"^\d{4}$", item.name or "")
+                ]
+                month_dirs = [
+                    month_dir
+                    for year_dir in year_dirs
+                    for month_dir in year_dir.iterdir()
+                    if month_dir.is_dir() and re.match(r"^\d{2}\.", month_dir.name or "")
+                ]
+                if month_dirs:
+                    scan_roots = month_dirs
             for root in scan_roots:
                 key = str(root.resolve()).casefold()
                 if key in seen:
@@ -434,8 +617,13 @@ def register_system_routes(app, ctx: dict) -> None:
         if scan_root.name.lower() in {"daily", "hourly"}:
             candidates.extend(scan_root.glob("*.pdf"))
         else:
+            seen_dirs: set[str] = set()
             for child_name in ("Daily", "DAILY", "daily", "Hourly", "HOURLY", "hourly"):
                 child = scan_root / child_name
+                dir_key = str(child).casefold()
+                if dir_key in seen_dirs:
+                    continue
+                seen_dirs.add(dir_key)
                 if child.is_dir():
                     candidates.extend(child.glob("*.pdf"))
             candidates.extend(scan_root.glob("*.pdf"))
@@ -444,12 +632,201 @@ def register_system_routes(app, ctx: dict) -> None:
         for path in candidates:
             if not path.is_file():
                 continue
-            key = str(path.resolve()).casefold()
+            resolved = path.resolve()
+            key = str(resolved).casefold()
             if key in seen:
                 continue
             seen.add(key)
-            result.append(path.resolve())
+            result.append(resolved)
         return sorted(result, key=lambda item: item.name.casefold())
+
+    _PT_MONTH_NAMES = {
+        1: "01. Janeiro", 2: "02. Fevereiro", 3: "03. Março", 4: "04. Abril",
+        5: "05. Maio", 6: "06. Junho", 7: "07. Julho", 8: "08. Agosto",
+        9: "09. Setembro", 10: "10. Outubro", 11: "11. Novembro", 12: "12. Dezembro",
+    }
+
+    def _meter_root_from_monitor_path(folder_path: str) -> Path | None:
+        """Strip the trailing \\{ano}\\{mês} segments from a configured monitor
+        folder path, returning the meter's root folder (one level above the year)."""
+        path = Path(_monitor_folder_root_path(folder_path))
+        parts = list(path.parts)
+        if len(parts) >= 2 and re.match(r"^\d{2}\.", parts[-1] or "") and re.match(r"^\d{4}$", parts[-2] or ""):
+            return Path(*parts[:-2])
+        if path.is_dir() and any(item.is_dir() and re.match(r"^\d{4}$", item.name or "") for item in path.iterdir()):
+            return path
+        return None
+
+    def _scan_month_source_coverage(month: str) -> dict:
+        """Compara, para todos os bancos MPFM configurados, os arquivos existentes
+        em disco (pasta por pasta, subpasta por subpasta) com o que já está
+        importado em measurements_curated para o mês pedido. Não escreve nada."""
+        match = re.match(r"^(?P<year>\d{4})-(?P<mon>\d{2})$", str(month or "").strip())
+        if not match:
+            raise HTTPException(400, "Mês inválido. Use o formato YYYY-MM.")
+        year = int(match.group("year"))
+        mon = int(match.group("mon"))
+        month_name = _PT_MONTH_NAMES.get(mon)
+        if not month_name:
+            raise HTTPException(400, "Mês inválido.")
+
+        days_in_month = calendar.monthrange(year, mon)[1]
+        month_start = f"{year:04d}-{mon:02d}-01"
+        month_end = f"{year:04d}-{mon:02d}-{days_in_month:02d}"
+
+        _t_scan0 = time.monotonic()
+        print(f"[gap-scan] {month}: iniciando", flush=True)
+
+        _t_sql0 = time.monotonic()
+        conn = db_conn()
+        cur = conn.cursor()
+        rows = cur.execute(
+            "SELECT bank, day_ref, row_kind, hour_ref FROM measurements_curated "
+            "WHERE row_kind IN ('daily','hourly') AND bank<>'' AND bank<>'SEP' "
+            "AND day_ref BETWEEN ? AND ?",
+            (month_start, month_end),
+        ).fetchall()
+        conn.close()
+        print(f"[gap-scan] {month}: query SQL concluida em {time.monotonic()-_t_sql0:.2f}s ({len(rows)} linhas)", flush=True)
+
+        db_daily: set[tuple[str, str]] = set()
+        db_hours: dict[tuple[str, str], set[int]] = {}
+        for bank, day_ref, row_kind, hour_ref in rows:
+            if row_kind == "daily":
+                db_daily.add((bank, day_ref))
+            elif row_kind == "hourly" and hour_ref is not None:
+                db_hours.setdefault((bank, day_ref), set()).add(int(hour_ref))
+
+        today = datetime.now().date()
+        last_day = min(days_in_month, today.day) if (today.year == year and today.month == mon) else days_in_month
+        all_month_days = [f"{year:04d}-{mon:02d}-{day:02d}" for day in range(1, last_day + 1)]
+
+        banks_out: list[dict] = []
+        pending_files: list[dict] = []
+        total_pending = 0
+        total_source_gap = 0
+
+        _t_folders0 = time.monotonic()
+        monitor_folders = _active_mpfm_monitor_folders()
+        print(f"[gap-scan] {month}: _active_mpfm_monitor_folders concluido em {time.monotonic()-_t_folders0:.2f}s ({len(monitor_folders)} pasta(s))", flush=True)
+
+        for folder in monitor_folders:
+            _t_bank0 = time.monotonic()
+            folder_path = str(folder.get("path") or "").strip()
+            label = folder.get("label") or Path(folder_path).name
+            bank_match = re.search(r"\bB\d{2}\b", folder_path, re.IGNORECASE)
+            expected_bank = bank_match.group(0).upper() if bank_match else ""
+            bank_entry = {
+                "bank": expected_bank,
+                "label": label,
+                "folder_path": folder_path,
+                "scan_roots": [],
+                "found_on_disk": False,
+                "pending_count": 0,
+                "source_gap_count": 0,
+                "days": [],
+                "error": "",
+            }
+            if not expected_bank:
+                bank_entry["error"] = "Não foi possível identificar o código do banco (B##) na pasta configurada."
+                banks_out.append(bank_entry)
+                continue
+            meter_root = _meter_root_from_monitor_path(folder_path)
+            if meter_root is None:
+                bank_entry["error"] = f"Estrutura de pasta inesperada (esperado .../{{ano}}/{{mês}}): {folder_path}"
+                banks_out.append(bank_entry)
+                continue
+
+            synthetic_path = str(meter_root / f"{year:04d}" / month_name)
+            _t_roots0 = time.monotonic()
+            scan_roots = _candidate_existing_mpfm_roots(synthetic_path)
+            print(f"[gap-scan] {month}: {expected_bank} _candidate_existing_mpfm_roots concluido em {time.monotonic()-_t_roots0:.2f}s ({len(scan_roots)} raiz(es))", flush=True)
+            bank_entry["scan_roots"] = [str(item) for item in scan_roots]
+            bank_entry["found_on_disk"] = bool(scan_roots)
+            if not scan_roots:
+                bank_entry["error"] = f"Pasta do mês não encontrada em disco: {synthetic_path}"
+
+            disk_daily: dict[str, Path] = {}
+            disk_hours: dict[str, dict[int, Path]] = {}
+            files: list[Path] = []
+            _t_files0 = time.monotonic()
+            for scan_root in scan_roots:
+                files.extend(_discover_mpfm_pdf_files_fast(scan_root))
+            if not files and scan_roots:
+                for scan_root in scan_roots:
+                    files.extend(_discover_measurement_files(scan_root))
+            print(f"[gap-scan] {month}: {expected_bank} descoberta de arquivos concluida em {time.monotonic()-_t_files0:.2f}s ({len(files)} arquivo(s))", flush=True)
+            for path in files:
+                meta = _parse_mpfm_pdf_filename(path)
+                if not meta or meta["bank"] != expected_bank:
+                    continue
+                day = meta["production_day"]
+                if not day.startswith(f"{year:04d}-{mon:02d}"):
+                    continue
+                if meta["report_type"] == "daily":
+                    disk_daily[day] = meta["path"]
+                elif meta.get("hour") is not None:
+                    disk_hours.setdefault(day, {})[meta["hour"]] = meta["path"]
+
+            day_reports = []
+            bank_pending = 0
+            bank_gap = 0
+            for day in all_month_days:
+                key = (expected_bank, day)
+                missing_hours: list[int] = []
+                pending_hours: list[dict] = []
+                for hour in range(24):
+                    if hour in db_hours.get(key, set()):
+                        continue
+                    disk_path = disk_hours.get(day, {}).get(hour)
+                    if disk_path is not None:
+                        pending_hours.append({"hour": hour, "path": str(disk_path)})
+                        pending_files.append({"bank": expected_bank, "day": day, "hour": hour, "path": str(disk_path)})
+                    else:
+                        missing_hours.append(hour)
+                daily_pending = False
+                daily_missing = False
+                if key not in db_daily:
+                    disk_daily_path = disk_daily.get(day)
+                    if disk_daily_path is not None:
+                        daily_pending = True
+                        pending_files.append({"bank": expected_bank, "day": day, "hour": "daily", "path": str(disk_daily_path)})
+                    else:
+                        daily_missing = True
+                if missing_hours or pending_hours or daily_pending or daily_missing:
+                    day_reports.append(
+                        {
+                            "day": day,
+                            "missing_hours": missing_hours,
+                            "pending_hours": pending_hours,
+                            "daily_missing": daily_missing,
+                            "daily_pending": daily_pending,
+                        }
+                    )
+                bank_pending += len(pending_hours) + (1 if daily_pending else 0)
+                bank_gap += len(missing_hours) + (1 if daily_missing else 0)
+
+            bank_entry["pending_count"] = bank_pending
+            bank_entry["source_gap_count"] = bank_gap
+            bank_entry["days"] = day_reports
+            total_pending += bank_pending
+            total_source_gap += bank_gap
+            banks_out.append(bank_entry)
+            print(f"[gap-scan] {month}: {expected_bank} banco finalizado em {time.monotonic()-_t_bank0:.2f}s (total acumulado {time.monotonic()-_t_scan0:.2f}s)", flush=True)
+
+        print(f"[gap-scan] {month}: FINALIZADO em {time.monotonic()-_t_scan0:.2f}s", flush=True)
+        return {
+            "ok": True,
+            "month": f"{year:04d}-{mon:02d}",
+            "days_scanned": len(all_month_days),
+            "banks": banks_out,
+            "pending_files": pending_files,
+            "summary": {
+                "total_pending": total_pending,
+                "total_source_gap": total_source_gap,
+                "banks_scanned": len(banks_out),
+            },
+        }
 
     def _scan_latest_day_ingestion(body: dict | None = None) -> dict:
         body = body or {}
@@ -503,7 +880,12 @@ def register_system_routes(app, ctx: dict) -> None:
                 folder_candidates.append(meta)
             folder_summaries.append(summary)
 
-        available_days = sorted({item["production_day"] for item in folder_candidates}, reverse=True)
+        loaded_days = _loaded_operational_days(max(62, days_count * 2))
+        loaded_day_set = set(loaded_days)
+        available_days = sorted(
+            {item["production_day"] for item in folder_candidates} | loaded_day_set,
+            reverse=True,
+        )
         if requested_day:
             end_day = datetime.strptime(requested_day, "%Y-%m-%d").date()
             start_day = end_day - timedelta(days=days_count - 1)
@@ -532,8 +914,12 @@ def register_system_routes(app, ctx: dict) -> None:
                     day_hourly = by_folder_day_type.get((summary["folder_id"], day, "hourly"), 0)
                     if day_daily < 1:
                         summary["missing"].append(f"{day} daily")
+                    elif day_daily > 1:
+                        summary["missing"].append(f"{day} daily {day_daily}/1 excesso/duplicado")
                     if day_hourly < 24:
                         summary["missing"].append(f"{day} hourly {day_hourly}/24")
+                    elif day_hourly > 24:
+                        summary["missing"].append(f"{day} hourly {day_hourly}/24 excesso/duplicado")
 
         sep_root_raw = str(body.get("sep_root") or body.get("sep_folder") or "").strip()
         raw_folders = body.get("sep_folder_names") or body.get("folder_names") or DEFAULT_FOLDER_NAMES
@@ -611,6 +997,7 @@ def register_system_routes(app, ctx: dict) -> None:
             )
 
         duplicates = _find_duplicates(items)
+        loaded_selected_days = sorted(target_day_set & loaded_day_set)
         return {
             "ok": True,
             "requested_day": requested_day,
@@ -618,6 +1005,8 @@ def register_system_routes(app, ctx: dict) -> None:
             "target_days": target_days,
             "days_count": len(target_days) or days_count,
             "has_eligible": bool(items),
+            "has_loaded_data": bool(loaded_selected_days),
+            "loaded_days": loaded_selected_days,
             "mpfm_count": len(selected_mpfm),
             "sep_count": len(sep_selected),
             "files_count": len(items),
@@ -626,14 +1015,33 @@ def register_system_routes(app, ctx: dict) -> None:
             "sep": sep_preview,
             "items": items,
             "duplicates": duplicates,
-            "message": (f"Sim: {len(items)} arquivo(s) elegível(is) encontrados para {target_days[0] if len(target_days) == 1 else f'{min(target_days)} a {max(target_days)}'}." if items else f"Não: nenhum arquivo elegível encontrado para {target_day or 'o último dia'}.")
+            "message": (
+                f"Sim: {len(items)} arquivo(s) elegível(is) encontrados para {target_days[0] if len(target_days) == 1 else f'{min(target_days)} a {max(target_days)}'}."
+                if items
+                else (
+                    f"Dados já salvos no banco para {loaded_selected_days[0] if len(loaded_selected_days) == 1 else f'{min(loaded_selected_days)} a {max(loaded_selected_days)}'}; nenhum PDF/TXT novo elegível foi encontrado para reprocessar."
+                    if loaded_selected_days
+                    else f"Não: nenhum arquivo elegível encontrado para {target_day or 'o último dia'}."
+                )
+            )
         }
 
     def _process_latest_day_ingestion(body: dict | None = None) -> dict:
         body = body or {}
         preview = _scan_latest_day_ingestion(body)
         if not preview.get("items"):
-            return {**preview, "processed": 0, "skipped": 0, "log": [preview.get("message") or "Nenhum arquivo elegível."]}
+            loaded_days = preview.get("loaded_days") or []
+            log = [
+                f"Último dia vigente: {preview.get('target_day') or (loaded_days[0] if loaded_days else '')}",
+                preview.get("message") or "Nenhum arquivo elegível.",
+            ]
+            return {
+                **preview,
+                "processed": 0,
+                "skipped": 0,
+                "log": log,
+                "last_date": preview.get("target_day") or (loaded_days[0] if loaded_days else ""),
+            }
         overwrite_map = body.get("overwrite_map") or {}
         pairs = []
         skipped_log = []
@@ -676,46 +1084,59 @@ def register_system_routes(app, ctx: dict) -> None:
                 entry["last_error"] = f"Pasta não encontrada: {folder}"
                 _update_folder_status_summary(entry, trigger, 0, entry["last_error"], force_display=True)
                 return {"ok": False, "processed": 0, "skipped": 0, "found": 0, "log": [entry["last_error"]]}
-            stable_files = _stable_folder_files(folder, monitor_prefs["stability_seconds"])
-            items = [{"file_id": str(path), "filename": path.name, "file_hash": _file_sha1(path)} for path in stable_files]
+            stable_files_all = _stable_folder_files(folder, monitor_prefs["stability_seconds"])
+            stable_files, scan_scope = _incremental_folder_candidates(stable_files_all, scan_all=False)
+            tmp = Path(tempfile.mkdtemp(prefix="monitor_zip_", dir=upload_dir))
+            materialized_pairs, zip_log = _materialize_process_pairs(stable_files, tmp, skip_known_zip_entries=True)
+            items = [{"file_id": str(path), "filename": filename, "file_hash": _file_sha1(path)} for path, filename in materialized_pairs]
             duplicates = {dup["file_id"]: dup for dup in _find_duplicates(items)}
             pairs = []
             skipped_log = []
             skipped = 0
-            for path in stable_files:
+            for path, filename in materialized_pairs:
                 duplicate = duplicates.get(str(path))
                 if duplicate and duplicate.get("duplicate_mode") == "same_content":
                     skipped += 1
-                    skipped_log.append(f"⏭️  {path.name}  →  ignorado (mesmo conteúdo já importado)")
+                    skipped_log.append(f"⏭️  {filename}  →  ignorado (mesmo conteúdo já importado)")
                     continue
                 if duplicate and folder_cfg.get("duplicate_policy") == "skip":
                     skipped += 1
-                    skipped_log.append(f"⏭️  {path.name}  →  ignorado (mesmo nome já importado)")
+                    skipped_log.append(f"⏭️  {filename}  →  ignorado (mesmo nome já importado)")
                     continue
-                pairs.append((path, path.name))
+                pairs.append((path, filename))
             if not pairs:
-                entry["last_found"] = len(stable_files)
+                entry["last_found"] = len(stable_files_all)
                 entry["last_processed"] = 0
                 entry["last_skipped"] = skipped
                 _update_folder_status_summary(entry, trigger, 0, "Nenhum arquivo novo elegível.")
-                return {"ok": True, "processed": 0, "skipped": skipped, "found": len(stable_files), "log": skipped_log + ["⚠ Nenhum arquivo novo elegível."]}
-            result = process_file_list(pairs, default_density, source_type="auto-folder", source_ref=folder)
-            entry["last_found"] = len(stable_files)
-            entry["last_processed"] = len(pairs)
-            entry["last_skipped"] = skipped
-            _update_folder_status_summary(
-                entry,
-                trigger,
-                len(pairs),
-                f"{len(pairs)} arquivo(s) processado(s), {skipped} ignorado(s)",
-            )
-            return {
-                "ok": True,
-                "processed": len(pairs),
-                "skipped": skipped,
-                "found": len(stable_files),
-                "log": skipped_log + result.get("log", []),
-            }
+                try:
+                    shutil.rmtree(tmp)
+                except Exception:
+                    pass
+                return {"ok": True, "processed": 0, "skipped": skipped, "found": len(stable_files_all), "log": [f"Escopo: {scan_scope}"] + zip_log + skipped_log + ["⚠ Nenhum arquivo novo elegível."]}
+            try:
+                result = process_file_list(pairs, default_density, source_type="auto-folder", source_ref=folder)
+                entry["last_found"] = len(stable_files_all)
+                entry["last_processed"] = len(pairs)
+                entry["last_skipped"] = skipped
+                _update_folder_status_summary(
+                    entry,
+                    trigger,
+                    len(pairs),
+                    f"{len(pairs)} arquivo(s) processado(s), {skipped} ignorado(s)",
+                )
+                return {
+                    "ok": True,
+                    "processed": len(pairs),
+                    "skipped": skipped,
+                    "found": len(stable_files_all),
+                    "log": [f"Escopo: {scan_scope}"] + zip_log + skipped_log + result.get("log", []),
+                }
+            finally:
+                try:
+                    shutil.rmtree(tmp)
+                except Exception:
+                    pass
 
     monitor_prefs = _load_monitor_prefs()
 
@@ -1038,16 +1459,15 @@ def register_system_routes(app, ctx: dict) -> None:
         all_files = _discover_measurement_files(folder)
         if not all_files:
             return {"duplicates": [], "items": []}
-        items = []
-        for path in all_files:
-            items.append(
-                {
-                    "file_id": str(path),
-                    "filename": path.name,
-                    "file_hash": _file_sha1(path),
-                }
-            )
-        return {"items": items, "duplicates": _find_duplicates(items)}
+        scoped_files, scan_scope = _incremental_folder_candidates(all_files, scan_all=bool((body or {}).get("scan_all")))
+        items, zip_log = _folder_duplicate_items(scoped_files)
+        return {
+            "items": items,
+            "duplicates": _find_duplicates(items),
+            "log": [f"Escopo: {scan_scope}"] + zip_log,
+            "found": len(all_files),
+            "scanned": len(scoped_files),
+        }
 
     @app.post("/api/process-files")
     async def api_process_files(request: Request):
@@ -1101,30 +1521,43 @@ def register_system_routes(app, ctx: dict) -> None:
         overwrite_map = body.get("overwrite_map") or {}
         all_files = _discover_measurement_files(folder)
         if not all_files:
-            raise HTTPException(400, "Nenhum PDF ou TXT encontrado.")
+            raise HTTPException(400, "Nenhum PDF, TXT ou ZIP encontrado.")
+        force_overwrite = bool((body or {}).get("force_overwrite"))
+        scoped_files, scan_scope = _incremental_folder_candidates(all_files, scan_all=bool((body or {}).get("scan_all")))
+        tmp = Path(tempfile.mkdtemp(prefix="folder_zip_", dir=upload_dir))
+        materialized_pairs, zip_log = _materialize_process_pairs(scoped_files, tmp, skip_known_zip_entries=not force_overwrite)
         pairs = []
         skipped_log = []
-        for path in all_files:
-            fname = path.name
+        for path, fname in materialized_pairs:
             if overwrite_map and (overwrite_map.get(str(path)) == "skip" or overwrite_map.get(fname) == "skip"):
                 skipped_log.append(f"⏭️  {fname}  →  ignorado (duplicado)")
                 continue
             pairs.append((path, fname))
         if not pairs:
-            return {"ok": True, "log": skipped_log + ["⚠ Nenhum arquivo para processar (todos ignorados)."], "last_date": ""}
-        result = process_file_list(
-            pairs,
-            default_density,
-            source_type="folder",
-            source_ref=folder,
-            force_overwrite=bool((body or {}).get("force_overwrite")),
-        )
-        result["log"] = skipped_log + result.get("log", [])
-        conn = db_conn()
-        cur = conn.cursor()
-        last_date = cur.execute("SELECT MAX(day_ref) FROM measurements_curated").fetchone()[0] or ""
-        conn.close()
-        return {**result, "ok": True, "last_date": last_date}
+            try:
+                shutil.rmtree(tmp)
+            except Exception:
+                pass
+            return {"ok": True, "log": [f"Escopo: {scan_scope}"] + zip_log + skipped_log + ["⚠ Nenhum arquivo para processar (todos ignorados)."], "last_date": ""}
+        try:
+            result = process_file_list(
+                pairs,
+                default_density,
+                source_type="folder",
+                source_ref=folder,
+                force_overwrite=force_overwrite,
+            )
+            result["log"] = [f"Escopo: {scan_scope}"] + zip_log + skipped_log + result.get("log", [])
+            conn = db_conn()
+            cur = conn.cursor()
+            last_date = cur.execute("SELECT MAX(day_ref) FROM measurements_curated").fetchone()[0] or ""
+            conn.close()
+            return {**result, "ok": True, "last_date": last_date}
+        finally:
+            try:
+                shutil.rmtree(tmp)
+            except Exception:
+                pass
 
     @app.post("/api/latest-day-ingestion/preview")
     def api_latest_day_ingestion_preview(body: dict):
@@ -1133,6 +1566,120 @@ def register_system_routes(app, ctx: dict) -> None:
     @app.post("/api/latest-day-ingestion/process")
     def api_latest_day_ingestion_process(body: dict):
         return _process_latest_day_ingestion(body or {})
+
+    @app.get("/api/monthly-gap-scan")
+    def api_monthly_gap_scan(month: str = ""):
+        target_month = str(month or "").strip() or datetime.now().strftime("%Y-%m")
+        return _scan_month_source_coverage(target_month)
+
+    @app.post("/api/monthly-gap-scan/import")
+    def api_monthly_gap_scan_import(body: dict):
+        body = body or {}
+        month = str(body.get("month") or "").strip()
+        if not month:
+            raise HTTPException(400, "Informe o mês (YYYY-MM).")
+        scan = _scan_month_source_coverage(month)
+        pending_files = scan.get("pending_files") or []
+
+        requested_paths = body.get("paths")
+        if requested_paths:
+            wanted = {str(p).strip() for p in requested_paths if str(p).strip()}
+            pending_files = [item for item in pending_files if item.get("path") in wanted]
+
+        if not pending_files:
+            return {"ok": True, "scan": scan, "processed": 0, "skipped": 0, "log": ["Nenhum arquivo pendente para importar."], "last_date": ""}
+
+        pairs = [(Path(item["path"]), Path(item["path"]).name) for item in pending_files if Path(item["path"]).is_file()]
+        if not pairs:
+            return {"ok": True, "scan": scan, "processed": 0, "skipped": 0, "log": ["Arquivos pendentes não foram encontrados no disco (podem ter sido movidos)."], "last_date": ""}
+
+        result = process_file_list(pairs, default_density, source_type="monthly-gap-scan", source_ref=month, force_overwrite=False)
+        conn = db_conn()
+        cur = conn.cursor()
+        last_date = cur.execute("SELECT MAX(day_ref) FROM measurements_curated").fetchone()[0] or ""
+        conn.close()
+        return {**result, "ok": True, "scan": scan, "last_date": last_date}
+
+    @app.post("/api/calendar-repair/run")
+    def api_calendar_repair_run(body: dict | None = None):
+        body = body or {}
+        month = str(body.get("month") or "").strip() or datetime.now().strftime("%Y-%m")
+        if not re.match(r"^\d{4}-\d{2}$", month):
+            raise HTTPException(400, "Mês inválido. Use o formato YYYY-MM.")
+        full_scan = bool(body.get("full_scan") or body.get("diagnostic") or body.get("scan_month"))
+
+        monitor_results = []
+        if body.get("run_monitor", True) is not False:
+            active_folders = _active_mpfm_monitor_folders()
+            folders_to_run = active_folders if full_scan else [
+                folder for folder in active_folders
+                if "zip" in str(folder.get("id") or "").lower() or "zip" in str(folder.get("path") or "").lower()
+            ]
+            if not folders_to_run:
+                folders_to_run = active_folders
+            for folder in folders_to_run:
+                result = _run_monitored_folder(folder, trigger="manual-repair")
+                monitor_results.append(
+                    {
+                        "folder_id": folder.get("id") or "",
+                        "label": folder.get("label") or Path(folder.get("path") or "").name,
+                        "processed": result.get("processed", 0),
+                        "skipped": result.get("skipped", 0),
+                        "found": result.get("found", 0),
+                        "ok": result.get("ok", False),
+                    }
+                )
+
+        scan_before_import = None
+        scan_after_import = None
+        import_result = {"processed": 0, "skipped": 0, "log": ["Nenhum arquivo pendente para importar."]}
+        remaining_pending = None
+        remaining_source_gap = None
+        if full_scan:
+            scan_before_import = _scan_month_source_coverage(month)
+            pending_files = scan_before_import.get("pending_files") or []
+            if pending_files:
+                pairs = [(Path(item["path"]), Path(item["path"]).name) for item in pending_files if Path(item["path"]).is_file()]
+                if pairs:
+                    import_result = process_file_list(
+                        pairs,
+                        default_density,
+                        source_type="calendar-repair",
+                        source_ref=month,
+                        force_overwrite=False,
+                    )
+                else:
+                    import_result = {"processed": 0, "skipped": 0, "log": ["Arquivos pendentes não foram encontrados no disco."]}
+            scan_after_import = _scan_month_source_coverage(month)
+            remaining_pending = int((scan_after_import.get("summary") or {}).get("total_pending") or 0)
+            remaining_source_gap = int((scan_after_import.get("summary") or {}).get("total_source_gap") or 0)
+
+        conn = db_conn()
+        cur = conn.cursor()
+        last_date = cur.execute("SELECT MAX(day_ref) FROM measurements_curated").fetchone()[0] or ""
+        conn.close()
+        monitor_processed = sum(int(item.get("processed") or 0) for item in monitor_results)
+        import_processed = int(import_result.get("processed") or 0)
+        return {
+            "ok": True,
+            "mode": "full" if full_scan else "quick",
+            "month": month,
+            "monitor_results": monitor_results,
+            "import_result": import_result,
+            "scan_before_import": scan_before_import,
+            "scan_after_import": scan_after_import,
+            "last_date": last_date,
+            "status": "ok" if remaining_pending in (None, 0) else "pending",
+            "message": (
+                f"Ronda rápida concluída: {monitor_processed + import_processed} arquivo(s) novo(s) processado(s). Atualize/abra o detalhe do dia; vermelho restante indica arquivo de fechamento ainda ausente."
+                if not full_scan else
+                "Calendário conferido. Não há arquivos elegíveis pendentes; o que permanecer vermelho é fonte ainda ausente."
+                if remaining_pending == 0
+                else f"Calendário conferido, mas ainda há {remaining_pending} arquivo(s) existente(s) no disco sem importar."
+            ),
+            "remaining_pending": remaining_pending,
+            "remaining_source_gap": remaining_source_gap,
+        }
 
     @app.post("/api/sep-folder/preview")
     def api_sep_folder_preview(body: dict):

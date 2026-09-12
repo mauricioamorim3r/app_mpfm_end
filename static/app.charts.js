@@ -110,6 +110,7 @@ function chartSetEmpty(message) {
   if (appState.chart) {
     appState.chart.destroy();
     appState.chart = null;
+    chartZoomLevel = 1.0; // Reset zoom level when clearing chart
   }
 }
 
@@ -614,4 +615,88 @@ document.getElementById('cSeparatorMode')?.addEventListener('change', async even
 document.querySelectorAll('.charts-preset-chip').forEach(button => {
   button.addEventListener('click', () => setChartPreset(button.dataset.preset));
 });
+
+// Chart zoom controls
+let chartZoomLevel = 1.0;
+
+function adjustChartZoom(factor) {
+  const appState = chartState();
+  if (!appState.chart || !appState.chart.options || !appState.chart.data) {
+    console.warn('Gráfico não está disponível para zoom');
+    return;
+  }
+
+  chartZoomLevel *= factor;
+  chartZoomLevel = Math.max(0.1, Math.min(5.0, chartZoomLevel)); // Clamp between 0.1x and 5x
+
+  const chart = appState.chart;
+  const scales = chart.options.scales;
+
+  if (!scales) {
+    console.warn('Escalas não encontradas');
+    return;
+  }
+
+  // Adjust all Y axes
+  Object.keys(scales).forEach(scaleId => {
+    const scale = scales[scaleId];
+    if (scale.type === 'linear' && scale.position) {
+      // Get current data range
+      const dataset = chart.data.datasets.find(ds => ds.yAxisID === scaleId);
+      if (!dataset) return;
+
+      const values = dataset.data.filter(v => v != null);
+      if (!values.length) return;
+
+      const dataMin = Math.min(...values);
+      const dataMax = Math.max(...values);
+      const dataRange = dataMax - dataMin;
+      const padding = dataRange * 0.1;
+
+      // Calculate new range based on zoom level
+      const center = (dataMax + dataMin) / 2;
+      const newRange = dataRange / chartZoomLevel;
+
+      scale.min = center - newRange / 2 - padding;
+      scale.max = center + newRange / 2 + padding;
+    }
+  });
+
+  if (typeof chart.update === 'function') {
+    chart.update('none'); // Update without animation
+  }
+}
+
+function resetChartZoom() {
+  const appState = chartState();
+  if (!appState.chart || !appState.chart.options) {
+    console.warn('Gráfico não está disponível para reset');
+    return;
+  }
+
+  chartZoomLevel = 1.0;
+  const chart = appState.chart;
+  const scales = chart.options.scales;
+
+  if (!scales) return;
+
+  // Reset all Y axes to auto
+  Object.keys(scales).forEach(scaleId => {
+    const scale = scales[scaleId];
+    if (scale.type === 'linear' && scale.position) {
+      delete scale.min;
+      delete scale.max;
+    }
+  });
+
+  if (typeof chart.update === 'function') {
+    chart.update('none');
+  }
+}
+
+// Attach event listeners
+document.getElementById('chartZoomIn')?.addEventListener('click', () => adjustChartZoom(1.3));
+document.getElementById('chartZoomOut')?.addEventListener('click', () => adjustChartZoom(1 / 1.3));
+document.getElementById('chartZoomReset')?.addEventListener('click', resetChartZoom);
+
 window.replotChart = replotChart;

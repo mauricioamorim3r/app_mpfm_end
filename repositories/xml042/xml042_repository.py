@@ -157,12 +157,30 @@ class Xml042Repository:
                 COALESCE(tag,'') AS well_operator_name,
                 COALESCE(instrument,'') AS subsea_tag,
                 COALESCE(loop,'') AS loop,
-                MAX(CASE WHEN metric_name='PVT vol Óleo (m³)' THEN metric_value END) AS oil_sm3,
-                MAX(CASE WHEN metric_name='PVT vol Gás (Sm³)' THEN metric_value END) AS gas_sm3,
-                MAX(CASE WHEN metric_name='PVT vol Água (m³)' THEN metric_value END) AS water_sm3,
-                MAX(CASE WHEN metric_name='PVT mass Óleo (t)' THEN metric_value END) AS oil_t,
-                MAX(CASE WHEN metric_name='PVT mass Gás (t)' THEN metric_value END) AS gas_t,
-                MAX(CASE WHEN metric_name='PVT mass Água (t)' THEN metric_value END) AS water_t,
+                COALESCE(
+                    MAX(CASE WHEN metric_name='PVT @20 vol Óleo (m³)' THEN metric_value END),
+                    MAX(CASE WHEN metric_name='PVT vol Óleo (m³)' THEN metric_value END)
+                ) AS oil_sm3,
+                COALESCE(
+                    MAX(CASE WHEN metric_name='PVT @20 vol Gás (Sm³)' THEN metric_value END),
+                    MAX(CASE WHEN metric_name='PVT vol Gás (Sm³)' THEN metric_value END)
+                ) AS gas_sm3,
+                COALESCE(
+                    MAX(CASE WHEN metric_name='PVT @20 vol Água (m³)' THEN metric_value END),
+                    MAX(CASE WHEN metric_name='PVT vol Água (m³)' THEN metric_value END)
+                ) AS water_sm3,
+                COALESCE(
+                    MAX(CASE WHEN metric_name='PVT @20 mass Óleo (t)' THEN metric_value END),
+                    MAX(CASE WHEN metric_name='PVT mass Óleo (t)' THEN metric_value END)
+                ) AS oil_t,
+                COALESCE(
+                    MAX(CASE WHEN metric_name='PVT @20 mass Gás (t)' THEN metric_value END),
+                    MAX(CASE WHEN metric_name='PVT mass Gás (t)' THEN metric_value END)
+                ) AS gas_t,
+                COALESCE(
+                    MAX(CASE WHEN metric_name='PVT @20 mass Água (t)' THEN metric_value END),
+                    MAX(CASE WHEN metric_name='PVT mass Água (t)' THEN metric_value END)
+                ) AS water_t,
                 COUNT(DISTINCT CASE WHEN row_kind='hourly' THEN hour_ref END) AS hours_available
             FROM measurements_curated
             WHERE row_kind IN ('daily', 'hourly')
@@ -321,13 +339,19 @@ class Xml042Repository:
         conn.close()
         return int(row[0]) if row else 0
 
-    def list_documents(self, month: str = ""):
+    def list_documents(self, month: str = "", production_day: str = ""):
         conn = self._db_conn()
         params: list[object] = []
         sql = "SELECT * FROM xml042_documents"
-        if month:
-            sql += " WHERE substr(production_day,1,7)=?"
+        where: list[str] = []
+        if production_day:
+            where.append("production_day=?")
+            params.append(production_day)
+        elif month:
+            where.append("substr(production_day,1,7)=?")
             params.append(month)
+        if where:
+            sql += " WHERE " + " AND ".join(where)
         sql += " ORDER BY production_day DESC, generated_at DESC, cod_cadastro_poco"
         rows = [dict(row) for row in conn.execute(sql, params).fetchall()]
         conn.close()

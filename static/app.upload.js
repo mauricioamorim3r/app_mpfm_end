@@ -4,6 +4,19 @@ function uploadEscape(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
+// Helper para traduzir mensagens com substituição de placeholders
+function t(key, replacements = {}) {
+  if (typeof window.i18n === 'undefined' || typeof window.i18n.t !== 'function') {
+    return key;
+  }
+  let text = window.i18n.t(key);
+  // Substituir placeholders {key} pelos valores
+  Object.keys(replacements).forEach(k => {
+    text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), replacements[k]);
+  });
+  return text;
+}
+
 // ── UPLOAD ────────────────────────────────────────────────────────────────────
 const drop = document.getElementById('dropZone'), inp = document.getElementById('fileInput');
 let uploadQueueSeq = 0;
@@ -261,7 +274,7 @@ async function startFolderProcessing(folder, overwriteMap) {
   if (state.mainProcessingBusy) return;
   state.mainProcessingBusy = true;
   setMainProcessingBusy(true);
-  setProcessLogStatus(`Processando pasta:\n${folder}\n\nAguarde…`);
+  setProcessLogStatus(`${t('msg.processing-folder')}\n${folder}\n\n${t('msg.please-wait')}`);
   try {
     const res = await j(`${API}/process-folder`, {
       method:'POST',
@@ -317,20 +330,28 @@ function formatLatestDayPreview(preview) {
   const folders = preview?.folders || [];
   const targetDays = preview?.target_days || (preview?.target_day ? [preview.target_day] : []);
   const requestedDay = preview?.requested_day || '';
-  const daysLabel = targetDays.length > 1 ? targetDays.slice().sort().join(' a ') : (targetDays[0] || 'não identificado');
+  const sortedTargetDays = targetDays.slice().sort();
+  const daysLabel = sortedTargetDays.length > 1 ? `${sortedTargetDays[0]} a ${sortedTargetDays[sortedTargetDays.length - 1]}` : (sortedTargetDays[0] || 'não identificado');
   const folderLines = folders.map(folder => {
     const expectedHourly = 24 * Math.max(1, targetDays.length || preview?.days_count || 1);
     const status = folder.exists ? `${folder.daily_found || 0} daily · ${folder.hourly_found || 0}/${expectedHourly} hourly` : 'pasta não encontrada';
-    const missing = (folder.missing || []).length ? ` · faltando: ${(folder.missing || []).join(', ')}` : '';
-    return `• ${folder.label || folder.path}: ${status}${missing}`;
+    const issues = folder.missing || [];
+    const issueLabel = issues.some(item => /excesso|duplicado/i.test(item)) ? 'atenção' : 'faltando';
+    const issueText = issues.length ? ` · ${issueLabel}: ${issues.join(', ')}` : '';
+    return `• ${folder.label || folder.path}: ${status}${issueText}`;
   });
   const sep = preview?.sep || {};
   const sepLine = sep.enabled
     ? `SEP TXT: ${preview.sep_count || 0} arquivo(s) selecionado(s) · ${sep.complete ? 'trio completo' : 'trio incompleto/ausente'}`
     : `SEP TXT: ${sep.message || 'pasta SEP não informada'}`;
+  const loadedDays = preview?.loaded_days || [];
+  const loadedLine = loadedDays.length
+    ? `Banco de dados: dados já salvos para ${loadedDays.join(', ')}`
+    : 'Banco de dados: sem dados salvos para a janela selecionada';
   return [
     `${requestedDay ? (targetDays.length > 1 ? 'Janela solicitada' : 'Dia solicitado') : (targetDays.length > 1 ? 'Últimos dias vigentes' : 'Último dia vigente')}: ${daysLabel}`,
     `${preview?.message || ''}`,
+    loadedLine,
     `MPFM PDF: ${preview?.mpfm_count || 0} arquivo(s)` ,
     sepLine,
     `Duplicados detectados: ${preview?.duplicates_count || 0}`,
@@ -344,8 +365,8 @@ async function startLatestDayProcessing(daysCount = 1, overwriteMap = null, targ
   state.mainProcessingBusy = true;
   setMainProcessingBusy(true);
   setProcessLogStatus(targetDay
-    ? `Processando janela de ${daysCount} dia(s) até ${targetDay}…`
-    : (daysCount > 1 ? `Processando ${daysCount} últimos dias vigentes…` : 'Processando último dia vigente…'));
+    ? t('msg.processing-window', { count: daysCount, day: targetDay })
+    : (daysCount > 1 ? t('msg.processing-days', { count: daysCount }) : t('msg.processing-last-day')));
   try {
     const res = await j(`${API}/latest-day-ingestion/process`, {
       method: 'POST',
@@ -390,8 +411,14 @@ async function previewAndMaybeProcessLatestDays(daysCount = 1, targetDay = '') {
     });
     const summary = formatLatestDayPreview(preview);
     setProcessLogStatus(summary);
-    if (!preview.has_eligible) {
+    if (!preview.has_eligible && !preview.has_loaded_data) {
       alert('Não foram encontrados arquivos elegíveis para processar.');
+      return;
+    }
+    if (!preview.has_eligible && preview.has_loaded_data) {
+      await notifyDataChanged(['upload','mpfm','separador','cards','alertas','exportar','monitoramento','xml042']);
+      syncGlobal();
+      await loadSummary();
       return;
     }
     const proceed = confirm(`${summary}\n\nDeseja processar agora?`);
@@ -761,6 +788,166 @@ document.getElementById('sepImportBtn')?.addEventListener('click', async () => {
   }
 });
 
+function renderMonthlyGapBankRow(bank) {
+  const dayLines = (bank.days || []).slice(0, 31).map(d => {
+    const parts = [];
+    if (d.pending_hours && d.pending_hours.length) parts.push(`${d.pending_hours.length}h pendente(s) de importação`);
+    if (d.missing_hours && d.missing_hours.length) parts.push(`${d.missing_hours.length}h sem arquivo de origem`);
+    if (d.daily_pending) parts.push('relatório diário pendente de importação');
+    if (d.daily_missing) parts.push('relatório diário sem arquivo de origem');
+    return `${d.day}: ${parts.join(' · ')}`;
+  });
+  return `
+    <div class="sep-preview-panel${bank.error ? ' sep-preview-panel--warn' : ''}">
+      <div class="sep-preview-panel__title">${escapeHtml(bank.label || bank.bank || '—')} (${escapeHtml(bank.bank || '—')}) — ${bank.pending_count || 0} pendente(s) · ${bank.source_gap_count || 0} lacuna(s) de origem</div>
+      ${bank.error ? `<div class="sep-preview-list__item">${escapeHtml(bank.error)}</div>` : ''}
+      <div class="sep-preview-list">${renderSepPreviewItems(dayLines, 'Sem pendências neste banco para o mês.')}</div>
+    </div>
+  `;
+}
+
+function renderMonthlyGapSamples(pendingFiles) {
+  if (!pendingFiles.length) {
+    return '<div class="sep-preview-empty">Nenhum arquivo pendente de importação encontrado.</div>';
+  }
+  return pendingFiles.slice(0, 12).map(item => `
+    <div class="sep-preview-sample">
+      <div class="sep-preview-sample__top">
+        <strong>${escapeHtml(item.day || '—')}</strong>
+        <span>${escapeHtml(item.bank || '—')}</span>
+        <span>${escapeHtml(String(item.hour ?? '—'))}</span>
+      </div>
+      <div class="sep-preview-sample__name">${escapeHtml(String(item.path || '').split(/[\\/]/).pop() || '—')}</div>
+      <div class="sep-preview-sample__meta">${escapeHtml(item.path || '—')}</div>
+    </div>
+  `).join('');
+}
+
+function renderMonthlyGapScanResult(result) {
+  const host = document.getElementById('monthlyGapScanResult');
+  const importBtn = document.getElementById('monthlyGapImportBtn');
+  if (!host || !importBtn) return;
+  if (!result) {
+    host.innerHTML = '<div class="sep-preview-empty">Nenhuma varredura carregada.</div>';
+    importBtn.disabled = true;
+    return;
+  }
+  const summary = result.summary || {};
+  const banks = result.banks || [];
+  const pendingFiles = result.pending_files || [];
+  const totalPending = Number(summary.total_pending || 0);
+  const totalGap = Number(summary.total_source_gap || 0);
+  const cards = [
+    ['Pendentes de importação', totalPending, 'existem em disco, ainda não importados', totalPending ? 'warn' : 'ok'],
+    ['Lacunas de origem', totalGap, 'sem arquivo correspondente em disco', totalGap ? 'warn' : 'ok'],
+    ['Bancos analisados', summary.banks_scanned || banks.length, `mês ${escapeHtml(result.month || '—')}`, 'muted'],
+    ['Dias varridos', result.days_scanned || 0, 'até hoje ou fim do mês', 'muted'],
+  ];
+  host.innerHTML = `
+    <div class="sep-preview">
+      <div class="sep-preview-grid">${cards.map(([label, value, meta, tone]) => renderSepPreviewStatCard(label, value, meta, tone)).join('')}</div>
+      ${banks.map(renderMonthlyGapBankRow).join('')}
+      <div class="sep-preview-panel">
+        <div class="sep-preview-panel__title">Amostra de arquivos pendentes de importação</div>
+        <div class="sep-preview-samples">${renderMonthlyGapSamples(pendingFiles)}</div>
+      </div>
+    </div>
+  `;
+  importBtn.disabled = totalPending <= 0;
+}
+
+function setMonthlyGapBusy(isBusy) {
+  const scanBtn = document.getElementById('monthlyGapScanBtn');
+  const importBtn = document.getElementById('monthlyGapImportBtn');
+  if (scanBtn) {
+    scanBtn.disabled = !!isBusy;
+    scanBtn.classList.toggle('is-loading', !!isBusy);
+    scanBtn.setAttribute('aria-busy', String(!!isBusy));
+    if (isBusy) {
+      if (!scanBtn.dataset.originalLabel) scanBtn.dataset.originalLabel = scanBtn.textContent;
+      scanBtn.textContent = '⏳ Varrendo… (pode levar até 30s)';
+    } else if (scanBtn.dataset.originalLabel) {
+      scanBtn.textContent = scanBtn.dataset.originalLabel;
+      delete scanBtn.dataset.originalLabel;
+    }
+  }
+  if (importBtn) {
+    if (isBusy) {
+      importBtn.dataset.wasDisabled = importBtn.disabled ? '1' : '0';
+      importBtn.disabled = true;
+    } else if (importBtn.dataset.wasDisabled === '0') {
+      importBtn.disabled = false;
+    }
+    delete importBtn.dataset.wasDisabled;
+  }
+}
+
+(function initMonthlyGapMonthDefault() {
+  const input = document.getElementById('monthlyGapScanMonth');
+  if (input && !input.value) {
+    const now = new Date();
+    input.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
+})();
+
+document.getElementById('monthlyGapScanBtn')?.addEventListener('click', async () => {
+  const month = (document.getElementById('monthlyGapScanMonth')?.value || '').trim();
+  if (state.monthlyGapScanBusy) return;
+  state.monthlyGapScanBusy = true;
+  setMonthlyGapBusy(true);
+  document.getElementById('monthlyGapScanResult').innerHTML = '<div class="sep-preview-empty is-loading">⏳ Varrendo pastas MPFM (pasta por pasta, subpasta por subpasta)… isso pode levar até 30s, aguarde.</div>';
+  try {
+    const qs = month ? `?month=${encodeURIComponent(month)}` : '';
+    const res = await j(`${API}/monthly-gap-scan${qs}`);
+    state.monthlyGapScan = res;
+    renderMonthlyGapScanResult(res);
+  } catch (error) {
+    console.error('Falha ao varrer lacunas mensais', error);
+    document.getElementById('monthlyGapScanResult').innerHTML = `<div class="sep-preview-empty sep-preview-empty--error">${escapeHtml(error?.message || 'Falha ao varrer lacunas do mês.')}</div>`;
+    document.getElementById('monthlyGapImportBtn').disabled = true;
+  } finally {
+    state.monthlyGapScanBusy = false;
+    setMonthlyGapBusy(false);
+  }
+});
+
+document.getElementById('monthlyGapImportBtn')?.addEventListener('click', async () => {
+  const month = (document.getElementById('monthlyGapScanMonth')?.value || '').trim() || (state.monthlyGapScan?.month || '');
+  if (!month) {
+    alert('Escolha o mês antes de importar.');
+    return;
+  }
+  if (state.monthlyGapImportBusy) return;
+  state.monthlyGapImportBusy = true;
+  setMonthlyGapBusy(true);
+  setProcessLogStatus('Importando arquivos pendentes identificados na varredura mensal…');
+  try {
+    const res = await j(`${API}/monthly-gap-scan/import`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({month}),
+    });
+    setProcessLogStatus((res.log || []).join('\n') || `Importação concluída: ${res.processed || 0} arquivo(s).`);
+    appendImportCheckFeedback(res);
+    state.monthlyGapScan = res.scan || null;
+    renderMonthlyGapScanResult(state.monthlyGapScan);
+    if (res.last_date) {
+      const moSel = document.getElementById('globalMonth');
+      if (moSel) moSel.value = res.last_date.slice(0, 7);
+    }
+    await notifyDataChanged(['upload','mpfm','separador','cards','alertas','exportar','monitoramento','xml042']);
+    syncGlobal();
+    await loadSummary();
+    await loadProcessHistory();
+  } catch (error) {
+    console.error('Falha ao importar arquivos pendentes (varredura mensal)', error);
+    setProcessLogStatus(error?.message || 'Falha ao importar arquivos pendentes.');
+  } finally {
+    state.monthlyGapImportBusy = false;
+    setMonthlyGapBusy(false);
+  }
+});
+
 // ── AUTOMAÇÕES DO BANCO ───────────────────────────────────────────────────────
 (function () {
   function automacaoStatus(msg, isError) {
@@ -813,5 +1000,36 @@ document.getElementById('sepImportBtn')?.addEventListener('click', async () => {
     automacaoStatus('Abrindo relatório em nova aba…');
     window.open('/api/automacao/relatorio-base-unica?' + params.toString(), '_blank');
   });
-})();
 
+  document.getElementById('btnExportarBaseUnica')?.addEventListener('click', async () => {
+    const from = document.getElementById('automacaoDateFrom')?.value || '';
+    const to   = document.getElementById('automacaoDateTo')?.value || '';
+    if (!from || !to) {
+      automacaoStatus('Selecione as datas De/Até para exportar o período desejado.', true);
+      return;
+    }
+    const params = new URLSearchParams();
+    params.set('date_from', from);
+    params.set('date_to', to);
+    automacaoStatus('Gerando Excel da Base Única…');
+    try {
+      const res = await fetch('/api/automacao/exportar-base-unica-excel?' + params.toString());
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        automacaoStatus('Erro: ' + (err.detail || 'Falha ao exportar'), true);
+        return;
+      }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      const cd   = res.headers.get('content-disposition') || '';
+      a.download = cd.match(/filename="?([^"]+)"?/)?.[1] || `BASE_UNICA_${from}_a_${to}.xlsx`;
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
+      automacaoStatus(`Excel exportado com sucesso (${from} a ${to}).`);
+    } catch (e) {
+      automacaoStatus('Erro de rede: ' + e.message, true);
+    }
+  });
+})();
